@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gothic: {
+                            900: '#0a0a0a',
+                            800: '#141414',
+                            700: '#1f1f1f',
+                            600: '#2a2a2a',
+                            accent: '#8b0000',
+                            accent2: '#4a0080',
+                            muted: '#888888',
+                            light: '#e0e0e0'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Crimson Text', 'serif'],
+                        display: ['Cinzel', 'serif'],
+                        body: ['Cormorant Garamond', 'serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'flicker': 'flicker 3s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        flicker: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.8 },
+                        },
+                        glow: {
+                            '0%': { textShadow: '0 0 5px #8b0000' },
+                            '100%': { textShadow: '0 0 20px #8b0000, 0 0 40px #8b0000' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        #rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gothic-border {
+            position: relative;
+        }
+
+        .gothic-border::before,
+        .gothic-border::after {
+            content: '❦';
+            position: absolute;
+            color: #8b0000;
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .gothic-border::before {
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%) rotate(180deg);
+        }
+
+        .gothic-border::after {
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+
+        .hover-gothic:hover {
+            color: #8b0000;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .art-card:hover .art-overlay {
+            opacity: 1;
+        }
+
+        .art-card:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .art-overlay {
+            opacity: 0;
+            transition: all 0.4s ease;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, transparent 100%);
+        }
+
+        .writing-excerpt {
+            border-left: 3px solid #8b0000;
+            background: linear-gradient(90deg, rgba(139, 0, 0, 0.1) 0%, transparent 100%);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b0000;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-body antialiased selection:bg-gothic-accent selection:text-white">
+
+    <canvas id="rain-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="font-display text-xl tracking-widest text-white hover-gothic cursor-pointer font-bold">
+                    AETHER
+                </div>
+
+                <div class="hidden md:flex space-x-8 font-serif text-gray-300 tracking-wide">
+                    <a href="#about" class="hover-gothic transition-colors">About</a>
+                    <a href="#writings" class="hover-gothic transition-colors">Writings</a>
+                    <a href="#gallery" class="hover-gothic transition-colors">Gallery</a>
+                    <a href="#contact" class="hover-gothic transition-colors">Contact</a>
+                </div>
+
+                <button class="md:hidden text-white" onclick="toggleMenu()">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-white/10">
+            <div class="px-4 pt-2 pb-6 space-y-2 font-serif">
+                <a href="#about" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">About</a>
+                <a href="#writings" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">Writings</a>
+                <a href="#gallery" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">Gallery</a>
+                <a href="#contact" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+        <div class="text-center z-10 max-w-4xl mx-auto">
+            <div class="mb-6 text-gothic-accent opacity-80">
+                <i data-lucide="feather" class="w-12 h-12 mx-auto animate-float"></i>
+            </div>
+            <h1 id="hero-title-display" class="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-2 tracking-wider text-glow animate-flicker">
+                AETHER
+            </h1>
+            <p class="font-display text-sm md:text-base text-gothic-accent tracking-[0.3em] mb-8 uppercase">evesgrandson</p>
+            <p id="hero-subtitle-display" class="font-body text-xl md:text-2xl text-gothic-muted italic mb-8 tracking-wide">
+                I'm the fear of the unknown
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#writings" id="hero-btn1-display" class="group px-8 py-3 border border-gothic-accent text-gothic-accent font-serif tracking-widest hover:bg-gothic-accent hover:text-white transition-all duration-300">
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-4 h-4"></i>
+                        READ MY WORK
+                    </span>
+                </a>
+                <a href="#gallery" id="hero-btn2-display" class="group px-8 py-3 border border-white/20 text-white font-serif tracking-widest hover:bg-white hover:text-black transition-all duration-300">
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        VIEW GALLERY
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-gothic-muted">
+            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 px-4 relative">
+        <div class="max-w-4xl mx-auto">
+            <div class="gothic-border text-center mb-16 reveal">
+                <h2 id="about-title-display" class="font-display text-4xl md:text-5xl font-bold text-white mb-4">About The Creator</h2>
+                <div class="w-24 h-0.5 bg-gothic-accent mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="reveal delay-200">
+                    <div class="relative aspect-[3/4] overflow-hidden border border-gothic-700">
+                        <img id="about-image-display" src="https://static.photos/monochrome/600x800/42" alt="Portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute inset-0 border-4 border-gothic-900 pointer-events-none"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-6 font-body text-lg leading-relaxed text-gray-300 reveal delay-400">
+                    <p id="about-p1-display" class="first-letter:text-5xl first-letter:font-display first-letter:text-gothic-accent first-letter:float-left first-letter:mr-3 first-letter:mt-[-6px]">
+                        In the spaces between midnight and dawn, I find my voice. A weaver of dark tales and keeper of visual nightmares, my work explores the beautiful melancholy of existence.
+                    </p>
+                    <p id="about-p2-display">
+                        My writing delves into gothic fiction, poetry that speaks to the soul's shadows, and stories that linger long after the final page. Each piece is a fragment of moonlight captured in ink.
+                    </p>
+                    <p id="about-p3-display">
+                        Through my art, I translate the whispers of forgotten places—ruined cathedrals, mist-covered forests, and the eternal dance between light and dark. Welcome to my world of elegant darkness.
+                    </p>
+
+                    <div class="flex gap-4 pt-4">
+                        <div class="flex items-center gap-2 text-gothic-accent">
+                            <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                            <span class="font-serif">Writer</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gothic-accent">
+                            <i data-lucide="palette" class="w-5 h-5"></i>
+                            <span class="font-serif">Artist</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gothic-accent">
+                            <i data-lucide="moon" class="w-5 h-5"></i>
+                            <span class="font-serif">Dreamer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Writings -->
+    <section id="writings" class="py-24 px-4 bg-gothic-800/50 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="gothic-border text-center mb-16 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Writings</h2>
+                <p class="font-body text-gothic-muted italic">Gibberish</p>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Writing 1 -->
+                <article class="writing-excerpt p-8 reveal hover:bg-gothic-700/30 transition-colors cursor-pointer group" onclick="toggleExcerpt(this)">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 id="writing1-title-display" class="font-display text-2xl text-white group-hover:text-gothic-accent transition-colors">The Cathedral of Broken Dreams</h3>
+                            <span id="writing1-meta-display" class="font-serif text-sm text-gothic-muted">Dark Fiction • 12 min read</span>
+                        </div>
+                        <i data-lucide="plus" class="w-6 h-6 text-gothic-muted group-hover:text-gothic-accent transition-all excerpt-icon"></i>
+                    </div>
+                    <p id="writing1-preview-display" class="font-body text-gray-400 mb-4 line-clamp-2 excerpt-preview">
+                        The spires reached toward a moonless sky, stone fingers grasping at void. Within its hollow halls, dreams came to die—not quickly, but slowly, rotting from the inside like fruit forgotten in winter...
+                    </p>
+                    <div id="writing1-full-display" class="hidden excerpt-full font-body text-gray-300 leading-relaxed space-y-4 border-t border-gothic-600 pt-4 mt-4">
+                        <p>The spires reached toward a moonless sky, stone fingers grasping at void. Within its hollow halls, dreams came to die—not quickly, but slowly, rotting from the inside like fruit forgotten in winter.</p>
+                        <p>Elena stepped through the archway, her boots crunching on centuries of dust and shattered glass. Each window had once held stained glass depicting salvation, now reduced to jagged teeth framing the night. She carried a lantern, but its light seemed embarrassed by the darkness here, offering only a small yellow pool of cowardice against the overwhelming black.</p>
+                        <p>"You came," whispered a voice from the rafters.</p>
+                        <p>Elena did not flinch. She had expected this. After all, one does not enter the Cathedral of Broken Dreams without being invited.</p>
+                        <button class="mt-4 text-gothic-accent hover:text-white font-serif text-sm tracking-widest border border-gothic-accent px-4 py-2 hover:bg-gothic-accent transition-all">
+                            READ FULL STORY
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Writing 2 -->
+                <article class="writing-excerpt p-8 reveal hover:bg-gothic-700/30 transition-colors cursor-pointer group" onclick="toggleExcerpt(this)">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 id="writing2-title-display" class="font-display text-2xl text-white group-hover:text-gothic-accent transition-colors">Midsonnet</h3>
+                            <span id="writing2-meta-display" class="font-serif text-sm text-gothic-muted">Poetry • 2 min read</span>
+                        </div>
+                        <i data-lucide="plus" class="w-6 h-6 text-gothic-muted group-hover:text-gothic-accent transition-all excerpt-icon"></i>
+                    </div>
+                    <p id="writing2-preview-display" class="font-body text-gray-400 mb-4 line-clamp-2 excerpt-preview">
+                        The clock strikes thirteen in hollow halls, Where shadows breed and silence calls...
+                    </p>
+                    <div id="writing2-full-display" class="hidden excerpt-full font-body text-gray-300 leading-relaxed border-t border-gothic-600 pt-4 mt-4">
+                        <div class="font-serif italic space-y-2 text-lg">
+                            <p>The clock strikes thirteen in hollow halls,</p>
+                            <p>Where shadows breed and silence calls.</p>
+                            <p>Your ghost sits heavy on my chest,</p>
+                            <p>A midnight weight that knows no rest.</p>
+                            <br>
+                            <p>The roses red have turned to black,</p>
+                            <p>And I can't find the will to turn back.</p>
+                            <p>Through corridors of memory dark,</p>
+                            <p>I search for you, I miss your mark.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Writing 3 -->
+                <article class="writing-excerpt p-8 reveal hover:bg-gothic-700/30 transition-colors cursor-pointer group" onclick="toggleExcerpt(this)">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 id="writing3-title-display" class="font-display text-2xl text-white group-hover:text-gothic-accent transition-colors">Velvet Shadows</h3>
+                            <span id="writing3-meta-display" class="font-serif text-sm text-gothic-muted">Short Story • 8 min read</span>
+                        </div>
+                        <i data-lucide="plus" class="w-6 h-6 text-gothic-muted group-hover:text-gothic-accent transition-all excerpt-icon"></i>
+                    </div>
+                    <p id="writing3-preview-display" class="font-body text-gray-400 mb-4 line-clamp-2 excerpt-preview">
+                        The theatre had been closed since 1924, yet every night at midnight, music seeped through its boarded windows—waltzes played by hands that had rotted to bone decades ago...
+                    </p>
+                    <div id="writing3-full-display" class="hidden excerpt-full font-body text-gray-300 leading-relaxed space-y-4 border-t border-gothic-600 pt-4 mt-4">
+                        <p>The theatre had been closed since 1924, yet every night at midnight, music seeped through its boarded windows—waltzes played by hands that had rotted to bone decades ago.</p>
+                        <p>Sarah stood across the street, her breath misting in the cold November air. She held her notebook close, filled with research about the fire that had killed hundreds, and the alleged curse that followed the building through changing ownerships.</p>
+                        <p>But she wasn't here for the history. She was here for the music.</p>
+                        <p>Because somewhere in that decaying grandeur, her sister was dancing.</p>
+                        <button class="mt-4 text-gothic-accent hover:text-white font-serif text-sm tracking-widest border border-gothic-accent px-4 py-2 hover:bg-gothic-accent transition-all">
+                            READ FULL STORY
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="gothic-border text-center mb-16 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Visual Works</h2>
+                <p class="font-body text-gothic-muted italic">hallucinations</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Art 1 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-100" onclick="openLightbox(this)">
+                    <img src="https://static.photos/monochrome/600x600/1" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery1-title-display" class="font-display text-xl text-white mb-1">Silent Witness</h3>
+                        <p id="gallery1-desc-display" class="font-serif text-sm text-gray-400">Charcoal & Digital</p>
+                    </div>
+                </div>
+
+                <!-- Art 2 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-200" onclick="openLightbox(this)">
+                    <img src="https://static.photos/cityscape/600x600/2" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery2-title-display" class="font-display text-xl text-white mb-1">Midst in the City</h3>
+                        <p id="gallery2-desc-display" class="font-serif text-sm text-gray-400">Photography</p>
+                    </div>
+                </div>
+
+                <!-- Art 3 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-300" onclick="openLightbox(this)">
+                    <img src="https://static.photos/nature/600x600/3" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery3-title-display" class="font-display text-xl text-white mb-1">Old Growth</h3>
+                        <p id="gallery3-desc-display" class="font-serif text-sm text-gray-400">Mixed Media</p>
+                    </div>
+                </div>
+
+                <!-- Art 4 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-100" onclick="openLightbox(this)">
+                    <img src="https://static.photos/abstract/600x600/4" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery4-title-display" class="font-display text-xl text-white mb-1">Void Whispers</h3>
+                        <p id="gallery4-desc-display" class="font-serif text-sm text-gray-400">Digital Art</p>
+                    </div>
+                </div>
+
+                <!-- Art 5 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-200" onclick="openLightbox(this)">
+                    <img src="https://static.photos/vintage/600x600/5" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery5-title-display" class="font-display text-xl text-white mb-1">Forgotten Ritual</h3>
+                        <p id="gallery5-desc-display" class="font-serif text-sm text-gray-400">Ink & Gold Leaf</p>
+                    </div>
+                </div>
+
+                <!-- Art 6 -->
+                <div class="art-card relative overflow-hidden aspect-square cursor-pointer group reveal delay-300" onclick="openLightbox(this)">
+                    <img src="https://static.photos/indoor/600x600/6" alt="Gothic Art" class="w-full h-full object-cover grayscale transition-all duration-500">
+                    <div class="art-overlay absolute inset-0 flex flex-col justify-end p-6">
+                        <h3 id="gallery6-title-display" class="font-display text-xl text-white mb-1">Sanctuary</h3>
+                        <p id="gallery6-desc-display" class="font-serif text-sm text-gray-400">Oil on Canvas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-4 bg-gothic-800/50">
+        <div class="max-w-2xl mx-auto text-center">
+            <div class="gothic-border mb-12 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Summon Contact</h2>
+                <p class="font-body text-gothic-muted italic">It won't work</p>
+            </div>
+
+            <h3 id="contact-title-display" class="font-display text-3xl font-bold text-white mb-8">Summon Contact</h3>
+
+            <form class="space-y-6 reveal text-left max-w-lg mx-auto">
+                <div>
+                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">YOUR NAME</label>
+                    <input type="text" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">YOUR EMAIL</label>
+                    <input type="email" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700" placeholder="Enter your email">
+                </div>
+                <div>
+                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">MESSAGE</label>
+                    <textarea rows="5" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700 resize-none" placeholder="Speak your mind..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 bg-gothic-accent text-white font-serif tracking-widest hover:bg-red-900 transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <span>SEND MESSAGE</span>
+                    <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </form>
+
+            <div class="flex justify-center gap-8 mt-12 reveal">
+                <a href="#" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                </a>
+                <a href="#" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
+                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                </a>
+                <a href="#" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                </a>
+                <a href="#" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-4 border-t border-white/5 text-center">
+        <p id="footer-text-display" class="font-serif text-gothic-muted text-sm mb-4">
+            © 2026 Aether, Evesgrandson shared with the world.
+        </p>
+        <a href="admin.html" class="text-gothic-700 hover:text-gothic-accent transition-colors text-xs tracking-widest">
+            ◆ SANCTUM ◆
+        </a>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 text-white hover:text-gothic-accent transition-colors">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] object-contain border border-gothic-700">
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Rain Animation
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const drops = [];
+        const splashes = [];
+
+        class RainDrop {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -100;
+                this.length = Math.random() * 20 + 10;
+                this.speed = Math.random() * 4 + 3;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > height) {
+                    // Create splash
+                    if (Math.random() > 0.7) {
+                        splashes.push(new Splash(this.x, height));
+                    }
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.length);
+                ctx.strokeStyle = `rgba(174, 174, 174, ${this.opacity})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        class Splash {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 10 + 5;
+                this.opacity = 0.5;
+                this.speed = Math.random() * 1 + 0.5;
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.opacity -= 0.02;
+            }
+
+            draw() {
+                if (this.opacity <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI, false);
+                ctx.strokeStyle = `rgba(174, 174, 174, ${this.opacity})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        // Create drops
+        for (let i = 0; i < 150; i++) {
+            drops.push(new RainDrop());
+        }
+
+        function animateRain() {
+            ctx.clearRect(0, 0, width, height);
+
+            drops.forEach(drop => {
+                drop.update();
+                drop.draw();
+            });
+
+            // Update and draw splashes
+            for (let i = splashes.length - 1; i >= 0; i--) {
+                splashes[i].update();
+                splashes[i].draw();
+                if (splashes[i].opacity <= 0) {
+                    splashes.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animateRain);
+        }
+
+        animateRain();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Writing Excerpt Toggle
+        function toggleExcerpt(element) {
+            const preview = element.querySelector('.excerpt-preview');
+            const full = element.querySelector('.excerpt-full');
+            const icon = element.querySelector('.excerpt-icon');
+
+            if (full.classList.contains('hidden')) {
+                preview.classList.add('hidden');
+                full.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'minus');
+                lucide.createIcons();
+            } else {
+                preview.classList.remove('hidden');
+                full.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'plus');
+                lucide.createIcons();
+            }
+        }
+
+        // Lightbox Functions
+        function openLightbox(card) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const src = card.querySelector('img').src;
+            img.src = src.replace('600x600', '1200x1200');
+            lightbox.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+        }
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                navbar.classList.add('bg-gothic-900/95');
+            } else {
+                navbar.classList.remove('bg-gothic-900/95');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Load content from admin edits
+        const STORAGE_KEY = 'aether_site_content';
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(key => {
+                const el = document.getElementById(key + '-display');
+                if (el) {
+                    if (el.tagName === 'P' || el.tagName === 'H3' || el.tagName === 'H2' || el.tagName === 'SPAN') {
+                        el.textContent = data[key];
+                    } else if (el.tagName === 'A') {
+                        // For buttons, keep the inner span structure but update text
+                        const span = el.querySelector('span');
+                        if (span) {
+                            // Extract text without icon
+                            span.innerHTML = `<i data-lucide="book-open" class="w-4 h-4"></i> ${data[key]}`;
+                            if (key === 'hero-btn2') {
+                                span.innerHTML = `<i data-lucide="image" class="w-4 h-4"></i> ${data[key]}`;
+                            }
+                        }
+                    } else if (el.tagName === 'IMG') {
+                        el.src = data[key];
+                    } else {
+                        el.innerHTML = data[key];
+                    }
+                }
+            });
+            lucide.createIcons();
+        }
+
+        // Prevent form submission (demo)
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Message sent into the void... (Demo only)');
+        });
+    </script>
+</body>
+</html>
