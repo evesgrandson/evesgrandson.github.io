@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-
+    
     <script>
         tailwind.config = {
             theme: {
@@ -29,12 +29,12 @@
             }
         }
     </script>
-
+    
     <style>
         body {
             background-color: #0a0a0a;
             color: #e0e0e0;
-            background-image:
+            background-image: 
                 radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(74, 0, 128, 0.05) 0%, transparent 50%);
         }
@@ -80,9 +80,9 @@
             <h1 class="font-display text-4xl font-bold text-white mb-2 aether-glow tracking-wider">AETHER</h1>
             <p class="text-gothic-accent text-sm mb-1 tracking-[0.3em] uppercase">Content Sanctum</p>
             <p class="text-gothic-muted mb-8 italic text-sm">Authorized soul only</p>
-
+            
             <form id="login-form" class="space-y-4">
-                <input type="password" id="password" placeholder="Speak the shadow phrase..."
+                <input type="password" id="password" placeholder="Speak the shadow phrase..." 
                     class="w-full px-4 py-3 font-serif text-center border-gothic-700 focus:border-gothic-accent">
                 <button type="submit" class="w-full py-3 bg-gothic-accent text-white font-bold tracking-widest hover:bg-red-900 transition-all flex items-center justify-center gap-2 group">
                     <i data-lucide="log-in" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
@@ -125,7 +125,7 @@
         </header>
 
         <main class="max-w-6xl mx-auto px-4 py-8 pb-24">
-
+            
             <!-- Hero Section Editor -->
             <!-- Welcome Banner -->
             <div class="mb-8 p-6 glass-panel border-l-4 border-gothic-accent">
@@ -155,10 +155,6 @@
                         <div>
                             <label class="block text-xs text-gothic-muted mb-1 uppercase tracking-widest">Button 1 Text</label>
                             <input type="text" id="hero-btn1" class="w-full px-4 py-2" value="READ MY WORK">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gothic-muted mb-1 uppercase tracking-widest">Button 2 Text</label>
-                            <input type="text" id="hero-btn2" class="w-full px-4 py-2" value="VIEW GALLERY">
                         </div>
                     </div>
                 </div>
@@ -207,7 +203,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 text-gothic-muted"></i>
                 </button>
                 <div id="writings-editor" class="hidden p-6 glass-panel border-t-0 space-y-6">
-
+                    
                     <!-- Writing 1 -->
                     <div class="editable-section p-4 space-y-3">
                         <h3 class="font-display text-lg text-gothic-accent">Story 1</h3>
@@ -238,53 +234,6 @@ A midnight weight that knows no rest...</textarea>
                         <input type="text" id="writing3-meta" class="w-full px-4 py-2 text-sm" value="Short Story • 8 min read">
                         <textarea id="writing3-preview" rows="2" class="w-full px-4 py-2 text-sm">The theatre had been closed since 1924...</textarea>
                         <textarea id="writing3-full" rows="6" class="w-full px-4 py-2 text-sm">The theatre had been closed since 1924, yet every night at midnight, music seeped through its boarded windows—waltzes played by hands that had rotted to bone decades ago...</textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gallery Editor -->
-            <div class="mb-8">
-                <button onclick="toggleSection('gallery-editor')" class="w-full flex items-center justify-between p-4 glass-panel hover:bg-gothic-800 transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="image" class="w-5 h-5 text-gothic-accent"></i>
-                        <h2 class="font-display text-xl font-bold text-white">Gallery</h2>
-                    </div>
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-gothic-muted"></i>
-                </button>
-                <div id="gallery-editor" class="hidden p-6 glass-panel border-t-0 space-y-4">
-                    <p class="text-sm text-gothic-muted mb-4">Edit image captions (Image URLs are managed via static.photos)</p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 1</label>
-                            <input type="text" id="gallery1-title" class="w-full mt-1 px-3 py-2" value="Silent Witness">
-                            <input type="text" id="gallery1-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Charcoal & Digital">
-                        </div>
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 2</label>
-                            <input type="text" id="gallery2-title" class="w-full mt-1 px-3 py-2" value="Midst in the City">
-                            <input type="text" id="gallery2-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Photography">
-                        </div>
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 3</label>
-                            <input type="text" id="gallery3-title" class="w-full mt-1 px-3 py-2" value="Old Growth">
-                            <input type="text" id="gallery3-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Mixed Media">
-                        </div>
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 4</label>
-                            <input type="text" id="gallery4-title" class="w-full mt-1 px-3 py-2" value="Void Whispers">
-                            <input type="text" id="gallery4-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Digital Art">
-                        </div>
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 5</label>
-                            <input type="text" id="gallery5-title" class="w-full mt-1 px-3 py-2" value="Forgotten Ritual">
-                            <input type="text" id="gallery5-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Ink & Gold Leaf">
-                        </div>
-                        <div class="editable-section p-3">
-                            <label class="text-xs text-gothic-muted">Image 6</label>
-                            <input type="text" id="gallery6-title" class="w-full mt-1 px-3 py-2" value="Sanctuary">
-                            <input type="text" id="gallery6-desc" class="w-full mt-2 px-3 py-1 text-sm" value="Oil on Canvas">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -412,7 +361,6 @@ A midnight weight that knows no rest...</textarea>
                 'hero-title': document.getElementById('hero-title').value,
                 'hero-subtitle': document.getElementById('hero-subtitle').value,
                 'hero-btn1': document.getElementById('hero-btn1').value,
-                'hero-btn2': document.getElementById('hero-btn2').value,
                 // About
                 'about-title': document.getElementById('about-title').value,
                 'about-p1': document.getElementById('about-p1').value,
@@ -432,19 +380,6 @@ A midnight weight that knows no rest...</textarea>
                 'writing3-meta': document.getElementById('writing3-meta').value,
                 'writing3-preview': document.getElementById('writing3-preview').value,
                 'writing3-full': document.getElementById('writing3-full').value,
-                // Gallery
-                'gallery1-title': document.getElementById('gallery1-title').value,
-                'gallery1-desc': document.getElementById('gallery1-desc').value,
-                'gallery2-title': document.getElementById('gallery2-title').value,
-                'gallery2-desc': document.getElementById('gallery2-desc').value,
-                'gallery3-title': document.getElementById('gallery3-title').value,
-                'gallery3-desc': document.getElementById('gallery3-desc').value,
-                'gallery4-title': document.getElementById('gallery4-title').value,
-                'gallery4-desc': document.getElementById('gallery4-desc').value,
-                'gallery5-title': document.getElementById('gallery5-title').value,
-                'gallery5-desc': document.getElementById('gallery5-desc').value,
-                'gallery6-title': document.getElementById('gallery6-title').value,
-                'gallery6-desc': document.getElementById('gallery6-desc').value,
                 // Contact/Footer
                 'contact-title': document.getElementById('contact-title').value,
                 'footer-text': document.getElementById('footer-text').value
@@ -454,7 +389,7 @@ A midnight weight that knows no rest...</textarea>
         function saveChanges() {
             const data = getContentData();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
+            
             const status = document.getElementById('status-msg');
             status.innerHTML = '<span class="text-gothic-accent">Aether\'s will</span> has been recorded. Refresh your site to see changes.';
             status.classList.add('text-white');
@@ -491,7 +426,7 @@ A midnight weight that knows no rest...</textarea>
             const code = document.getElementById('export-code');
             code.select();
             document.execCommand('copy');
-
+            
             const btn = event.target.closest('button');
             const original = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
