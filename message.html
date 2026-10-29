@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Aether · Send a Message</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#140a05;font-family:'Cormorant Garamond',serif}
@@ -34,42 +34,41 @@ canvas#deskCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 /* Realistic Paper */
 #letter{position:relative;background:#f2eedc;padding:clamp(30px,6vw,50px);border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 0 60px rgba(160,140,110,.2);color:#111b2e}
 #letter::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none}
-/* Center crease */
 #letter::after{content:'';position:absolute;top:50%;left:0;right:0;height:4px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.08) 40%,rgba(255,255,255,.4) 60%,transparent);pointer-events:none}
 
-.letter-date{font-family:'Dancing Script',cursive;font-size:1.4rem;text-align:right;margin-bottom:20px;color:#111b2e}
+.letter-date{font-family:'Dancing Script',cursive;font-size:1.4rem;text-align:right;margin-bottom:20px;color:#0e1726}
 .letter-header{margin-bottom:25px}
-.letter-header h2{font-family:'Dancing Script',cursive;font-size:1.8rem;font-weight:500;margin-bottom:10px}
+.letter-header h2{font-family:'Dancing Script',cursive;font-size:2rem;font-weight:700;margin-bottom:10px;color:#0e1726}
 
 .field-group{margin-bottom:20px}
-.field-group input,.field-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(17,27,46,.15);padding:8px 0;font-family:'Dancing Script',cursive;font-size:1.6rem;color:#111b2e;resize:none;outline:none;line-height:1.4}
+.field-group input,.field-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(17,27,46,.15);padding:8px 0;font-family:'Dancing Script',cursive;font-size:1.7rem;color:#0e1726;resize:none;outline:none;line-height:1.4}
 .field-group input::placeholder,.field-group textarea::placeholder{color:rgba(17,27,46,.25)}
 .field-group textarea{min-height:100px;border-bottom:none;background:repeating-linear-gradient(transparent,transparent 31px,rgba(17,27,46,.08) 31px,rgba(17,27,46,.08) 32px);line-height:32px;padding-top:0}
 
 /* Signature */
 .sig-section{margin-top:30px;position:relative}
-.sig-wrap{position:relative;height:100px;cursor:crosshair;touch-action:none}
+.sig-wrap{position:relative;height:120px;cursor:crosshair;touch-action:none}
 #sigCanvas{display:block;width:100%;height:100%}
-.sig-line{position:absolute;bottom:15px;left:0;right:0;height:1px;background:rgba(17,27,46,.2);pointer-events:none}
+.sig-line{position:absolute;bottom:20px;left:0;right:0;height:1px;background:rgba(17,27,46,.2);pointer-events:none}
 .sig-clear{position:absolute;top:0;right:0;background:none;border:none;font-family:'Rajdhani',sans-serif;color:rgba(17,27,46,.4);font-size:.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase}
-.sig-clear:hover{color:#111b2e}
+.sig-clear:hover{color:#0e1726}
 
 .letter-actions{display:flex;gap:15px;justify-content:center;margin-top:40px;position:relative;z-index:2}
 .btn-send,.btn-close{font-family:'Cinzel Decorative',serif;font-size:.8rem;letter-spacing:2px;padding:12px 30px;border:none;border-radius:2px;cursor:pointer;transition:all .3s}
-.btn-send{background:#111b2e;color:#f2eedc;box-shadow:0 4px 15px rgba(17,27,46,.3)}
-.btn-send:hover{background:#1a2844;transform:translateY(-1px);box-shadow:0 6px 20px rgba(17,27,46,.4)}
+.btn-send{background:#0e1726;color:#f2eedc;box-shadow:0 4px 15px rgba(14,23,38,.3)}
+.btn-send:hover{background:#1a2a44;transform:translateY(-1px);box-shadow:0 6px 20px rgba(14,23,38,.4)}
 .btn-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-close{background:transparent;color:#111b2e;border:1px solid rgba(17,27,46,.3)}
-.btn-close:hover{background:rgba(17,27,46,.05)}
+.btn-close{background:transparent;color:#0e1726;border:1px solid rgba(14,23,38,.3)}
+.btn-close:hover{background:rgba(14,23,38,.05)}
 
 .send-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(242,238,220,.3);border-top-color:#f2eedc;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-#fold-overlay{position:fixed;inset:0;z-index:200;display:none;background:rgba(15,8,5,.95)}
-#fold-overlay.active{display:block}
-#foldCanvas{display:block;width:100%;height:100%}
+#fire-overlay{position:fixed;inset:0;z-index:200;display:none;background:transparent}
+#fire-overlay.active{display:block}
+#fireCanvas{display:block;width:100%;height:100%}
 
-#success-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;display:none;text-align:center;opacity:0;transition:opacity .8s}
+#success-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;display:none;text-align:center;opacity:0;transition:opacity 1.5s}
 #success-msg.show{display:block;opacity:1}
 #success-msg h3{font-family:'Cinzel Decorative',serif;color:#d4a57b;font-size:clamp(1.2rem,4vw,1.8rem);margin-bottom:12px;letter-spacing:3px}
 #success-msg p{font-family:'Cormorant Garamond',serif;color:#a38563;font-size:1.1rem;font-style:italic}
@@ -112,9 +111,9 @@ canvas#deskCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
      </div>
     </div>
     <input type="hidden" name="signature" id="fSig">
-    <input type="hidden" name="_subject" value="An owl brings a message">
+    <input type="hidden" name="_subject" value="A message cast into the fire">
     <div class="letter-actions">
-     <button type="submit" class="btn-send" id="btnSend">SEND BY OWL</button>
+     <button type="submit" class="btn-send" id="btnSend">CAST INTO THE FIRE</button>
      <button type="button" class="btn-close" id="btnClose">CLOSE</button>
     </div>
    </form>
@@ -122,22 +121,21 @@ canvas#deskCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
  </div>
 </div>
 
-<div id="fold-overlay"><canvas id="foldCanvas"></canvas></div>
+<div id="fire-overlay"><canvas id="fireCanvas"></canvas></div>
 
 <div id="success-msg">
- <h3>The Owl Has Departed</h3>
- <p>Your message takes flight through the silent woods.</p>
+ <h3>The Flames Have Spoken</h3>
+ <p>Your words drift as embers into the night.</p>
 </div>
 
 <script>
-/* ================= DESK SCENE (REFERENCE 1 MATCH) ================= */
+/* ================= DESK SCENE ================= */
 (function(){
 var C=document.getElementById('deskCanvas'),X=C.getContext('2d'),W,H,t=0;
 function res(){W=C.width=window.innerWidth;H=C.height=window.innerHeight}
 window.addEventListener('resize',res);res();
 
 function drawDesk(){
- /* Dark rich wood background */
  var wg=X.createRadialGradient(W*.3,H*.3,0,W*.5,H*.5,W);
  wg.addColorStop(0,'#4a2912');wg.addColorStop(1,'#140a05');
  X.fillStyle=wg;X.fillRect(0,0,W,H);
@@ -147,9 +145,7 @@ function drawDesk(){
  X.lineWidth=2;
  for(var i=0;i<40;i++){
   X.beginPath();X.moveTo(-100,i*H/30);
-  for(var x=0;x<W+100;x+=50){
-   X.lineTo(x,i*H/30+Math.sin(x*.01+i)*15);
-  }
+  for(var x=0;x<W+100;x+=50) X.lineTo(x,i*H/30+Math.sin(x*.01+i)*15);
   X.stroke();
  }
 
@@ -165,128 +161,102 @@ function drawDesk(){
  X.moveTo(0,0);X.lineTo(W*.5,0);X.lineTo(W*.9,H);X.lineTo(0,H);
  X.fill();
  
- /* Dust motes in the sunbeam */
+ /* Dust motes */
  for(var d=0;d<30;d++){
   var dx=(W*.1+d*W*.02+Math.sin(t*.2+d)*50)%W;
   var dy=(H*.1+d*H*.03+Math.cos(t*.15+d)*40)%H;
-  if(dx>dy*(W/H)+W*.2) continue; /* Keep roughly in beam */
+  if(dx>dy*(W/H)+W*.2) continue;
   X.fillStyle='rgba(255,220,150,'+(Math.sin(t+d)*.4+.1)+')';
   X.beginPath();X.arc(dx,dy,Math.random()*1.5+.5,0,Math.PI*2);X.fill();
  }
  X.restore();
 
- /* --- Envelope & Wax Seal (Top Right) --- */
+ /* --- Envelope & Wax Seal --- */
  X.save();
  X.translate(W*.75,H*.25);
  X.rotate(.2);
- /* Shadow */
  X.shadowColor='rgba(0,0,0,.6)';X.shadowBlur=20;X.shadowOffsetX=5;X.shadowOffsetY=10;
- /* Envelope body */
  X.fillStyle='#cba67c';
  X.beginPath();X.moveTo(-100,-70);X.lineTo(100,-70);X.lineTo(100,70);X.lineTo(-100,70);X.fill();
  X.shadowColor='transparent';
- /* Flaps */
  X.fillStyle='#b88f61';
  X.beginPath();X.moveTo(-100,-70);X.lineTo(0,10);X.lineTo(100,-70);X.fill();
  X.strokeStyle='rgba(0,0,0,.1)';X.lineWidth=1;X.stroke();
  X.fillStyle='#c29d74';
  X.beginPath();X.moveTo(-100,70);X.lineTo(0,10);X.lineTo(100,70);X.fill();X.stroke();
- /* Red Wax Seal */
  X.fillStyle='#8b1a1a';
  X.beginPath();
- for(var a=0;a<Math.PI*2;a+=.4){
-  var r=18+Math.sin(a*5+t*.0)*2;
-  X.lineTo(Math.cos(a)*r,Math.sin(a)*r);
- }
+ for(var a=0;a<Math.PI*2;a+=.4) X.lineTo(Math.cos(a)*(18+Math.sin(a*5+t*.0)*2),Math.sin(a)*(18+Math.sin(a*5+t*.0)*2));
  X.fill();
  X.fillStyle='#630d0d';
  X.beginPath();X.arc(0,0,12,0,Math.PI*2);X.fill();
- /* Stamp emblem */
  X.strokeStyle='rgba(255,200,150,.3)';X.lineWidth=1;
  X.beginPath();X.arc(0,0,8,0,Math.PI*2);X.stroke();
  X.restore();
 
- /* --- Glass Inkwell (Left) --- */
+ /* --- Glass Inkwell --- */
  X.save();
  X.translate(W*.18,H*.35);
  X.rotate(-.1);
  X.shadowColor='rgba(0,0,0,.8)';X.shadowBlur=25;X.shadowOffsetX=15;X.shadowOffsetY=15;
- /* Glass cube base */
  X.fillStyle='rgba(200,210,220,0.15)';
  X.fillRect(-45,-45,90,90);
  X.shadowColor='transparent';
- /* Inner ink pool */
  X.fillStyle='#0a0f1a';
  X.fillRect(-35,-35,70,70);
- /* Inner glass thickness walls */
  X.strokeStyle='rgba(255,255,255,0.3)';X.lineWidth=3;
  X.strokeRect(-40,-40,80,80);
  X.strokeStyle='rgba(255,255,255,0.1)';X.lineWidth=10;
  X.strokeRect(-45,-45,90,90);
- /* Diagonal light reflections */
  X.fillStyle='rgba(255,255,255,0.2)';
  X.beginPath();X.moveTo(-45,-45);X.lineTo(-20,-45);X.lineTo(-45,-20);X.fill();
  X.beginPath();X.moveTo(20,45);X.lineTo(45,45);X.lineTo(45,20);X.fill();
- /* Brass Cap */
  var capG=X.createLinearGradient(-25,-75,25,-75);
  capG.addColorStop(0,'#8a6b32');capG.addColorStop(.3,'#d4af37');capG.addColorStop(.7,'#a68028');capG.addColorStop(1,'#5c4516');
  X.fillStyle=capG;
  X.fillRect(-22,-75,44,30);
  X.fillStyle='#4a3510';
- X.beginPath();X.ellipse(0,-75,22,6,0,0,Math.PI*2);X.fill(); /* Top of cap */
- X.beginPath();X.ellipse(0,-45,22,6,0,0,Math.PI*2);X.fill(); /* Base of cap */
- /* Cap highlights */
+ X.beginPath();X.ellipse(0,-75,22,6,0,0,Math.PI*2);X.fill();
+ X.beginPath();X.ellipse(0,-45,22,6,0,0,Math.PI*2);X.fill();
  X.fillStyle='rgba(255,255,255,0.4)';
  X.fillRect(-15,-75,4,30);
  X.restore();
 
- /* --- Tortoiseshell Pen (Bottom Left) --- */
+ /* --- Tortoiseshell Pen --- */
  X.save();
  X.translate(W*.28,H*.75);
  X.rotate(.6);
  X.shadowColor='rgba(0,0,0,.6)';X.shadowBlur=15;X.shadowOffsetX=10;X.shadowOffsetY=10;
- /* Main barrel */
- X.fillStyle='#8c4314';
+ var penG = X.createLinearGradient(-100, -8, 100, 16);
+ penG.addColorStop(0, '#54210a');penG.addColorStop(0.2, '#994411');penG.addColorStop(0.4, '#381606');
+ penG.addColorStop(0.6, '#b05517');penG.addColorStop(0.8, '#260e03');penG.addColorStop(1, '#75320e');
+ X.fillStyle=penG;
  X.beginPath();X.roundRect(-100,-8,200,16,8);X.fill();
  X.shadowColor='transparent';
- /* Tortoiseshell mottled pattern */
- X.globalCompositeOperation='source-atop';
- for(var p=0;p<30;p++){
-  X.fillStyle=Math.random()>.5?'#1c0c04':'#d67424';
-  X.beginPath();
-  X.ellipse(-90+Math.random()*180,-6+Math.random()*12,8+Math.random()*10,4+Math.random()*4,Math.random()*Math.PI,0,Math.PI*2);
-  X.fill();
- }
- X.globalCompositeOperation='source-over';
- /* Gold trim rings */
  X.fillStyle='#d4af37';
  X.fillRect(-60,-9,4,18);X.fillRect(40,-9,8,18);X.fillRect(80,-9,4,18);
- /* Pen Nib (Gold) */
  X.beginPath();X.moveTo(100,-6);X.lineTo(135,0);X.lineTo(100,6);X.fill();
  X.fillStyle='#1c0c04';
  X.beginPath();X.arc(115,0,2,0,Math.PI*2);X.fill();
- X.fillRect(115,-.5,20,1); /* Nib slit */
- /* Shine */
- X.fillStyle='rgba(255,255,255,0.15)';
- X.fillRect(-90,-5,180,3);
+ X.fillRect(115,-.5,20,1);
+ var shineG = X.createLinearGradient(-100, -8, -100, 0);
+ shineG.addColorStop(0, 'rgba(255,255,255,0.4)');shineG.addColorStop(1, 'rgba(255,255,255,0)');
+ X.fillStyle=shineG;
+ X.fillRect(-98,-6,196,6);
  X.restore();
 
- /* --- Spectacles (Mid Right) --- */
+ /* --- Spectacles --- */
  X.save();
  X.translate(W*.82,H*.55);
  X.rotate(-.4);
  X.shadowColor='rgba(0,0,0,.5)';X.shadowBlur=10;X.shadowOffsetX=5;X.shadowOffsetY=8;
- /* Lenses (Wireframe) */
  X.strokeStyle='#b89947';X.lineWidth=3;
  X.beginPath();X.arc(-35,0,25,0,Math.PI*2);X.stroke();
  X.beginPath();X.arc(35,0,25,0,Math.PI*2);X.stroke();
- /* Bridge */
  X.beginPath();X.moveTo(-10,0);X.quadraticCurveTo(0,-10,10,0);X.stroke();
- /* Temples (Folded back) */
  X.beginPath();X.moveTo(-60,0);X.lineTo(-80,40);X.stroke();
  X.beginPath();X.moveTo(60,0);X.lineTo(40,50);X.stroke();
  X.shadowColor='transparent';
- /* Glass glare */
  X.fillStyle='rgba(255,255,255,0.08)';
  X.beginPath();X.arc(-35,0,23,0,Math.PI*2);X.fill();
  X.beginPath();X.arc(35,0,23,0,Math.PI*2);X.fill();
@@ -295,7 +265,6 @@ function drawDesk(){
  X.beginPath();X.arc(35,0,18,3.5,4.5);X.stroke();
  X.restore();
 }
-
 (function frame(){t+=.016;X.clearRect(0,0,W,H);drawDesk();requestAnimationFrame(frame)})();
 })();
 
@@ -306,10 +275,9 @@ var dy=d.getDate(),s='th';if(dy%10===1&&dy!==11)s='st';else if(dy%10===2&&dy!==1
 document.getElementById('letterDate').textContent=mo[d.getMonth()]+' '+dy+s+', '+d.getFullYear();
 })();
 
-/* ================= ENVELOPE INTERACTION ================= */
+/* ================= ENVELOPE ================= */
 (function(){
-var ec=document.getElementById('envelope-container'),ew=document.getElementById('envelope-wrap');
-var ov=document.getElementById('letter-overlay'),bc=document.getElementById('btnClose');
+var ec=document.getElementById('envelope-container'),ew=document.getElementById('envelope-wrap'),ov=document.getElementById('letter-overlay'),bc=document.getElementById('btnClose');
 ec.addEventListener('click',function(){
  ew.classList.add('env-open');
  setTimeout(function(){ec.style.opacity='0';setTimeout(function(){ec.style.display='none';ov.classList.add('show');window.dispatchEvent(new Event('resize'))},500)},600);
@@ -320,316 +288,319 @@ bc.addEventListener('click',function(){
 });
 })();
 
-/* ================= SIGNATURE CANVAS (DARK BLUE FOUNTAIN INK) ================= */
+/* ================= SIGNATURE CANVAS ================= */
 (function(){
 var wrap=document.querySelector('.sig-wrap'),canvas=document.getElementById('sigCanvas'),ctx=canvas.getContext('2d');
-var dpr=window.devicePixelRatio||1,W2,H2,isDrawing=false,points=[],allStrokes=[];
+var dpr=window.devicePixelRatio||1,W2,H2,isDrawing=false,paths=[],currentPath=[];
 
 function resizeCanvas(){
- var rect=wrap.getBoundingClientRect();W2=rect.width;H2=100;
+ var rect=wrap.getBoundingClientRect();
+ W2=rect.width;H2=120;
  canvas.style.width=W2+'px';canvas.style.height=H2+'px';
  canvas.width=Math.round(W2*dpr);canvas.height=Math.round(H2*dpr);
  ctx.setTransform(dpr,0,0,dpr,0,0);
  redrawAll();
 }
 
-function drawStroke(pts){
- if(pts.length<2)return;
+function redrawAll(){
+ ctx.clearRect(0,0,W2,H2);
  ctx.lineCap='round';ctx.lineJoin='round';
- for(var i=1;i<pts.length;i++){
-  var p0=pts[i-1],p1=pts[i];
-  var dist=Math.hypot(p1.x-p0.x,p1.y-p0.y),vel=dist/(p1.t-p0.t+1);
-  var width=Math.max(1,Math.min(4,4-vel*1.5));
-  ctx.strokeStyle='rgba(17,27,46,0.9)'; /* Dark blue ink matching font */
-  ctx.lineWidth=width;
-  if(i>=2){
-   var pp=pts[i-2],cpx=(p0.x+p1.x)/2,cpy=(p0.y+p1.y)/2;
-   ctx.beginPath();ctx.moveTo((pp.x+p0.x)/2,(pp.y+p0.y)/2);ctx.quadraticCurveTo(p0.x,p0.y,cpx,cpy);ctx.stroke();
-  }else{
-   ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();
-  }
-  if(vel>3.5&&Math.random()<.25){
-   ctx.fillStyle='rgba(17,27,46,.4)';
-   ctx.beginPath();ctx.arc(p1.x+(Math.random()-.5)*6,p1.y+(Math.random()-.5)*6,.3+Math.random()*.5,0,Math.PI*2);ctx.fill();
-  }
- }
- if(pts.length>2){ctx.fillStyle='rgba(17,27,46,.8)';ctx.beginPath();ctx.arc(pts[0].x,pts[0].y,1.5,0,Math.PI*2);ctx.fill()}
+ ctx.strokeStyle='rgba(14, 23, 38, 0.9)'; 
+ ctx.lineWidth=3; 
+ paths.forEach(drawPath);
 }
-function redrawAll(){ctx.clearRect(0,0,W2,H2);allStrokes.forEach(drawStroke)}
+
+function drawPath(path){
+ if(path.length<2){
+  if(path.length===1){
+   ctx.fillStyle='rgba(14, 23, 38, 0.9)';
+   ctx.beginPath();ctx.arc(path[0].x,path[0].y,1.5,0,Math.PI*2);ctx.fill();
+  }
+  return;
+ }
+ ctx.beginPath();
+ ctx.moveTo(path[0].x, path[0].y);
+ for(var i=1; i<path.length-1; i++){
+  var xc = (path[i].x + path[i+1].x) / 2;
+  var yc = (path[i].y + path[i+1].y) / 2;
+  ctx.quadraticCurveTo(path[i].x, path[i].y, xc, yc);
+ }
+ ctx.lineTo(path[path.length-1].x, path[path.length-1].y);
+ ctx.stroke();
+}
 
 function getPos(e){
- var rect=canvas.getBoundingClientRect(),src=e.touches?e.touches[0]:e;
- return{x:src.clientX-rect.left,y:src.clientY-rect.top,t:performance.now()};
+ var rect=canvas.getBoundingClientRect(), src=e.touches?e.touches[0]:e;
+ return {x: src.clientX - rect.left, y: src.clientY - rect.top};
 }
 
-canvas.addEventListener('pointerdown',function(e){
- e.preventDefault();isDrawing=true;points=[getPos(e)];allStrokes.push(points);
-});
-canvas.addEventListener('pointermove',function(e){
- if(!isDrawing)return;e.preventDefault();points.push(getPos(e));
- if(points.length>=3){
-  var i=points.length-1,p0=points[i-1],p1=points[i],pp=points[i-2];
-  var dist=Math.hypot(p1.x-p0.x,p1.y-p0.y),vel=dist/(p1.t-p0.t+1);
-  ctx.strokeStyle='rgba(17,27,46,0.9)';ctx.lineWidth=Math.max(1,Math.min(4,4-vel*1.5));
-  ctx.lineCap='round';ctx.lineJoin='round';
-  ctx.beginPath();ctx.moveTo((pp.x+p0.x)/2,(pp.y+p0.y)/2);
-  ctx.quadraticCurveTo(p0.x,p0.y,(p0.x+p1.x)/2,(p0.y+p1.y)/2);ctx.stroke();
-  if(vel>3.5&&Math.random()<.25){
-   ctx.fillStyle='rgba(17,27,46,.4)';
-   ctx.beginPath();ctx.arc(p1.x+(Math.random()-.5)*6,p1.y+(Math.random()-.5)*6,.4,0,Math.PI*2);ctx.fill();
-  }
- }
-});
-function onEnd(){if(!isDrawing)return;isDrawing=false;if(points.length>1){ctx.fillStyle='rgba(17,27,46,.6)';ctx.beginPath();ctx.arc(points[points.length-1].x,points[points.length-1].y,1.2,0,Math.PI*2);ctx.fill()}points=[]}
-canvas.addEventListener('pointerup',onEnd);canvas.addEventListener('pointerleave',onEnd);canvas.addEventListener('pointercancel',onEnd);
-document.getElementById('sigClear').addEventListener('click',function(){allStrokes=[];ctx.clearRect(0,0,W2,H2)});
+function start(e){e.preventDefault();isDrawing=true;currentPath=[getPos(e)];paths.push(currentPath);redrawAll();}
+function move(e){if(!isDrawing)return;e.preventDefault();currentPath.push(getPos(e));redrawAll();}
+function end(e){if(!isDrawing)return;isDrawing=false;}
 
+canvas.addEventListener('pointerdown',start);
+canvas.addEventListener('pointermove',move);
+canvas.addEventListener('pointerup',end);
+canvas.addEventListener('pointerleave',end);
+canvas.addEventListener('pointercancel',end);
+
+document.getElementById('sigClear').addEventListener('click',function(){paths=[];redrawAll();});
 window.addEventListener('resize',resizeCanvas);
 new MutationObserver(function(){if(document.getElementById('letter-overlay').classList.contains('show'))setTimeout(resizeCanvas,100)}).observe(document.getElementById('letter-overlay'),{attributes:true,attributeFilter:['class']});
+
 window._getSigData=function(){return canvas.toDataURL('image/png')};
-window._hasSig=function(){return allStrokes.length>0};
+window._hasSig=function(){return paths.length>0};
 })();
 
-/* ================= FORM + FOLD + OWL ANIMATION ================= */
+/* ================= FORM + FIREPLACE ANIMATION ================= */
 (function(){
 var form=document.getElementById('msgForm'),btnSend=document.getElementById('btnSend');
-var overlay=document.getElementById('letter-overlay'),foldOvr=document.getElementById('fold-overlay'),foldC=document.getElementById('foldCanvas'),fX=foldC.getContext('2d');
+var overlay=document.getElementById('letter-overlay'),fireOvr=document.getElementById('fire-overlay'),fireC=document.getElementById('fireCanvas'),fX=fireC.getContext('2d');
 var success=document.getElementById('success-msg');
 
 function eio(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
-function lerp(a,b,t2){return a+(b-a)*t2}
+function lerp(a,b,t){return a+(b-a)*t}
+function lerpColor(c1, c2, t){
+ return [Math.round(c1[0]+(c2[0]-c1[0])*t), Math.round(c1[1]+(c2[1]-c1[1])*t), Math.round(c1[2]+(c2[2]-c1[2])*t)];
+}
+
+/* Base Normal Fire: White -> Yellow -> Orange -> Red */
+var normalTheme = [[255,255,255], [255,200,0], [255,100,0], [150,0,0]];
+
+/* Magical Fire Palettes (Chosen randomly on submit) */
+var magicThemes = [
+ [[255,255,255], [0,255,255], [0,100,255], [0,0,150]],     /* Azure */
+ [[255,255,255], [150,255,0], [0,200,0], [0,80,0]],        /* Emerald */
+ [[255,255,255], [255,150,255], [150,0,255], [50,0,100]],  /* Amethyst */
+ [[255,255,255], [255,200,200], [255,0,100], [100,0,50]],  /* Crimson */
+ [[255,255,255], [200,200,255], [100,100,200], [50,50,100]]/* Ghost */
+];
+
+var currentMagicTheme;
 
 form.addEventListener('submit',function(e){
  e.preventDefault();
  if(!document.getElementById('fName').value.trim()||!document.getElementById('fMsg').value.trim())return;
  document.getElementById('fSig').value=window._hasSig()?window._getSigData():'(no signature)';
- btnSend.disabled=true;btnSend.innerHTML='<span class="send-spinner"></span>SENDING...';
+ btnSend.disabled=true;btnSend.innerHTML='<span class="send-spinner"></span>CASTING...';
+ 
+ /* Select random fire color for this message */
+ currentMagicTheme = magicThemes[Math.floor(Math.random() * magicThemes.length)];
+
  fetch('https://formspree.io/f/xjyyopep',{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}
  }).then(function(r){if(!r.ok)throw new Error;startAnim()}).catch(function(){
-  btnSend.disabled=false;btnSend.textContent='SEND BY OWL';alert('The owl could not find its way. Please try again.');
+  btnSend.disabled=false;btnSend.textContent='CAST INTO THE FIRE';alert('The fire rejected your words. Please try again.');
  });
 });
 
 function startAnim(){
  overlay.classList.remove('show');
- setTimeout(function(){foldOvr.classList.add('active');resF();runOwlAnim()},400);
+ setTimeout(function(){fireOvr.classList.add('active');resF();runFireAnim()},400);
 }
-function resF(){foldC.width=window.innerWidth;foldC.height=window.innerHeight}
-window.addEventListener('resize',function(){if(foldOvr.classList.contains('active'))resF()});
+function resF(){fireC.width=window.innerWidth;fireC.height=window.innerHeight}
+window.addEventListener('resize',function(){if(fireOvr.classList.contains('active'))resF()});
 
-function runOwlAnim(){
- var W=foldC.width,H=foldC.height,cx=W/2,cy=H/2;
- var phase=0,phaseStart=0,startT=null,feathers=[];
- var owl={x:0,y:0,sc:0,wingP:0};
+function runFireAnim(){
+ var W=fireC.width, H=fireC.height, cx=W/2, cy=H/2;
+ var phase=0, phaseStart=0, startT=null;
+ var particles = [];
+ var bgOpacity = 0;
+ var flareBlend = 0; /* 0 = normal fire, 1 = magic fire */
+ var flareIntensity = 1; /* multiplier for particle count/speed */
+ var letter = {x: cx, y: cy, fold: 0, burn: 0, scale: 1, rot: 0};
 
- /* Draw Letter -> Package folding */
- function drawPackage(px,py,w,h,fold){
-  fX.save();
-  var w2=lerp(w,w*.6,fold),h2=lerp(h,h*.8,fold);
-  var x2=lerp(px,cx-w2/2,fold),y2=lerp(py,cy-h2/2,fold);
-  
-  fX.shadowColor='rgba(0,0,0,0.5)';fX.shadowBlur=20;
-  if(fold<1){
-   /* Transitioning: off-white to kraft brown */
-   fX.fillStyle='rgba('+lerp(242,203,fold)+','+lerp(238,166,fold)+','+lerp(220,124,fold)+',1)';
-  }else{
-   fX.fillStyle='#cba67c';
+ function spawnFire(x, y, amount) {
+  for(var i=0; i<amount; i++) {
+   var isSpark = Math.random() < 0.15;
+   particles.push({
+    x: x + (Math.random()-0.5)* (isSpark?300:200),
+    y: y + (Math.random()-0.5)* 40,
+    vx: (Math.random()-0.5)* (isSpark?80:30),
+    vy: isSpark ? -150 - Math.random()*300 * flareIntensity : -80 - Math.random()*150 * flareIntensity,
+    life: 1,
+    decay: isSpark ? 0.005 + Math.random()*0.01 : (0.01 + Math.random()*0.015) / Math.max(1, flareIntensity*0.5),
+    size: isSpark ? 1.5 + Math.random()*2 : 25 + Math.random()*40 * Math.max(1, flareIntensity*0.8),
+    isSpark: isSpark
+   });
   }
-  fX.fillRect(x2,y2,w2,h2);
-  fX.shadowColor='transparent';
-
-  /* Package details when fully folded */
-  if(fold>0.8){
-   fX.globalAlpha=(fold-0.8)*5;
-   /* Twine cross */
-   fX.strokeStyle='rgba(80,50,30,0.5)';fX.lineWidth=2;
-   fX.beginPath();fX.moveTo(x2+w2/2,y2);fX.lineTo(x2+w2/2,y2+h2);fX.stroke();
-   fX.beginPath();fX.moveTo(x2,y2+h2/2);fX.lineTo(x2+w2,y2+h2/2);fX.stroke();
-   /* Stamps / Barcode (like ref 2) */
-   fX.fillStyle='#e0e0e0';fX.fillRect(x2+w2-30,y2+10,20,25);
-   fX.fillStyle='#4a6b8c';fX.fillRect(x2+w2-27,y2+13,14,19);
-   fX.fillStyle='#ffffff';fX.fillRect(x2+10,y2+10,15,40);
-   fX.fillStyle='#000';
-   for(var b=0;b<6;b++) fX.fillRect(x2+12+b*2,y2+12,1,36);
-   fX.globalAlpha=1;
-  }
-  fX.restore();
  }
 
- /* --- REALISTIC EAGLE OWL --- */
- function drawOwlObj(ox,oy,scale,wPhase){
-  fX.save();
-  fX.translate(ox,oy);
-  fX.scale(scale,scale);
+ function getColor(theme, life) {
+  if(life > 0.7) return lerpColor(theme[1], theme[0], (life-0.7)/0.3);
+  if(life > 0.3) return lerpColor(theme[2], theme[1], (life-0.3)/0.4);
+  return lerpColor(theme[3], theme[2], life/0.3);
+ }
 
-  var ws=Math.sin(wPhase);
-  
-  /* --- WINGS (Back layer) --- */
-  fX.fillStyle='#8c694a';
-  for(var side=-1;side<=1;side+=2){
-   fX.save();
-   fX.scale(side,1);
-   fX.rotate(ws*.6);
-   fX.beginPath();
-   fX.moveTo(20,20);
-   fX.bezierCurveTo(100,-40-ws*20, 180,0-ws*40, 200,60-ws*20);
-   fX.bezierCurveTo(150,80, 80,60, 20,20);
-   fX.fill();
+ function drawFire() {
+  fX.globalCompositeOperation = 'lighter';
+  for(var i=particles.length-1; i>=0; i--){
+   var p = particles[i];
+   p.x += p.vx * 0.016;
+   p.y += p.vy * 0.016;
    
-   /* Feathers/Stripes on wings */
-   fX.strokeStyle='#3a2617';fX.lineWidth=3;
-   for(var w=0;w<6;w++){
-    fX.beginPath();fX.moveTo(40+w*25,10+w*5);fX.quadraticCurveTo(80+w*15,30,120+w*10,50-ws*10);fX.stroke();
+   if(p.isSpark) {
+    p.vx += Math.sin(p.y*0.05)*2; /* sway */
+   } else {
+    /* Fire shrinks as it rises */
+    p.vx *= 0.98;
    }
-   fX.restore();
+   
+   p.life -= p.decay;
+   if(p.life <= 0){ particles.splice(i,1); continue; }
+
+   var cNorm = getColor(normalTheme, p.life);
+   var cMag = getColor(currentMagicTheme, p.life);
+   var c = lerpColor(cNorm, cMag, flareBlend);
+   
+   fX.fillStyle = 'rgba('+c[0]+','+c[1]+','+c[2]+','+(p.life * (p.isSpark?1:0.3))+')';
+   fX.beginPath();
+   fX.arc(p.x, p.y, Math.max(0.1, p.size * p.life), 0, Math.PI*2);
+   fX.fill();
   }
+  fX.globalCompositeOperation = 'source-over';
+ }
 
-  /* --- BODY --- */
-  /* Plump oval */
-  var bg=fX.createRadialGradient(0,30,10,0,30,80);
-  bg.addColorStop(0,'#e6d5bc');bg.addColorStop(1,'#b38b62');
-  fX.fillStyle=bg;
-  fX.beginPath();fX.ellipse(0,40,45,60,0,0,Math.PI*2);fX.fill();
-  
-  /* Speckles / Teardrop markings */
-  fX.fillStyle='#2a1608';
-  for(var s=0;s<40;s++){
-   var sx=(Math.random()-.5)*70,sy=Math.random()*90;
-   if(sx*sx/(40*40) + sy*sy/(55*55) < 1){
-    fX.beginPath();fX.ellipse(sx,sy+5,2,4,0,0,Math.PI*2);fX.fill();
-   }
-  }
+ function drawFireplaceBg() {
+  fX.fillStyle = 'rgba(10, 5, 2, ' + bgOpacity + ')';
+  fX.fillRect(0,0,W,H);
+  /* Vignette */
+  var grad = fX.createRadialGradient(cx, cy+H*0.2, 0, cx, cy, Math.max(W,H));
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,' + (bgOpacity*0.9) + ')');
+  fX.fillStyle = grad;
+  fX.fillRect(0,0,W,H);
 
-  /* --- HEAD & FACIAL DISC --- */
-  fX.fillStyle='#c29d74';
-  fX.beginPath();fX.ellipse(0,-15,40,30,0,0,Math.PI*2);fX.fill();
-  
-  /* Facial disc rings */
-  fX.strokeStyle='#3a2617';fX.lineWidth=4;
-  fX.beginPath();fX.arc(-18,-15,22,Math.PI*.2,Math.PI*1.8);fX.stroke();
-  fX.beginPath();fX.arc(18,-15,22,Math.PI*1.2,Math.PI*.8);fX.stroke();
-  fX.fillStyle='#e6d5bc';
-  fX.beginPath();fX.arc(-18,-15,20,0,Math.PI*2);fX.fill();
-  fX.beginPath();fX.arc(18,-15,20,0,Math.PI*2);fX.fill();
-
-  /* --- EAR TUFTS (Horns) --- */
-  fX.fillStyle='#2a1608';
-  fX.beginPath();fX.moveTo(-20,-38);fX.quadraticCurveTo(-35,-55,-45,-50);fX.quadraticCurveTo(-35,-30,-25,-25);fX.fill();
-  fX.beginPath();fX.moveTo(20,-38);fX.quadraticCurveTo(35,-55,45,-50);fX.quadraticCurveTo(35,-30,25,-25);fX.fill();
-
-  /* --- EYES --- */
-  for(var e=-1;e<=1;e+=2){
-   var ex=18*e,ey=-15;
-   /* Dark rim */
-   fX.fillStyle='#110904';fX.beginPath();fX.arc(ex,ey,11,0,Math.PI*2);fX.fill();
-   /* Bright orange iris */
-   fX.fillStyle='#ff7700';fX.beginPath();fX.arc(ex,ey,9,0,Math.PI*2);fX.fill();
-   fX.fillStyle='#cc5500';fX.beginPath();fX.arc(ex,ey,9,Math.PI,Math.PI*2);fX.fill();
-   /* Huge black pupil */
-   fX.fillStyle='#000';fX.beginPath();fX.arc(ex,ey,5,0,Math.PI*2);fX.fill();
-   /* Catchlight */
-   fX.fillStyle='#fff';fX.beginPath();fX.arc(ex+2,ey-2,1.5,0,Math.PI*2);fX.fill();
-  }
-
-  /* --- BEAK (Overlaps the package if held) --- */
-  fX.fillStyle='#1c1511';
-  fX.beginPath();fX.moveTo(-6,-5);fX.quadraticCurveTo(0,10,0,15);fX.quadraticCurveTo(0,10,6,-5);fX.closePath();fX.fill();
-
+  /* Logs at bottom */
+  fX.save();
+  fX.globalAlpha = bgOpacity;
+  fX.translate(cx, H);
+  fX.fillStyle = '#080402';
+  fX.beginPath();fX.roundRect(-150, -40, 300, 50, 10);fX.fill();
+  fX.beginPath();fX.roundRect(-120, -70, 240, 45, 10);fX.fill();
+  /* Log glow */
+  var lg = fX.createLinearGradient(0,-70,0,-20);
+  lg.addColorStop(0, 'rgba(255,80,0,'+ (0.3 + flareBlend*0.5) +')');
+  lg.addColorStop(1, 'transparent');
+  fX.fillStyle = lg;
+  fX.beginPath();fX.roundRect(-120, -70, 240, 45, 10);fX.fill();
   fX.restore();
  }
 
- function spawnFeather(x,y){
-  feathers.push({
-   x:x,y:y,vx:(Math.random()-.5)*3,vy:-Math.random()*3-1,
-   rot:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.1,
-   life:1,sz:1.5+Math.random()
-  });
- }
- function drawFeathers(){
-  for(var i=feathers.length-1;i>=0;i--){
-   var f=feathers[i];
-   f.x+=f.vx;f.y+=f.vy;f.vy+=.05;f.vx*=.98;f.rot+=f.rv;f.life-=.008;
-   if(f.life<=0){feathers.splice(i,1);continue}
-   fX.save();fX.translate(f.x,f.y);fX.rotate(f.rot);fX.scale(f.sz,f.sz);fX.globalAlpha=f.life;
-   /* Striped owl feather */
-   fX.fillStyle='#c29d74';
-   fX.beginPath();fX.ellipse(0,0,4,12,0,0,Math.PI*2);fX.fill();
-   fX.fillStyle='#2a1608';
-   for(var st=-8;st<=8;st+=5) fX.fillRect(-3.5,st,7,2.5);
-   fX.strokeStyle='#fff';fX.lineWidth=.5;fX.beginPath();fX.moveTo(0,-12);fX.lineTo(0,12);fX.stroke();
-   fX.restore();
+ function drawFoldedLetter(lx, ly, w, h, fold, burnAmt, scale, rot) {
+  fX.save();
+  fX.translate(lx, ly);
+  fX.scale(scale, scale);
+  fX.rotate(rot);
+
+  var w2 = lerp(w, w*0.35, fold), h2 = lerp(h, h*0.35, fold);
+  
+  fX.shadowColor = 'rgba(0,0,0,0.5)'; fX.shadowBlur = 20;
+  fX.fillStyle = '#f2eedc';
+  fX.fillRect(-w2/2, -h2/2, w2, h2);
+  fX.shadowColor = 'transparent';
+
+  if(fold > 0.8) {
+   fX.globalAlpha = (fold-0.8)*5;
+   /* Red Wax Seal */
+   fX.fillStyle = '#8b1a1a';
+   fX.beginPath(); fX.arc(0,0, 15, 0, Math.PI*2); fX.fill();
+   fX.globalAlpha = 1;
   }
+
+  /* Burn effect */
+  if (burnAmt > 0) {
+   /* Blacken */
+   fX.fillStyle = 'rgba(10,5,0,' + Math.min(1, burnAmt * 1.5) + ')';
+   fX.fillRect(-w2/2, -h2/2, w2, h2);
+   
+   /* Glowing Ember Edges */
+   var magC = currentMagicTheme[1]; // Bright color of magic theme
+   fX.strokeStyle = 'rgba('+magC[0]+','+magC[1]+','+magC[2]+',' + Math.min(1, burnAmt*2) + ')';
+   fX.lineWidth = 3;
+   fX.strokeRect(-w2/2, -h2/2, w2, h2);
+  }
+  fX.restore();
  }
 
  function anim(now){
-  if(!startT){startT=now;phaseStart=now;}
+  if(!startT){startT=now; phaseStart=now;}
   var dt=(now-phaseStart)/1000;
+  var pw = Math.min(W*.8, 500), ph = Math.min(H*.6, 400);
+
+  /* Always spawn base fire */
+  spawnFire(cx, H-20, 3 * flareIntensity);
+
   fX.clearRect(0,0,W,H);
-  
-  /* Atmospheric background */
-  var bg=fX.createRadialGradient(cx,cy,0,cx,cy,W);
-  bg.addColorStop(0,'rgba(30,20,15,0.9)');bg.addColorStop(1,'rgba(10,5,5,0.95)');
-  fX.fillStyle=bg;fX.fillRect(0,0,W,H);
+  drawFireplaceBg();
 
-  var pw=Math.min(W*.8,500),ph=Math.min(H*.6,400);
-
-  if(phase===0){
-   /* Fold letter -> package (1.5s) */
-   var p=Math.min(dt/1.5,1);
-   drawPackage(cx-pw/2,cy-ph/2,pw,ph,eio(p));
-   if(p>=1){phase=1;phaseStart=now;}
+  if(phase === 0){
+   /* Fade to fireplace & Fold letter (1.5s) */
+   var p = Math.min(dt/1.5, 1);
+   bgOpacity = p;
+   letter.fold = eio(p);
+   if(p>=1){ phase = 1; phaseStart = now; }
   }
-  else if(phase===1){
-   /* Owl flies in (1.5s) */
-   drawPackage(cx-pw/2,cy-ph/2,pw,ph,1);
-   var p=Math.min(dt/1.5,1);
-   owl.sc=lerp(0, 1.4, eio(p));
-   owl.x=cx; owl.y=lerp(-200, cy, eio(p));
-   owl.wingP+=.2;
-   drawOwlObj(owl.x,owl.y,owl.sc,owl.wingP);
-   if(p>=1){phase=2;phaseStart=now;}
+  else if(phase === 1){
+   /* Move to top center, ready to drop (1s) */
+   var p = Math.min(dt/1, 1);
+   letter.y = lerp(cy, H*0.2, eio(p));
+   if(p>=1){ phase = 2; phaseStart = now; }
   }
-  else if(phase===2){
-   /* Hover & Grab (1s) */
-   var p=Math.min(dt/1,1);
-   owl.wingP+=.25; /* Flap faster to hover */
-   owl.y=cy+Math.sin(dt*8)*10;
-   /* Package snaps to beak */
-   drawPackage(cx-pw/2,cy-ph/2,pw,ph,1);
-   drawOwlObj(owl.x,owl.y,owl.sc,owl.wingP);
-   if(p>.4 && p<.6 && Math.random()<.3) spawnFeather(owl.x,owl.y);
-   if(p>=1){phase=3;phaseStart=now;}
+  else if(phase === 2){
+   /* Drop into fire (0.8s) */
+   var p = Math.min(dt/0.8, 1);
+   letter.y = lerp(H*0.2, H-60, p*p); /* accelerate down */
+   letter.rot = p * 0.3;
+   if(p>=1){ 
+    phase = 3; phaseStart = now; 
+    /* Initial spark burst */
+    spawnFire(cx, H-50, 50);
+   }
   }
-  else if(phase===3){
-   /* Fly away with package (2s) */
-   var p=Math.min(dt/2,1);
-   owl.wingP+=.2;
-   owl.sc=lerp(1.4, 0, eio(p));
-   owl.y=lerp(cy, -200, eio(p));
+  else if(phase === 3){
+   /* Flare up & Burn (2.5s) */
+   var p = Math.min(dt/2.5, 1);
    
-   /* Draw package attached to beak, scaled with owl */
-   fX.save();
-   fX.translate(owl.x,owl.y);
-   fX.scale(owl.sc,owl.sc);
-   drawPackage(-pw*.6/2, -10, pw, ph, 1);
-   fX.restore();
+   /* Transition fire color and intensity */
+   flareBlend = Math.min(1, p * 1.5);
+   flareIntensity = 1 + Math.sin(p * Math.PI) * 4; /* Surges up then down */
    
-   /* Draw owl over package so beak covers it */
-   drawOwlObj(owl.x,owl.y,owl.sc,owl.wingP);
-   if(Math.random()<.1) spawnFeather(owl.x,owl.y);
+   letter.burn = p * 1.2;
+   if (p > 0.6) {
+    /* Letter dissolves */
+    letter.scale = lerp(1, 0, (p-0.6)/0.4);
+    if(Math.random() < 0.3) spawnFire(cx, H-60, 5); /* Extra sparks as it dies */
+   }
 
-   if(p>=1){
-    setTimeout(function(){foldOvr.classList.remove('active');success.classList.add('show')},200);
-    /* Keep drawing falling feathers */
+   if(p>=1){ phase = 4; phaseStart = now; letter.scale = 0; }
+  }
+  else if(phase === 4){
+   /* Fire settles into magic color (2s) */
+   var p = Math.min(dt/2, 1);
+   flareIntensity = lerp(1, 0.8, p); /* Settles down slightly */
+   
+   if(p >= 1){
+    success.classList.add('show');
+    /* Keep drawing the eternal magic fire loop */
     (function driftOut(){
-     if(!feathers.length)return;
-     fX.fillStyle=bg;fX.fillRect(0,0,W,H);
-     drawFeathers();requestAnimationFrame(driftOut);
+     fX.clearRect(0,0,W,H);
+     drawFireplaceBg();
+     spawnFire(cx, H-20, 2);
+     drawFire();
+     requestAnimationFrame(driftOut);
     })();
     return;
    }
   }
-  drawFeathers();
+
+  /* Draw letter if it still exists */
+  if (letter.scale > 0) {
+   drawFoldedLetter(letter.x, letter.y, pw, ph, letter.fold, letter.burn, letter.scale, letter.rot);
+  }
+
+  /* Draw flames OVER the letter so it gets consumed */
+  drawFire();
+
   requestAnimationFrame(anim);
  }
  requestAnimationFrame(anim);
