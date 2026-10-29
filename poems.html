@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poems — Aether</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow-x:hidden;background:#060810;font-family:'Rajdhani',sans-serif;color:#fff}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block}
+
+.page{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:40px 20px 80px;
+}
+
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;letter-spacing:3px;
+  margin-bottom:4px;
+  background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.subtitle{
+  font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px;letter-spacing:1.5px;
+  text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.6);
+}
+
+/* ── Poem card ── */
+.poem-card{
+  width:100%;max-width:620px;
+  background:rgba(8,8,20,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;padding:44px 38px 40px;
+  box-shadow:0 0 80px rgba(0,0,0,.25);
+  text-align:center;position:relative;overflow:hidden;
+  margin-bottom:20px;
+  transition:border-color .5s;
+}
+.poem-card:hover{border-color:rgba(167,139,250,.15)}
+.poem-card::before,.poem-card::after{
+  content:'';position:absolute;width:36px;height:36px;
+  border-color:rgba(167,139,250,.12);border-style:solid;
+}
+.poem-card::before{top:14px;left:14px;border-width:2px 0 0 2px;border-radius:4px 0 0 0}
+.poem-card::after{bottom:14px;right:14px;border-width:0 2px 2px 0;border-radius:0 0 4px 0}
+
+.poem-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px;font-weight:600;
+  color:rgba(255,255,255,.85);margin-bottom:20px;
+  opacity:1;transition:opacity .6s ease;
+}
+.poem-title.fade-out{opacity:0}
+
+.poem-body{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-weight:400;font-style:italic;
+  line-height:2;color:rgba(255,255,255,.78);
+  white-space:pre-line;
+  opacity:1;transition:opacity .6s ease;
+}
+.poem-body.fade-out{opacity:0}
+
+.poem-author{
+  font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(167,139,250,.5);
+  margin-top:24px;
+  opacity:1;transition:opacity .6s ease;
+}
+.poem-author.fade-out{opacity:0}
+
+/* ── Navigation ── */
+.poem-nav{
+  display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap;justify-content:center;
+}
+.nav-btn{
+  padding:10px 28px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);
+  font:700 14px 'Rajdhani',sans-serif;letter-spacing:1px;
+  cursor:pointer;transition:all .3s;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.nav-btn:hover{
+  background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3);
+  color:#fff;transform:scale(1.03);
+}
+.nav-btn:active{transform:scale(.97)}
+.nav-btn:disabled{opacity:.25;pointer-events:none}
+
+.poem-counter{
+  font:400 12px 'Rajdhani',sans-serif;
+  color:rgba(255,255,255,.25);letter-spacing:1px;
+  min-width:60px;text-align:center;
+}
+
+/* ── Add your own poems instructions ── */
+.add-note{
+  margin-top:16px;font-size:11px;color:rgba(255,255,255,.15);
+  max-width:400px;text-align:center;line-height:1.6;
+}
+
+.backlink{
+  position:fixed;bottom:12px;left:16px;z-index:9999;
+  color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
+  text-decoration:none;letter-spacing:.5px;transition:color .3s;
+  text-shadow:0 1px 6px rgba(0,0,0,.6);
+}
+.backlink:hover{color:#fff}
+
+@media(max-width:480px){
+  .poem-card{padding:32px 22px 30px}
+  .poem-title{font-size:22px}
+  .poem-body{font-size:16px;line-height:1.9}
+  h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="page">
+  <h1>POEMS</h1>
+  <div class="subtitle">ink that bleeds louder than words</div>
+
+  <div class="poem-card">
+    <div class="poem-title" id="poemTitle"></div>
+    <div class="poem-body" id="poemBody"></div>
+    <div class="poem-author" id="poemAuthor"></div>
+  </div>
+
+  <div class="poem-nav">
+    <button class="nav-btn" id="btnPrev">← PREV</button>
+    <div class="poem-counter" id="poemCounter">1 / 1</div>
+    <button class="nav-btn" id="btnNext">NEXT →</button>
+  </div>
+  <div style="margin-top:10px">
+    <button class="nav-btn" id="btnRandom" style="font-size:12px;padding:8px 20px">✦ RANDOM</button>
+  </div>
+
+  <div class="add-note">
+    To add poems, edit the POEMS array at the top of the script in this file.
+  </div>
+</div>
+
+<a class="backlink" href="index.html">&larr; home</a>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════════════════════════════════════════════════
+   YOUR POEMS — Add, remove, or edit freely.
+   Format: { title:"...", body:"...", author:"..." }
+   Use \n for line breaks in the body.
+   ══════════════════════════════════════════════════════ */
+
+var POEMS = [
+  {
+    title: "The Hollow Men",
+    body: "We are the hollow men\nWe are the stuffed men\nLeaning together\nHeadpiece filled with straw. Alas!\nOur dried voices, when\nWe whisper together\nAre quiet and meaningless\nAs wind in dry grass\nOr rats' feet over broken glass\nIn our dry cellar",
+    author: "T.S. Eliot"
+  },
+  {
+    title: "Invictus",
+    body: "Out of the night that covers me,\nBlack as the pit from pole to pole,\nI thank whatever gods may be\nFor my unconquerable soul.\n\nIn the fell clutch of circumstance\nI have not winced nor cried aloud.\nUnder the bludgeonings of chance\nMy head is bloody, but unbowed.\n\nIt matters not how strait the gate,\nHow charged with punishments the scroll,\nI am the master of my fate,\nI am the captain of my soul.",
+    author: "William Ernest Henley"
+  },
+  {
+    title: "Do Not Go Gentle into That Good Night",
+    body: "Do not go gentle into that good night,\nOld age should burn and rave at close of day;\nRage, rage against the dying of the light.\n\nThough wise men at their end know dark is right,\nBecause their words had forked no lightning they\nDo not go gentle into that good night.\n\nGrave men, near death, who see with blinding sight\nBlind eyes could blaze like meteors and be gay,\nRage, rage against the dying of the light.",
+    author: "Dylan Thomas"
+  },
+  {
+    title: "Ozymandias",
+    body: "I met a traveller from an antique land,\nWho said — Two vast and trunkless legs of stone\nStand in the desert. Near them, on the sand,\nHalf sunk a shattered visage lies, whose frown,\nAnd wrinkled lip, and sneer of cold command,\nTell that its sculptor well those passions read\nWhich yet survive, stamped on these lifeless things,\nThe hand that mocked them, and the heart that fed;\n\nAnd on the pedestal, these words appear:\nMy name is Ozymandias, King of Kings;\nLook on my Works, ye Mighty, and despair!\nNothing beside remains. Round the decay\nOf that colossal Wreck, boundless and bare\nThe lone and level sands stretch far away.",
+    author: "Percy Bysshe Shelley"
+  },
+  {
+    title: "The Road Not Taken",
+    body: "Two roads diverged in a yellow wood,\nAnd sorry I could not travel both\nAnd be one traveler, long I stood\nAnd looked down one as far as I could\nTo where it bent in the undergrowth;\n\nThen took the other, as just as fair,\nAnd having perhaps the better claim,\nBecause it was grassy and wanted wear;\nThough as for that the passing there\nHad worn them really about the same.\n\nI shall be telling this with a sigh\nSomewhere ages and ages hence:\nTwo roads diverged in a wood, and I —\nI took the one less traveled by,\nAnd that has made all the difference.",
+    author: "Robert Frost"
+  },
+  {
+    title: "If—",
+    body: "If you can keep your head when all about you\nAre losing theirs and blaming it on you,\nIf you can trust yourself when all men doubt you,\nBut make allowance for their doubting too;\n\nIf you can wait and not be tired by waiting,\nOr being lied about, don't deal in lies,\nOr being hated, don't give way to hating,\nAnd yet don't look too good, nor talk too wise;\n\nIf you can fill the unforgiving minute\nWith sixty seconds' worth of distance run,\nYours is the Earth and everything that's in it,\nAnd — which is more — you'll be a Man, my son!",
+    author: "Rudyard Kipling"
+  },
+  {
+    title: "Still I Rise",
+    body: "You may write me down in history\nWith your bitter, twisted lies,\nYou may trod me in the very dirt\nBut still, like dust, I'll rise.\n\nDoes my sassiness upset you?\nWhy are you beset with gloom?\n'Cause I walk like I've got oil wells\nPumping in my living room.\n\nOut of the huts of history's shame\nI rise\nUp from a past that's rooted in pain\nI rise\nI'm a black ocean, leaping and wide,\nWelling and swelling I bear in the tide.\nLeaving behind nights of terror and fear\nI rise\nInto a daybreak that's wondrously clear\nI rise.",
+    author: "Maya Angelou"
+  },
+  {
+    title: "The Raven (excerpt)",
+    body: "Once upon a midnight dreary, while I pondered, weak and weary,\nOver many a quaint and curious volume of forgotten lore —\nWhile I nodded, nearly napping, suddenly there came a tapping,\nAs of some one gently rapping, rapping at my chamber door.\n\"'Tis some visitor,\" I muttered, \"tapping at my chamber door —\nOnly this and nothing more.\"\n\nAnd the Raven, never flitting, still is sitting, still is sitting\nOn the pallid bust of Pallas just above my chamber door;\nAnd his eyes have all the seeming of a demon's that is dreaming,\nAnd the lamp-light o'er him streaming throws his shadow on the floor;\nAnd my soul from out that shadow that lies floating on the floor\nShall be lifted — nevermore!",
+    author: "Edgar Allan Poe"
+  }
+];
+
+/* ══════════════════════════════════════════════════════ */
+
+var poemTitle = document.getElementById('poemTitle');
+var poemBody = document.getElementById('poemBody');
+var poemAuthor = document.getElementById('poemAuthor');
+var poemCounter = document.getElementById('poemCounter');
+var btnPrev = document.getElementById('btnPrev');
+var btnNext = document.getElementById('btnNext');
+var btnRandom = document.getElementById('btnRandom');
+var currentIdx = 0;
+
+function showPoem(idx, animate){
+  if(idx<0) idx=POEMS.length-1;
+  if(idx>=POEMS.length) idx=0;
+  currentIdx = idx;
+
+  if(animate){
+    poemTitle.classList.add('fade-out');
+    poemBody.classList.add('fade-out');
+    poemAuthor.classList.add('fade-out');
+    setTimeout(function(){ setPoem(idx); },500);
+  } else {
+    setPoem(idx);
+  }
+}
+
+function setPoem(idx){
+  var p = POEMS[idx];
+  poemTitle.textContent = p.title;
+  poemBody.textContent = p.body;
+  poemAuthor.textContent = '— ' + p.author;
+  poemCounter.textContent = (idx+1) + ' / ' + POEMS.length;
+  poemTitle.classList.remove('fade-out');
+  poemBody.classList.remove('fade-out');
+  poemAuthor.classList.remove('fade-out');
+  btnPrev.disabled = false;
+  btnNext.disabled = false;
+}
+
+btnPrev.addEventListener('click', function(){ showPoem(currentIdx-1, true); });
+btnNext.addEventListener('click', function(){ showPoem(currentIdx+1, true); });
+btnRandom.addEventListener('click', function(){
+  var r;
+  do { r=Math.floor(Math.random()*POEMS.length); } while(r===currentIdx && POEMS.length>1);
+  showPoem(r, true);
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='ArrowLeft') showPoem(currentIdx-1, true);
+  else if(e.key==='ArrowRight') showPoem(currentIdx+1, true);
+});
+
+showPoem(0, false);
+
+/* ══════════════════════════════════════════════════════
+   CANVAS — Storm ↔ Calm Ocean Cycle
+   ══════════════════════════════════════════════════════ */
+
+var C = document.getElementById('bg');
+var ctx = C.getContext('2d');
+var W, H, dpr = Math.min(window.devicePixelRatio||1, 2);
+
+// Cycle: 60s total — 30s storm, 30s calm, smooth transitions
+var CYCLE_MS = 60000;
+
+var waves = [];
+var raindrops = [];
+var foam = [];
+var debris = [];
+var lightningFlash = 0;
+var lightningBolts = [];
+var lastLightning = 0;
+
+function resize(){
+  W = window.innerWidth; H = window.innerHeight;
+  C.width = W*dpr; C.height = H*dpr;
+  C.style.width = W+'px'; C.style.height = H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  initOcean();
+}
+
+function initOcean(){
+  waves = [];
+  for(var i=0;i<10;i++){
+    waves.push({
+      baseY: H*0.4 + i*H*0.06,
+      amp: 6 + i*2.5,
+      freq: 0.006 - i*0.0003,
+      speed: 0.0006 + i*0.00015,
+      phase: Math.random()*Math.PI*2,
+      baseAlpha: 0.12 + i*0.05
+    });
+  }
+
+  raindrops = [];
+  for(var i=0;i<250;i++){
+    raindrops.push({
+      x: Math.random()*W*1.3 - W*0.15,
+      y: Math.random()*H,
+      len: 8 + Math.random()*18,
+      speed: 12 + Math.random()*10,
+      wind: 0,
+      alpha: Math.random()*0.3 + 0.15
+    });
+  }
+
+  foam = [];
+  for(var i=0;i<40;i++){
+    foam.push({
+      x: Math.random()*W,
+      y: H*0.38 + Math.random()*H*0.12,
+      r: Math.random()*3 + 1,
+      phase: Math.random()*Math.PI*2,
+      driftSpeed: Math.random()*0.3 + 0.1
+    });
+  }
+
+  debris = [];
+  for(var i=0;i<15;i++){
+    debris.push({
+      x: Math.random()*W,
+      y: H*0.35 + Math.random()*H*0.1,
+      vx: (Math.random()-0.5)*2,
+      phase: Math.random()*Math.PI*2,
+      size: 1 + Math.random()*2
+    });
+  }
+}
+
+function lerp(a,b,t){ return a+(b-a)*t; }
+function lerpC(c1,c2,t){ return [Math.round(lerp(c1[0],c2[0],t)),Math.round(lerp(c1[1],c2[1],t)),Math.round(lerp(c1[2],c2[2],t))]; }
+function rgb(c){ return 'rgb('+c[0]+','+c[1]+','+c[2]+')'; }
+function rgba(c,a){ return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')'; }
+
+// Storm intensity: 0=calm, 1=full storm
+function getStormIntensity(time){
+  var phase = (time % CYCLE_MS) / CYCLE_MS; // 0..1
+  // 0..0.1 = calm→storm transition
+  // 0.1..0.45 = full storm
+  // 0.45..0.55 = storm→calm transition
+  // 0.55..0.95 = full calm
+  // 0.95..1.0 = calm→storm transition
+
+  if(phase < 0.1) return smoothStep(phase / 0.1);
+  if(phase < 0.45) return 1;
+  if(phase < 0.55) return 1 - smoothStep((phase - 0.45) / 0.1);
+  if(phase < 0.95) return 0;
+  return smoothStep((phase - 0.95) / 0.05);
+}
+
+function smoothStep(t){ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
+
+function spawnLightning(time, storm){
+  if(storm < 0.5) return;
+  if(time - lastLightning < 800 + Math.random()*3000/storm) return;
+  if(Math.random() > storm*0.04) return;
+
+  lastLightning = time;
+  lightningFlash = 1;
+
+  // Generate branching bolt
+  var bolt = [];
+  var x = W*0.15 + Math.random()*W*0.7;
+  var y = 0;
+  var segments = 8 + Math.floor(Math.random()*8);
+  for(var i=0;i<segments;i++){
+    var nx = x + (Math.random()-0.5)*60;
+    var ny = y + H*0.04 + Math.random()*H*0.05;
+    bolt.push({x1:x,y1:y,x2:nx,y2:ny});
+
+    // Branch
+    if(Math.random()>0.6 && i>1){
+      var bx = nx + (Math.random()-0.5)*80;
+      var by = ny + H*0.03 + Math.random()*H*0.04;
+      bolt.push({x1:nx,y1:ny,x2:bx,y2:by,branch:true});
+    }
+    x=nx; y=ny;
+    if(y > H*0.38) break;
+  }
+  lightningBolts.push({segments:bolt, life:1, decay:0.04+Math.random()*0.02});
+}
+
+function drawScene(time){
+  var storm = getStormIntensity(time);
+  var calm = 1 - storm;
+
+  // ── SKY ──
+  var stormSkyTop = [12,14,22];
+  var stormSkyMid = [18,20,32];
+  var stormSkyLow = [25,28,40];
+
+  var calmSkyTop = [15,25,60];
+  var calmSkyMid = [40,65,120];
+  var calmSkyLow = [70,100,155];
+
+  var skyTop = lerpC(calmSkyTop, stormSkyTop, storm);
+  var skyMid = lerpC(calmSkyMid, stormSkyMid, storm);
+  var skyLow = lerpC(calmSkyLow, stormSkyLow, storm);
+
+  var skyG = ctx.createLinearGradient(0,0,0,H*0.42);
+  skyG.addColorStop(0, rgb(skyTop));
+  skyG.addColorStop(0.5, rgb(skyMid));
+  skyG.addColorStop(1, rgb(skyLow));
+  ctx.fillStyle = skyG;
+  ctx.fillRect(0,0,W,H);
+
+  // ── Storm clouds ──
+  if(storm > 0.05){
+    drawStormClouds(time, storm);
+  }
+
+  // ── Stars (calm only) ──
+  if(calm > 0.3){
+    var starA = (calm-0.3)/0.7;
+    for(var i=0;i<60;i++){
+      var sx = (i*137.5)%W;
+      var sy = (i*97.3)%(H*0.3);
+      var sa = starA*(0.2+0.4*Math.sin(time*0.001+i*2.7));
+      ctx.beginPath(); ctx.arc(sx,sy,0.8,0,Math.PI*2);
+      ctx.fillStyle='rgba(220,230,255,'+sa+')';ctx.fill();
+    }
+  }
+
+  // ── Moon (calm) ──
+  if(calm > 0.2){
+    var moonA = Math.min(1,(calm-0.2)/0.5)*0.8;
+    var mx = W*0.78, my = H*0.1;
+    ctx.beginPath(); ctx.arc(mx,my,50,0,Math.PI*2);
+    ctx.fillStyle=rgba([150,170,200],moonA*0.03); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx,my,30,0,Math.PI*2);
+    ctx.fillStyle=rgba([150,170,200],moonA*0.05); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx,my,16,0,Math.PI*2);
+    ctx.fillStyle=rgba([215,225,240],moonA); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx+5,my-2,13,0,Math.PI*2);
+    ctx.fillStyle=rgba(skyTop,moonA*0.8); ctx.fill();
+
+    // Moon reflection on calm water
+    if(calm > 0.5){
+      var refA = (calm-0.5)*0.6;
+      for(var i=0;i<12;i++){
+        var ry = H*0.42 + i*6;
+        var rw = 14-i*0.5 + Math.sin(time*0.001+i)*2;
+        ctx.fillStyle=rgba([180,200,225],refA*(0.04-i*0.002));
+        ctx.fillRect(mx-rw/2+Math.sin(time*0.0008+i*0.4)*3, ry, rw, 2);
+      }
+    }
+  }
+
+  // ── Ocean base ──
+  var oceanDeep = lerpC([8,20,50],[6,10,20],storm);
+  ctx.fillStyle = rgb(oceanDeep);
+  ctx.fillRect(0,H*0.4,W,H*0.6);
+
+  // ── Waves ──
+  var waveTurbulence = lerp(1, 3.5, storm);
+  var waveSpeedMult = lerp(1, 2.2, storm);
+
+  for(var i=0;i<waves.length;i++){
+    var w = waves[i];
+    var amp = w.amp * waveTurbulence;
+    var darkCol = lerpC([15,35,75],[10,18,35],storm);
+    var midCol = lerpC([25,55,105],[15,25,50],storm);
+    var lightCol = lerpC([35,75,135],[20,35,60],storm);
+
+    var waveCol = i<3?lightCol:(i<6?midCol:darkCol);
+    var waveAlpha = w.baseAlpha + storm*0.08;
+
+    ctx.beginPath();
+    ctx.moveTo(0,H);
+    for(var x=0;x<=W;x+=3){
+      var y = w.baseY
+        + Math.sin(x*w.freq + time*w.speed*waveSpeedMult + w.phase)*amp
+        + Math.sin(x*w.freq*2.1 + time*w.speed*1.6*waveSpeedMult + w.phase*1.3)*amp*0.35
+        + Math.sin(x*w.freq*0.5 + time*w.speed*0.7*waveSpeedMult)*amp*0.5*storm;
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(W,H); ctx.closePath();
+    ctx.fillStyle = rgba(waveCol, waveAlpha);
+    ctx.fill();
+  }
+
+  // ── Wave crests / whitecaps (more in storm) ──
+  var crestCount = Math.floor(lerp(3,15,storm));
+  for(var i=0;i<crestCount;i++){
+    var cx = (time*0.03*(i+1)*0.7 + i*W/crestCount)%W;
+    var cy = H*0.4 + i*H*0.04 + Math.sin(time*0.001+i*3)*8*waveTurbulence;
+    var cw = 15 + Math.random()*20 + storm*15;
+    var ca = (0.1 + storm*0.25)*Math.abs(Math.sin(time*0.002+i*2));
+
+    ctx.beginPath();
+    ctx.moveTo(cx-cw/2, cy);
+    ctx.quadraticCurveTo(cx, cy-3-storm*4, cx+cw/2, cy);
+    ctx.strokeStyle=rgba([200,220,240],ca);
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+  }
+
+  // ── Sea foam ──
+  for(var i=0;i<foam.length;i++){
+    var f = foam[i];
+    var fx = f.x + Math.sin(time*0.001+f.phase)*5*waveTurbulence;
+    var fy = f.y + Math.sin(time*0.002+f.phase)*4*waveTurbulence;
+    var fa = (0.1+storm*0.2)*(0.3+0.5*Math.sin(time*0.002+f.phase));
+    ctx.beginPath(); ctx.arc(fx,fy,f.r*(1+storm*0.5),0,Math.PI*2);
+    ctx.fillStyle=rgba([180,210,235],Math.max(0,fa));
+    ctx.fill();
+  }
+
+  // ── Spray / mist at wave tops (storm) ──
+  if(storm > 0.3){
+    var sprayA = (storm-0.3)*0.5;
+    for(var i=0;i<20;i++){
+      var sx = (time*0.05+i*73)%W;
+      var sy = H*0.36 + Math.sin(time*0.002+i)*H*0.05 + Math.random()*5;
+      ctx.beginPath(); ctx.arc(sx,sy,1+Math.random()*2,0,Math.PI*2);
+      ctx.fillStyle=rgba([200,215,230],sprayA*(0.2+Math.random()*0.3));
+      ctx.fill();
+    }
+  }
+
+  // ── Floating debris in storm ──
+  if(storm > 0.4){
+    var debA = (storm-0.4)/0.6;
+    for(var i=0;i<debris.length;i++){
+      var d = debris[i];
+      d.x += d.vx*storm;
+      if(d.x>W+10) d.x=-10;
+      if(d.x<-10) d.x=W+10;
+      var dy = d.y + Math.sin(time*0.003+d.phase)*6*storm;
+      ctx.fillStyle=rgba([80,70,60],debA*0.5);
+      ctx.fillRect(d.x,dy,d.size*3,d.size);
+    }
+  }
+
+  // ── Rain (storm) ──
+  if(storm > 0.1){
+    var rainA = storm;
+    var windAngle = storm*0.25;
+    for(var i=0;i<raindrops.length;i++){
+      var r = raindrops[i];
+      r.y += r.speed*storm;
+      r.x += 3*storm + windAngle*r.speed*0.5;
+      if(r.y > H+10){ r.y=-20; r.x=Math.random()*W*1.3-W*0.15; }
+      if(r.x > W+20) r.x=-20;
+
+      var rLen = r.len*storm;
+      ctx.beginPath();
+      ctx.moveTo(r.x, r.y);
+      ctx.lineTo(r.x - windAngle*rLen*0.3, r.y - rLen);
+      ctx.strokeStyle=rgba([180,200,220],r.alpha*rainA);
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
+
+    // Rain impact splashes on water surface
+    if(storm > 0.4){
+      for(var i=0;i<8;i++){
+        var rx = Math.random()*W;
+        var ry = H*0.39 + Math.random()*H*0.04;
+        var ra = storm*0.15*Math.random();
+        ctx.beginPath(); ctx.arc(rx,ry,2+Math.random()*2,0,Math.PI*2);
+        ctx.strokeStyle=rgba([200,215,230],ra);
+        ctx.lineWidth=0.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // ── Lightning ──
+  spawnLightning(time, storm);
+
+  // Decay flash
+  if(lightningFlash > 0){
+    lightningFlash *= 0.92;
+    if(lightningFlash < 0.01) lightningFlash = 0;
+    ctx.fillStyle=rgba([220,225,240],lightningFlash*0.15);
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // Draw bolts
+  for(var b=lightningBolts.length-1;b>=0;b--){
+    var bolt = lightningBolts[b];
+    bolt.life -= bolt.decay;
+    if(bolt.life <= 0){ lightningBolts.splice(b,1); continue; }
+
+    for(var s=0;s<bolt.segments.length;s++){
+      var seg = bolt.segments[s];
+      ctx.beginPath();
+      ctx.moveTo(seg.x1,seg.y1);
+      ctx.lineTo(seg.x2,seg.y2);
+
+      if(seg.branch){
+        ctx.strokeStyle=rgba([180,190,255],bolt.life*0.4);
+        ctx.lineWidth=1;
+      } else {
+        ctx.strokeStyle=rgba([230,235,255],bolt.life*0.8);
+        ctx.lineWidth=2;
+        ctx.shadowColor='rgba(180,190,255,'+bolt.life*0.5+')';
+        ctx.shadowBlur=15;
+      }
+      ctx.stroke();
+      ctx.shadowBlur=0;
+    }
+
+    // Glow at bolt origin
+    if(bolt.segments.length>0){
+      var origin=bolt.segments[0];
+      ctx.beginPath(); ctx.arc(origin.x1,origin.y1,30,0,Math.PI*2);
+      ctx.fillStyle=rgba([200,210,255],bolt.life*0.03);
+      ctx.fill();
+    }
+  }
+
+  // ── Thunder rumble clouds illumination ──
+  if(storm > 0.3){
+    var rumbleA = storm*0.02*Math.abs(Math.sin(time*0.005))*Math.abs(Math.sin(time*0.013));
+    if(rumbleA > 0.005){
+      var rx = W*0.3+Math.sin(time*0.001)*W*0.3;
+      var rg = ctx.createRadialGradient(rx,H*0.05,0,rx,H*0.05,H*0.25);
+      rg.addColorStop(0,rgba([200,210,240],rumbleA));
+      rg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=rg;ctx.fillRect(0,0,W,H*0.3);
+    }
+  }
+
+  // ── Calm water reflections ──
+  if(calm > 0.3){
+    var refA = (calm-0.3)/0.7;
+    // Sky reflection in water
+    var refG = ctx.createLinearGradient(0,H*0.4,0,H*0.55);
+    refG.addColorStop(0,rgba(skyLow,refA*0.08));
+    refG.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=refG;
+    ctx.fillRect(0,H*0.4,W,H*0.15);
+
+    // Gentle sparkle on calm water
+    for(var i=0;i<25;i++){
+      var sx = (i*W/25) + Math.sin(time*0.0005+i)*20;
+      var sy = H*0.42+i*3+Math.sin(time*0.001+i*2)*3;
+      var sa = refA*0.12*(0.3+0.7*Math.sin(time*0.002+i*3.7));
+      ctx.fillStyle=rgba([200,220,250],sa);
+      ctx.fillRect(sx,sy,3+Math.random()*2,1);
+    }
+  }
+
+  // ── Atmospheric fog ──
+  var fogA = lerp(0.01, 0.06, storm);
+  var fogG = ctx.createLinearGradient(0,H*0.3,0,H*0.5);
+  var fogCol = lerpC([100,110,130],[40,45,55],storm);
+  fogG.addColorStop(0,rgba(fogCol,0));
+  fogG.addColorStop(0.5,rgba(fogCol,fogA));
+  fogG.addColorStop(1,rgba(fogCol,0));
+  ctx.fillStyle=fogG;
+  ctx.fillRect(0,H*0.3,W,H*0.2);
+}
+
+function drawStormClouds(time, storm){
+  // Multiple cloud layers
+  for(var layer=0;layer<3;layer++){
+    var cy = H*0.02 + layer*H*0.06;
+    var speed = (0.015+layer*0.008)*storm;
+    var cloudDark = lerpC([30,33,45],[15,17,25],storm);
+
+    for(var i=0;i<6;i++){
+      var cx = ((time*speed + i*W/6 + layer*100)%(W+300)) - 150;
+      var cw = 120+layer*40+Math.sin(i*5)*30;
+      var ch = 30+layer*12;
+      var ca = storm*(0.4+layer*0.15);
+
+      ctx.fillStyle=rgba(cloudDark,ca);
+      ctx.beginPath(); ctx.ellipse(cx,cy,cw/2,ch/2,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx-cw*0.2,cy+ch*0.2,cw*0.35,ch*0.35,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+cw*0.25,cy-ch*0.1,cw*0.3,ch*0.4,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+cw*0.1,cy+ch*0.15,cw*0.4,ch*0.3,0,0,Math.PI*2); ctx.fill();
+
+      // Cloud underbelly glow from lightning
+      if(lightningFlash > 0.1){
+        ctx.beginPath(); ctx.ellipse(cx,cy+ch*0.3,cw*0.4,ch*0.25,0,0,Math.PI*2);
+        ctx.fillStyle=rgba([180,190,220],lightningFlash*0.08);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+resize();
+window.addEventListener('resize', resize);
+
+function loop(t){
+  requestAnimationFrame(loop);
+  drawScene(t);
+}
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
