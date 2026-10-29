@@ -32,7 +32,7 @@ h1{
   border:1px solid rgba(255,255,255,.06);
   border-radius:22px;padding:44px 38px 40px;
   box-shadow:0 0 80px rgba(0,0,0,.25);
-  text-align:center;position:relative;overflow-x:hidden;
+  text-align:center;position:relative;
   margin-bottom:20px;
   transition:border-color .5s;
   scrollbar-width:thin;scrollbar-color:rgba(167,139,250,.2) transparent;
@@ -69,56 +69,48 @@ h1{
   opacity:1;transition:opacity .6s ease;
 }
 .poem-author.fade-out{opacity:0}
-.poem-nav{
-  display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap;justify-content:center;
+.poem-meta{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;color:rgba(255,255,255,.18);
+  margin-top:8px;letter-spacing:1px;
+  opacity:1;transition:opacity .6s ease;
 }
-.nav-btn{
-  padding:10px 28px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);
-  font:700 14px 'Rajdhani',sans-serif;letter-spacing:1px;
-  cursor:pointer;transition:all .3s;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-}
-.nav-btn:hover{
-  background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3);
-  color:#fff;transform:scale(1.03);
-}
-.nav-btn:active{transform:scale(.97)}
-.nav-btn:disabled{opacity:.25;pointer-events:none}
-.nav-btn.api-btn{
+.poem-meta.fade-out{opacity:0}
+.fetch-btn{
+  padding:14px 40px;border-radius:14px;
+  border:1px solid rgba(167,139,250,.25);
   background:linear-gradient(135deg,rgba(110,80,255,.18),rgba(244,114,182,.12));
-  border-color:rgba(167,139,250,.25);
+  color:rgba(255,255,255,.75);
+  font:700 15px 'Rajdhani',sans-serif;letter-spacing:1.5px;
+  cursor:pointer;transition:all .35s ease;
 }
-.nav-btn.api-btn:hover{
+.fetch-btn:hover{
   background:linear-gradient(135deg,rgba(110,80,255,.35),rgba(244,114,182,.25));
+  color:#fff;transform:scale(1.03);
+  box-shadow:0 0 30px rgba(167,139,250,.15);
   border-color:rgba(167,139,250,.4);
 }
-.nav-btn.api-btn.loading{pointer-events:none;opacity:.5}
-.nav-btn .spinner{
-  display:none;width:14px;height:14px;
+.fetch-btn:active{transform:scale(.97)}
+.fetch-btn.loading{pointer-events:none;opacity:.5}
+.fetch-btn .spinner{
+  display:none;width:16px;height:16px;
   border:2px solid rgba(255,255,255,.2);
   border-top-color:rgba(167,139,250,.7);
   border-radius:50%;animation:spin .6s linear infinite;
-  margin-right:6px;vertical-align:middle;
+  margin-right:8px;vertical-align:middle;
 }
-.nav-btn.loading .spinner{display:inline-block}
+.fetch-btn.loading .spinner{display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-.poem-counter{
-  font:400 12px 'Rajdhani',sans-serif;
-  color:rgba(255,255,255,.25);letter-spacing:1px;
-  min-width:60px;text-align:center;
+.counter{
+  margin-top:14px;font-size:11px;color:rgba(255,255,255,.15);
+  letter-spacing:1px;text-shadow:0 1px 4px rgba(0,0,0,.4);
 }
-.api-badge{
-  display:inline-block;font:600 10px 'Rajdhani',sans-serif;
-  color:rgba(110,231,168,.5);letter-spacing:1px;
-  margin-top:8px;opacity:0;transition:opacity .4s;
+.error-msg{
+  font:400 14px 'Rajdhani',sans-serif;
+  color:rgba(248,113,113,.6);margin-top:12px;
+  opacity:0;transition:opacity .4s;
 }
-.api-badge.visible{opacity:1}
-.add-note{
-  margin-top:16px;font-size:11px;color:rgba(255,255,255,.15);
-  max-width:400px;text-align:center;line-height:1.6;
-}
+.error-msg.visible{opacity:1}
 .backlink{
   position:fixed;bottom:12px;left:16px;z-index:9999;
   color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
@@ -142,28 +134,19 @@ h1{
   <div class="subtitle">ink that bleeds louder than words</div>
 
   <div class="poem-card" id="poemCard">
-    <div class="poem-title" id="poemTitle"></div>
+    <div class="poem-title" id="poemTitle">Summoning a poem…</div>
     <div class="poem-body" id="poemBody"></div>
     <div class="poem-author" id="poemAuthor"></div>
-    <div class="api-badge" id="apiBadge">✦ from poetrydb</div>
+    <div class="poem-meta" id="poemMeta"></div>
   </div>
 
-  <div class="poem-nav">
-    <button class="nav-btn" id="btnPrev">← PREV</button>
-    <div class="poem-counter" id="poemCounter">1 / 1</div>
-    <button class="nav-btn" id="btnNext">NEXT →</button>
-  </div>
-  <div class="poem-nav" style="margin-top:8px">
-    <button class="nav-btn" id="btnRandomLocal">✦ RANDOM LOCAL</button>
-    <button class="nav-btn api-btn" id="btnRandomApi">
-      <span class="spinner"></span>
-      <span class="btn-label">⚡ RANDOM FROM API</span>
-    </button>
-  </div>
+  <button class="fetch-btn" id="fetchBtn">
+    <span class="spinner"></span>
+    <span class="btn-label">ANOTHER POEM</span>
+  </button>
 
-  <div class="add-note">
-    Local poems: edit the POEMS array in the script. API poems: fetched live from PoetryDB.
-  </div>
+  <div class="error-msg" id="errorMsg">Could not reach the poetry archive. Try again.</div>
+  <div class="counter" id="counter"></div>
 </div>
 
 <a class="backlink" href="index.html">&larr; home</a>
@@ -173,58 +156,15 @@ h1{
 "use strict";
 
 /* ══════════════════════════════════════════════════════
-   YOUR LOCAL POEMS — Add, remove, or edit freely.
-   Use \n for line breaks.
-   ══════════════════════════════════════════════════════ */
-
-var POEMS = [
-  {
-    title: "The Hollow Men",
-    body: "We are the hollow men\nWe are the stuffed men\nLeaning together\nHeadpiece filled with straw. Alas!\nOur dried voices, when\nWe whisper together\nAre quiet and meaningless\nAs wind in dry grass\nOr rats' feet over broken glass\nIn our dry cellar",
-    author: "T.S. Eliot"
-  },
-  {
-    title: "Invictus",
-    body: "Out of the night that covers me,\nBlack as the pit from pole to pole,\nI thank whatever gods may be\nFor my unconquerable soul.\n\nIn the fell clutch of circumstance\nI have not winced nor cried aloud.\nUnder the bludgeonings of chance\nMy head is bloody, but unbowed.\n\nIt matters not how strait the gate,\nHow charged with punishments the scroll,\nI am the master of my fate,\nI am the captain of my soul.",
-    author: "William Ernest Henley"
-  },
-  {
-    title: "Do Not Go Gentle into That Good Night",
-    body: "Do not go gentle into that good night,\nOld age should burn and rave at close of day;\nRage, rage against the dying of the light.\n\nThough wise men at their end know dark is right,\nBecause their words had forked no lightning they\nDo not go gentle into that good night.\n\nGrave men, near death, who see with blinding sight\nBlind eyes could blaze like meteors and be gay,\nRage, rage against the dying of the light.",
-    author: "Dylan Thomas"
-  },
-  {
-    title: "Ozymandias",
-    body: "I met a traveller from an antique land,\nWho said — Two vast and trunkless legs of stone\nStand in the desert. Near them, on the sand,\nHalf sunk a shattered visage lies, whose frown,\nAnd wrinkled lip, and sneer of cold command,\nTell that its sculptor well those passions read\nWhich yet survive, stamped on these lifeless things,\nThe hand that mocked them, and the heart that fed;\n\nAnd on the pedestal, these words appear:\nMy name is Ozymandias, King of Kings;\nLook on my Works, ye Mighty, and despair!\nNothing beside remains. Round the decay\nOf that colossal Wreck, boundless and bare\nThe lone and level sands stretch far away.",
-    author: "Percy Bysshe Shelley"
-  },
-  {
-    title: "The Road Not Taken",
-    body: "Two roads diverged in a yellow wood,\nAnd sorry I could not travel both\nAnd be one traveler, long I stood\nAnd looked down one as far as I could\nTo where it bent in the undergrowth;\n\nThen took the other, as just as fair,\nAnd having perhaps the better claim,\nBecause it was grassy and wanted wear;\nThough as for that the passing there\nHad worn them really about the same.\n\nI shall be telling this with a sigh\nSomewhere ages and ages hence:\nTwo roads diverged in a wood, and I —\nI took the one less traveled by,\nAnd that has made all the difference.",
-    author: "Robert Frost"
-  },
-  {
-    title: "If—",
-    body: "If you can keep your head when all about you\nAre losing theirs and blaming it on you,\nIf you can trust yourself when all men doubt you,\nBut make allowance for their doubting too;\n\nIf you can wait and not be tired by waiting,\nOr being lied about, don't deal in lies,\nOr being hated, don't give way to hating,\nAnd yet don't look too good, nor talk too wise;\n\nIf you can fill the unforgiving minute\nWith sixty seconds' worth of distance run,\nYours is the Earth and everything that's in it,\nAnd — which is more — you'll be a Man, my son!",
-    author: "Rudyard Kipling"
-  },
-  {
-    title: "Still I Rise",
-    body: "You may write me down in history\nWith your bitter, twisted lies,\nYou may trod me in the very dirt\nBut still, like dust, I'll rise.\n\nDoes my sassiness upset you?\nWhy are you beset with gloom?\n'Cause I walk like I've got oil wells\nPumping in my living room.\n\nOut of the huts of history's shame\nI rise\nUp from a past that's rooted in pain\nI rise\nI'm a black ocean, leaping and wide,\nWelling and swelling I bear in the tide.\nLeaving behind nights of terror and fear\nI rise\nInto a daybreak that's wondrously clear\nI rise.",
-    author: "Maya Angelou"
-  },
-  {
-    title: "The Raven (excerpt)",
-    body: "Once upon a midnight dreary, while I pondered, weak and weary,\nOver many a quaint and curious volume of forgotten lore —\nWhile I nodded, nearly napping, suddenly there came a tapping,\nAs of some one gently rapping, rapping at my chamber door.\n\"'Tis some visitor,\" I muttered, \"tapping at my chamber door —\nOnly this and nothing more.\"\n\nAnd the Raven, never flitting, still is sitting, still is sitting\nOn the pallid bust of Pallas just above my chamber door;\nAnd his eyes have all the seeming of a demon's that is dreaming,\nAnd the lamp-light o'er him streaming throws his shadow on the floor;\nAnd my soul from out that shadow that lies floating on the floor\nShall be lifted — nevermore!",
-    author: "Edgar Allan Poe"
-  }
-];
-
-/* ══════════════════════════════════════════════════════
    API CONFIGURATION
-   PoetryDB — free, no API key, no CORS issues.
+   PoetryDB — free, no key needed, no CORS issues.
    Docs: https://poetrydb.org/
-   Change the URL if you want a different source.
+
+   Other endpoints you can try:
+     Random poem:          https://poetrydb.org/random
+     Random Shakespeare:   https://poetrydb.org/author/Shakespeare/random
+     Random by title word: https://poetrydb.org/title,random/Love;1
+     Random by line count: https://poetrydb.org/linecount/14/random
    ══════════════════════════════════════════════════════ */
 
 var POEM_API_URL = 'https://poetrydb.org/random';
@@ -234,19 +174,17 @@ var POEM_API_URL = 'https://poetrydb.org/random';
 var poemTitle = document.getElementById('poemTitle');
 var poemBody = document.getElementById('poemBody');
 var poemAuthor = document.getElementById('poemAuthor');
-var poemCounter = document.getElementById('poemCounter');
-var apiBadge = document.getElementById('apiBadge');
-var btnPrev = document.getElementById('btnPrev');
-var btnNext = document.getElementById('btnNext');
-var btnRandomLocal = document.getElementById('btnRandomLocal');
-var btnRandomApi = document.getElementById('btnRandomApi');
-var currentIdx = 0;
-var isApiPoem = false;
+var poemMeta = document.getElementById('poemMeta');
+var fetchBtn = document.getElementById('fetchBtn');
+var errorMsg = document.getElementById('errorMsg');
+var counterEl = document.getElementById('counter');
+var fetchCount = 0;
 
 function fadeOut(cb){
   poemTitle.classList.add('fade-out');
   poemBody.classList.add('fade-out');
   poemAuthor.classList.add('fade-out');
+  poemMeta.classList.add('fade-out');
   setTimeout(cb, 500);
 }
 
@@ -254,118 +192,75 @@ function fadeIn(){
   poemTitle.classList.remove('fade-out');
   poemBody.classList.remove('fade-out');
   poemAuthor.classList.remove('fade-out');
+  poemMeta.classList.remove('fade-out');
 }
 
-function showLocalPoem(idx, animate){
-  if(idx<0) idx=POEMS.length-1;
-  if(idx>=POEMS.length) idx=0;
-  currentIdx = idx;
-  isApiPoem = false;
-  apiBadge.classList.remove('visible');
-
-  if(animate){
-    fadeOut(function(){
-      setLocalPoem(idx);
-      fadeIn();
-    });
-  } else {
-    setLocalPoem(idx);
-  }
-}
-
-function setLocalPoem(idx){
-  var p = POEMS[idx];
-  poemTitle.textContent = p.title;
-  poemBody.textContent = p.body;
-  poemAuthor.textContent = '— ' + p.author;
-  poemCounter.textContent = (idx+1) + ' / ' + POEMS.length;
-  // Scroll card to top
-  document.getElementById('poemCard').scrollTop = 0;
-}
-
-function fetchRandomPoem(){
-  btnRandomApi.classList.add('loading');
+function fetchPoem(){
+  fetchBtn.classList.add('loading');
+  errorMsg.classList.remove('visible');
 
   var ctrl = new AbortController();
-  var timeout = setTimeout(function(){ ctrl.abort(); }, 5000);
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 6000);
 
   fetch(POEM_API_URL, { signal: ctrl.signal })
     .then(function(res){
       clearTimeout(timeout);
-      if(!res.ok) throw new Error('API error');
+      if(!res.ok) throw new Error('API returned ' + res.status);
       return res.json();
     })
     .then(function(data){
-      // PoetryDB returns an array of poem objects
       var p = Array.isArray(data) ? data[0] : data;
-      if(!p || !p.title || !p.lines) throw new Error('Bad format');
-
-      isApiPoem = true;
-      apiBadge.classList.add('visible');
+      if(!p || !p.title || !p.lines) throw new Error('Unexpected format');
 
       fadeOut(function(){
         poemTitle.textContent = p.title;
-        // PoetryDB gives lines as an array — join with newlines
-        // Trim very long poems to keep the card readable
+
         var lines = p.lines;
-        if(lines.length > 40){
-          lines = lines.slice(0, 40);
-          lines.push('\n[… poem continues — ' + p.linecount + ' lines total]');
+        if(lines.length > 48){
+          lines = lines.slice(0, 48);
+          lines.push('\n[… ' + p.linecount + ' lines total — this is an excerpt]');
         }
         poemBody.textContent = lines.join('\n');
         poemAuthor.textContent = '— ' + p.author;
-        poemCounter.textContent = 'API';
+
+        var meta = [];
+        if(p.year) meta.push(p.year);
+        if(p.linecount) meta.push(p.linecount + ' lines');
+        poemMeta.textContent = meta.join(' · ');
+
         document.getElementById('poemCard').scrollTop = 0;
         fadeIn();
       });
+
+      fetchCount++;
+      counterEl.textContent = fetchCount + ' poem' + (fetchCount > 1 ? 's' : '') + ' summoned';
     })
-    .catch(function(){
+    .catch(function(err){
       clearTimeout(timeout);
-      // Fallback: show a random local poem instead
-      isApiPoem = false;
-      apiBadge.classList.remove('visible');
-      fadeOut(function(){
-        var r = Math.floor(Math.random()*POEMS.length);
-        currentIdx = r;
-        setLocalPoem(r);
-        fadeIn();
-      });
+      errorMsg.classList.add('visible');
+      if(fetchCount === 0){
+        poemTitle.textContent = 'The archive is silent.';
+        poemBody.textContent = 'Press the button to try again.';
+      }
     })
     .finally(function(){
-      btnRandomApi.classList.remove('loading');
+      fetchBtn.classList.remove('loading');
     });
 }
 
-btnPrev.addEventListener('click', function(){
-  if(isApiPoem){ showLocalPoem(POEMS.length-1, true); }
-  else { showLocalPoem(currentIdx-1, true); }
-});
-btnNext.addEventListener('click', function(){
-  if(isApiPoem){ showLocalPoem(0, true); }
-  else { showLocalPoem(currentIdx+1, true); }
-});
-btnRandomLocal.addEventListener('click', function(){
-  var r;
-  do { r=Math.floor(Math.random()*POEMS.length); } while(r===currentIdx && POEMS.length>1);
-  showLocalPoem(r, true);
-});
-btnRandomApi.addEventListener('click', fetchRandomPoem);
+fetchBtn.addEventListener('click', fetchPoem);
 
 document.addEventListener('keydown', function(e){
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-  if(e.key==='ArrowLeft'){
-    if(isApiPoem) showLocalPoem(POEMS.length-1, true);
-    else showLocalPoem(currentIdx-1, true);
-  } else if(e.key==='ArrowRight'){
-    if(isApiPoem) showLocalPoem(0, true);
-    else showLocalPoem(currentIdx+1, true);
-  } else if(e.key===' '){
-    e.preventDefault();
-    fetchRandomPoem();
+  if(e.key === ' ' || e.key === 'Enter'){
+    if(document.activeElement === fetchBtn || document.activeElement === document.body){
+      e.preventDefault();
+      fetchPoem();
+    }
   }
 });
 
-showLocalPoem(0, false);
+// Fetch first poem on load
+fetchPoem();
 
 /* ══════════════════════════════════════════════════════
    CANVAS — Storm ↔ Calm Ocean Cycle
