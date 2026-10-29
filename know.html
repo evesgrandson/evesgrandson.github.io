@@ -199,7 +199,7 @@ window.addEventListener('resize', resize);
    ================================================================== */
 var LOCATIONS = [
   { key:'path',     label:'The Forest Path',      sky:['#0a1216','#0f1a1c','#122225'], treeN:95, clearPx:70,  stars:0.25, fog:0.9,  fogCol:'198,208,208' },
-  { key:'cabin',    label:'The Lone Cabin',       sky:['#0b1014','#111a1f','#17242b'], treeN:70, clearPx:220, stars:0.35, fog:0.85, fogCol:'202,210,208' },
+  { key:'castle',   label:'The Forest Castle',    sky:['#0a0f14','#101820','#17222c'], treeN:76, clearPx:300, stars:0.4,  fog:0.85, fogCol:'200,210,214' },
   { key:'deep',     label:'Deeper Still',         sky:['#070d10','#0b1316','#0e1a1c'], treeN:130,clearPx:40,  stars:0.08, fog:1.05, fogCol:'186,198,196' },
   { key:'river',    label:'The Whispering River', sky:['#0a1418','#101d22','#16272d'], treeN:62, clearPx:300, stars:0.45, fog:0.8,  fogCol:'205,216,218' },
   { key:'lake',     label:'The Still Lake',       sky:['#091019','#0e1a26','#132334'], treeN:46, clearPx:420, stars:0.8,  fog:0.65, fogCol:'208,220,228' },
@@ -309,7 +309,7 @@ function buildGrass(){
 })();
 
 /* ==================================================================
-   SCENERY PER LOCATION
+   SHARED SCENERY HELPERS
    ================================================================== */
 function ground(topCol, botCol){
   var g = ctx.createLinearGradient(0,horizon,0,H);
@@ -362,6 +362,7 @@ function waterBand(topY,t,colTop,colBot,shimmer){
     ctx.stroke();
   }
 }
+function rndSeeded(n){ var s=Math.sin(n*12.9898)*43758.5453; return s-Math.floor(s); }
 function treelineSilhouette(y,scale,alpha){
   ctx.fillStyle='rgba(8,13,14,'+alpha+')';
   ctx.beginPath(); ctx.moveTo(-20,y+40);
@@ -374,9 +375,10 @@ function treelineSilhouette(y,scale,alpha){
   }
   ctx.lineTo(W+40,y+40); ctx.closePath(); ctx.fill();
 }
-function rndSeeded(n){ var s=Math.sin(n*12.9898)*43758.5453; return s-Math.floor(s); }
 
-/* ---- individual locations ---- */
+/* ==================================================================
+   LOCATION SCENERY
+   ================================================================== */
 function sceneryPath(t){
   ground('#0d1512','#070c0a');
   var g=ctx.createLinearGradient(0,horizon,0,H);
@@ -389,56 +391,165 @@ function sceneryPath(t){
   lightShafts(t,0.035);
 }
 
-function sceneryCabin(t){
-  ground('#0c1312','#060a09');
-  var cw=Math.min(300,W*0.3), ch=cw*0.62;
-  var cx=W*0.5, cy=horizon+H*0.11;
-  // warm pool of light on ground
-  var pg=ctx.createRadialGradient(cx,cy+ch*0.5,10,cx,cy+ch*0.5,cw*1.6);
-  pg.addColorStop(0,'rgba(255,182,96,.16)'); pg.addColorStop(1,'rgba(255,182,96,0)');
-  ctx.fillStyle=pg; ctx.beginPath(); ctx.arc(cx,cy+ch*0.5,cw*1.6,0,6.2832); ctx.fill();
-  // body
-  ctx.fillStyle='#120f0c';
-  ctx.fillRect(cx-cw/2, cy-ch/2, cw, ch);
-  // roof
-  ctx.fillStyle='#0b0908';
+/* ---------- THE FOREST CASTLE ---------- */
+function merlons(x,y,w,mh,col){
+  ctx.fillStyle=col;
+  var n=Math.max(3,Math.round(w/(mh*1.9)));
+  var step=w/n;
+  for(var i=0;i<n;i++){
+    ctx.fillRect(x+i*step+step*0.12, y-mh, step*0.56, mh+1);
+  }
+}
+function castleWindow(x,y,w,h,flick,warm){
+  var a=warm*flick;
+  var gl=ctx.createRadialGradient(x+w/2,y+h/2,1,x+w/2,y+h/2,w*4.2);
+  gl.addColorStop(0,'rgba(255,186,96,'+(0.26*a)+')');
+  gl.addColorStop(1,'rgba(255,186,96,0)');
+  ctx.fillStyle=gl; ctx.beginPath(); ctx.arc(x+w/2,y+h/2,w*4.2,0,6.2832); ctx.fill();
+  ctx.fillStyle='rgba(255,189,98,'+(0.9*a)+')';
   ctx.beginPath();
-  ctx.moveTo(cx-cw*0.62, cy-ch/2);
-  ctx.lineTo(cx, cy-ch*1.0);
-  ctx.lineTo(cx+cw*0.62, cy-ch/2);
+  ctx.moveTo(x, y+h);
+  ctx.lineTo(x, y+w*0.5);
+  ctx.quadraticCurveTo(x+w/2, y-w*0.35, x+w, y+w*0.5);
+  ctx.lineTo(x+w, y+h);
   ctx.closePath(); ctx.fill();
-  // chimney
-  ctx.fillStyle='#0d0b09';
-  ctx.fillRect(cx+cw*0.26, cy-ch*0.92, cw*0.1, ch*0.42);
-  // door
-  ctx.fillStyle='#070605';
-  ctx.fillRect(cx-cw*0.09, cy+ch*0.06, cw*0.18, ch*0.44);
-  // windows
-  var flick=0.78+0.22*Math.sin(t*0.004);
-  [[-0.3,0.72],[0.26,0.86]].forEach(function(p,i){
-    var wx=cx+cw*p[0], wy=cy-ch*0.12, ww=cw*0.17, wh=ch*0.26;
-    var f=flick*(i?0.92:1);
-    ctx.fillStyle='rgba(255,186,92,'+(0.85*f)+')';
-    ctx.fillRect(wx,wy,ww,wh);
-    var wg=ctx.createRadialGradient(wx+ww/2,wy+wh/2,2,wx+ww/2,wy+wh/2,ww*3.4);
-    wg.addColorStop(0,'rgba(255,180,88,'+(0.3*f)+')'); wg.addColorStop(1,'rgba(255,180,88,0)');
-    ctx.fillStyle=wg; ctx.beginPath(); ctx.arc(wx+ww/2,wy+wh/2,ww*3.4,0,6.2832); ctx.fill();
-    ctx.strokeStyle='rgba(20,14,8,.85)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(wx+ww/2,wy); ctx.lineTo(wx+ww/2,wy+wh);
-    ctx.moveTo(wx,wy+wh/2); ctx.lineTo(wx+ww,wy+wh/2); ctx.stroke();
+}
+function sceneryCastle(t){
+  // dim back treeline so castle reads as "in the forest"
+  treelineSilhouette(horizon+26, 30, 0.55);
+  ground('#0a110f','#050908');
+
+  var scale = Math.min(W*0.52, H*0.95);
+  var cx    = W*0.5;
+  var baseY = horizon + H*0.235;
+  var cw    = scale*0.80;                 // curtain wall width
+  var wallH = scale*0.22;
+  var twW   = cw*0.15,  twH = wallH*1.7;  // side towers
+  var keepW = cw*0.30,  keepH = wallH*2.25;
+
+  var stone  = '#0e1315';
+  var stone2 = '#0a0f11';
+  var roof   = '#070b0d';
+
+  // cold haze behind the castle
+  var hg=ctx.createRadialGradient(cx,baseY-keepH*0.55,10,cx,baseY-keepH*0.55,cw*1.25);
+  hg.addColorStop(0,'rgba(150,172,184,.10)');
+  hg.addColorStop(1,'rgba(150,172,184,0)');
+  ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(cx,baseY-keepH*0.55,cw*1.25,0,6.2832); ctx.fill();
+
+  var flick = 0.8 + 0.2*Math.sin(t*0.0035);
+
+  /* ---- central keep (furthest back) ---- */
+  ctx.fillStyle=stone2;
+  ctx.fillRect(cx-keepW/2, baseY-keepH, keepW, keepH);
+  merlons(cx-keepW/2, baseY-keepH, keepW, wallH*0.13, stone2);
+  // keep roof
+  ctx.fillStyle=roof;
+  ctx.beginPath();
+  ctx.moveTo(cx, baseY-keepH-wallH*0.82);
+  ctx.lineTo(cx-keepW*0.56, baseY-keepH-wallH*0.1);
+  ctx.lineTo(cx+keepW*0.56, baseY-keepH-wallH*0.1);
+  ctx.closePath(); ctx.fill();
+  // banner
+  var bx=cx, by=baseY-keepH-wallH*0.82;
+  ctx.strokeStyle='#0a0e10'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx,by-wallH*0.42); ctx.stroke();
+  ctx.fillStyle='rgba(96,36,44,.75)';
+  var wave=Math.sin(t*0.004)*4;
+  ctx.beginPath();
+  ctx.moveTo(bx, by-wallH*0.42);
+  ctx.quadraticCurveTo(bx+keepW*0.18+wave, by-wallH*0.36, bx+keepW*0.3+wave, by-wallH*0.3);
+  ctx.lineTo(bx+keepW*0.2+wave*0.6, by-wallH*0.18);
+  ctx.lineTo(bx, by-wallH*0.2);
+  ctx.closePath(); ctx.fill();
+  // keep windows
+  castleWindow(cx-keepW*0.28, baseY-keepH*0.78, keepW*0.14, keepH*0.14, flick, 1);
+  castleWindow(cx+keepW*0.14, baseY-keepH*0.78, keepW*0.14, keepH*0.14, flick*0.85, 1);
+  castleWindow(cx-keepW*0.08, baseY-keepH*0.50, keepW*0.16, keepH*0.15, flick*0.95, 1);
+
+  /* ---- curtain wall ---- */
+  ctx.fillStyle=stone;
+  ctx.fillRect(cx-cw/2, baseY-wallH, cw, wallH);
+  merlons(cx-cw/2, baseY-wallH, cw, wallH*0.16, stone);
+  // wall texture lines
+  ctx.strokeStyle='rgba(0,0,0,.35)'; ctx.lineWidth=1;
+  for(var r=1;r<4;r++){
+    var ly=baseY-wallH + (wallH/4)*r;
+    ctx.beginPath(); ctx.moveTo(cx-cw/2,ly); ctx.lineTo(cx+cw/2,ly); ctx.stroke();
+  }
+
+  /* ---- gatehouse + arch ---- */
+  var gw=cw*0.17, gh=wallH*0.78;
+  ctx.fillStyle=stone2;
+  ctx.fillRect(cx-gw*0.9, baseY-wallH*1.22, gw*1.8, wallH*1.22);
+  merlons(cx-gw*0.9, baseY-wallH*1.22, gw*1.8, wallH*0.14, stone2);
+  // arch opening
+  ctx.fillStyle='#040708';
+  ctx.beginPath();
+  ctx.moveTo(cx-gw/2, baseY);
+  ctx.lineTo(cx-gw/2, baseY-gh*0.52);
+  ctx.quadraticCurveTo(cx, baseY-gh*1.28, cx+gw/2, baseY-gh*0.52);
+  ctx.lineTo(cx+gw/2, baseY);
+  ctx.closePath(); ctx.fill();
+  // torchlight spilling from the gate
+  var gg=ctx.createRadialGradient(cx,baseY-gh*0.3,2,cx,baseY-gh*0.3,gw*3.4);
+  gg.addColorStop(0,'rgba(255,170,80,'+(0.20*flick)+')');
+  gg.addColorStop(1,'rgba(255,170,80,0)');
+  ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(cx,baseY-gh*0.3,gw*3.4,0,6.2832); ctx.fill();
+  // portcullis bars
+  ctx.strokeStyle='rgba(255,170,80,'+(0.13*flick)+')'; ctx.lineWidth=1.6;
+  for(var b=1;b<5;b++){
+    var bxx=cx-gw/2+(gw/5)*b;
+    ctx.beginPath(); ctx.moveTo(bxx,baseY); ctx.lineTo(bxx,baseY-gh*0.75); ctx.stroke();
+  }
+
+  /* ---- side towers ---- */
+  [-1,1].forEach(function(side,si){
+    var tx=cx+side*(cw/2 - twW*0.1) - twW/2;
+    ctx.fillStyle=stone;
+    ctx.fillRect(tx, baseY-twH, twW, twH);
+    merlons(tx, baseY-twH, twW, wallH*0.15, stone);
+    // conical roof
+    ctx.fillStyle=roof;
+    ctx.beginPath();
+    ctx.moveTo(tx+twW/2, baseY-twH-wallH*0.72);
+    ctx.lineTo(tx-twW*0.26, baseY-twH-wallH*0.08);
+    ctx.lineTo(tx+twW*1.26, baseY-twH-wallH*0.08);
+    ctx.closePath(); ctx.fill();
+    // tower windows
+    castleWindow(tx+twW*0.3, baseY-twH*0.72, twW*0.38, twH*0.13, flick*(si?0.8:1), 1);
+    castleWindow(tx+twW*0.3, baseY-twH*0.42, twW*0.38, twH*0.13, flick*(si?1:0.7), 0.8);
   });
-  // smoke
-  if(smoke.length<26 && Math.random()<0.25)
-    smoke.push({x:cx+cw*0.31,y:cy-ch*0.92,r:rnd(5,11),a:rnd(.1,.2),vy:rnd(.3,.7),vx:rnd(-.1,.3),p:rnd(0,6.28)});
+
+  /* ---- outer ruined towers further out ---- */
+  [-1,1].forEach(function(side){
+    var ox=cx+side*cw*0.78, ow=twW*0.8, oh=wallH*1.1;
+    ctx.fillStyle='rgba(10,14,16,.9)';
+    ctx.fillRect(ox-ow/2, baseY-oh, ow, oh);
+    merlons(ox-ow/2, baseY-oh, ow, wallH*0.1, 'rgba(10,14,16,.9)');
+  });
+
+  /* ---- chimney smoke from keep ---- */
+  if(smoke.length<26 && Math.random()<0.22)
+    smoke.push({x:cx+keepW*0.34,y:baseY-keepH-wallH*0.1,r:rnd(5,11),a:rnd(.08,.17),vy:rnd(.3,.7),vx:rnd(-.1,.3),p:rnd(0,6.28)});
   for(var s=smoke.length-1;s>=0;s--){
     var sm=smoke[s];
     sm.y-=sm.vy; sm.x+=sm.vx+Math.sin(t*0.001+sm.p)*0.25;
     sm.r+=0.42; sm.a-=0.0016;
     if(sm.a<=0){ smoke.splice(s,1); continue; }
     var sg=ctx.createRadialGradient(sm.x,sm.y,0,sm.x,sm.y,sm.r);
-    sg.addColorStop(0,'rgba(190,196,196,'+sm.a+')'); sg.addColorStop(1,'rgba(190,196,196,0)');
+    sg.addColorStop(0,'rgba(186,194,196,'+sm.a+')'); sg.addColorStop(1,'rgba(186,194,196,0)');
     ctx.fillStyle=sg; ctx.beginPath(); ctx.arc(sm.x,sm.y,sm.r,0,6.2832); ctx.fill();
   }
+
+  /* ---- path leading to the gate ---- */
+  var pg=ctx.createLinearGradient(0,baseY,0,H);
+  pg.addColorStop(0,'rgba(54,54,48,.3)'); pg.addColorStop(1,'rgba(32,32,28,.55)');
+  ctx.fillStyle=pg;
+  ctx.beginPath();
+  ctx.moveTo(cx-gw*0.5, baseY); ctx.lineTo(cx+gw*0.5, baseY);
+  ctx.lineTo(cx+W*0.4, H); ctx.lineTo(cx-W*0.4, H);
+  ctx.closePath(); ctx.fill();
 }
 
 function sceneryDeep(t){
@@ -447,7 +558,7 @@ function sceneryDeep(t){
   ctx.fillStyle='rgba(6,11,10,.5)';
   for(var i=0;i<9;i++){
     var x=(i/9)*W + Math.sin(t*0.0003+i)*12;
-    ctx.beginPath(); ctx.ellipse(x,H-rnd(0,0)+ (i%2?18:40), 90, 26, 0, 0, 6.2832); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x, H + (i%2?18:40), 90, 26, 0, 0, 6.2832); ctx.fill();
   }
 }
 
@@ -461,11 +572,9 @@ function sceneryRiver(t){
   ctx.closePath(); ctx.clip();
   waterBand(topY,t,'#1b2d33','#0b171c',1.25);
   ctx.restore();
-  // banks
   ctx.fillStyle='rgba(9,14,12,.9)';
   ctx.beginPath(); ctx.moveTo(0,topY); ctx.lineTo(W/2-26,topY); ctx.lineTo(W/2-W*0.62,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.moveTo(W,topY); ctx.lineTo(W/2+26,topY); ctx.lineTo(W/2+W*0.62,H); ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
-  // rocks
   ctx.fillStyle='rgba(16,22,24,.95)';
   [[0.40,0.76,22],[0.58,0.86,30],[0.47,0.95,38],[0.63,0.70,16]].forEach(function(r){
     ctx.beginPath(); ctx.ellipse(W*r[0],horizon+(H-horizon)*r[1],r[2],r[2]*0.6,0,0,6.2832); ctx.fill();
@@ -477,7 +586,6 @@ function sceneryLake(t){
   moon(W*0.62, horizon*0.36, Math.max(26,Math.min(W,H)*0.045), 0.2);
   treelineSilhouette(sy, 34, 0.92);
   waterBand(sy,t,'#16222f','#080e16',1);
-  // moon reflection
   var mx=W*0.62;
   for(var i=0;i<24;i++){
     var p=i/24;
@@ -492,8 +600,7 @@ function sceneryLake(t){
 }
 
 function sceneryCliff(t){
-  // distant mountain layers
-  var layers=[[0.52,'#101a2a',0.9],[0.58,'#0b1420',0.95],[0.64,'#070e18',1]];
+  var layers=[[0.52,'#101a2a'],[0.58,'#0b1420'],[0.64,'#070e18']];
   layers.forEach(function(L,li){
     ctx.fillStyle=L[1];
     ctx.beginPath(); ctx.moveTo(-20,H);
@@ -504,14 +611,12 @@ function sceneryCliff(t){
     }
     ctx.lineTo(W+40,H); ctx.closePath(); ctx.fill();
   });
-  // cloud sea
   var cg=ctx.createLinearGradient(0,H*0.6,0,H*0.9);
   cg.addColorStop(0,'rgba(190,205,215,0)');
   cg.addColorStop(0.5,'rgba(190,205,215,.17)');
   cg.addColorStop(1,'rgba(190,205,215,0)');
   ctx.fillStyle=cg; ctx.fillRect(0,H*0.6,W,H*0.3);
   moon(W*0.28, horizon*0.3, Math.max(28,Math.min(W,H)*0.05), 0.22);
-  // foreground cliff
   ctx.fillStyle='#04070a';
   ctx.beginPath(); ctx.moveTo(-20,H+20);
   var edge=H*0.80;
@@ -528,22 +633,17 @@ function sceneryRuins(t){
   var cx=W*0.5, baseY=horizon+H*0.26;
   var pw=Math.min(40,W*0.04), ph=H*0.3, gap=Math.min(190,W*0.2);
   ctx.fillStyle='#161c1c';
-  // two pillars
   ctx.fillRect(cx-gap/2-pw/2, baseY-ph, pw, ph);
   ctx.fillRect(cx+gap/2-pw/2, baseY-ph, pw, ph);
-  // arch
   ctx.strokeStyle='#161c1c'; ctx.lineWidth=pw*0.95;
   ctx.beginPath(); ctx.arc(cx, baseY-ph, gap/2, Math.PI, 0); ctx.stroke();
-  // broken pillars
   ctx.fillStyle='#121717';
   ctx.fillRect(cx-gap*1.25, baseY-ph*0.42, pw*0.85, ph*0.42);
   ctx.fillRect(cx+gap*1.05, baseY-ph*0.6, pw*0.8, ph*0.6);
   ctx.fillRect(cx-gap*1.75, baseY-ph*0.22, pw*0.7, ph*0.22);
-  // eerie glow under arch
   var gg=ctx.createRadialGradient(cx,baseY-ph*0.3,4,cx,baseY-ph*0.3,gap);
   gg.addColorStop(0,'rgba(120,190,180,.1)'); gg.addColorStop(1,'rgba(120,190,180,0)');
   ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(cx,baseY-ph*0.3,gap,0,6.2832); ctx.fill();
-  // moss specks
   for(var i=0;i<30;i++){
     var sx=cx-gap*1.9+rndSeeded(i*3.3)*gap*3.8;
     var sy=baseY-rndSeeded(i*7.7)*ph*0.9;
@@ -554,14 +654,12 @@ function sceneryRuins(t){
 
 function sceneryGrove(t){
   moon(W*0.78, horizon*0.3, Math.max(22,Math.min(W,H)*0.035), 0.16);
-  // rolling hill
   ctx.fillStyle='#0a1310';
   ctx.beginPath(); ctx.moveTo(-20,H+20);
   for(var x=-20;x<=W+40;x+=26){
     ctx.lineTo(x, horizon+20 + Math.sin(x*0.0035)*26 + Math.sin(x*0.0011+2)*16);
   }
   ctx.lineTo(W+40,H+20); ctx.closePath(); ctx.fill();
-  // grass
   ctx.strokeStyle='rgba(28,46,36,.75)'; ctx.lineWidth=1.3;
   for(var i=0;i<grass.length;i++){
     var gr=grass[i];
@@ -576,7 +674,6 @@ function sceneryGrove(t){
 function sceneryHollow(t){
   ground('#0a100e','#050908');
   var cx=W*0.5, baseY=H+30, tw=Math.min(260,W*0.3);
-  // massive trunk
   ctx.fillStyle='#0c0f0d';
   ctx.beginPath();
   ctx.moveTo(cx-tw*1.5, baseY);
@@ -584,7 +681,6 @@ function sceneryHollow(t){
   ctx.lineTo(cx+tw*0.52, -40);
   ctx.quadraticCurveTo(cx+tw*0.72, horizon+40, cx+tw*1.5, baseY);
   ctx.closePath(); ctx.fill();
-  // roots
   ctx.fillStyle='#090c0a';
   for(var r=0;r<6;r++){
     var dir=r%2?1:-1, k=Math.floor(r/2)+1;
@@ -594,7 +690,6 @@ function sceneryHollow(t){
     ctx.lineTo(cx+dir*tw*(1.1+k*0.4), H+20);
     ctx.closePath(); ctx.fill();
   }
-  // hollow opening
   var hy=horizon+H*0.16, hw=tw*0.46, hh=H*0.27;
   var pulse=0.78+0.22*Math.sin(t*0.0016);
   var hg=ctx.createRadialGradient(cx,hy,2,cx,hy,hw*3.2);
@@ -624,7 +719,7 @@ function sceneryClearing(t){
 }
 
 var SCENERY = {
-  path:sceneryPath, cabin:sceneryCabin, deep:sceneryDeep, river:sceneryRiver,
+  path:sceneryPath, castle:sceneryCastle, deep:sceneryDeep, river:sceneryRiver,
   lake:sceneryLake, cliff:sceneryCliff, ruins:sceneryRuins, grove:sceneryGrove,
   hollow:sceneryHollow, clearing:sceneryClearing
 };
@@ -633,7 +728,7 @@ var SCENERY = {
    TRAVEL STATE
    ================================================================== */
 var travelling=false, travelT=0, TRAVEL_MS=3400, swapped=false, travelTarget=0;
-var camSpeed=0, fogBoost=0;
+var camSpeed=0, blackout=0;
 var lastTS=0;
 
 function travelTo(idx, onArrive){
@@ -642,8 +737,7 @@ function travelTo(idx, onArrive){
   skyTo=LOCATIONS[idx].sky.slice();
   skyMix=0;
   playWhoosh();
-  var dur=TRAVEL_MS;
-  setTimeout(function(){ if(onArrive) onArrive(); }, dur+120);
+  setTimeout(function(){ if(onArrive) onArrive(); }, TRAVEL_MS+120);
 }
 
 /* ==================================================================
@@ -657,10 +751,9 @@ function loop(ts){
   if(travelling){
     travelT+=dt;
     var p=clamp(travelT/TRAVEL_MS,0,1);
-    // ease in-out speed
     var sp = Math.sin(p*Math.PI);
     camSpeed = sp*2.4;
-    fogBoost = Math.pow(sp,1.4);
+    blackout = Math.pow(sp,1.15);
     skyMix = p;
     if(!swapped && p>=0.5){
       swapped=true;
@@ -669,7 +762,7 @@ function loop(ts){
       setAmbience(loc.key);
       showLocLabel(loc.label);
     }
-    if(p>=1){ travelling=false; camSpeed=0; fogBoost=0; skyMix=1; }
+    if(p>=1){ travelling=false; camSpeed=0; blackout=0; skyMix=1; }
   }
 
   // sky
@@ -700,17 +793,14 @@ function loop(ts){
     for(var k=0;k<trees.length;k++){
       var tr=trees[k];
       tr.z -= camSpeed*dt*0.42;
-      if(tr.z < Z_NEAR){
-        var nt=spawnTree(Z_FAR+rnd(0,120));
-        trees[k]=nt;
-      }
+      if(tr.z < Z_NEAR) trees[k]=spawnTree(Z_FAR+rnd(0,120));
     }
   }
   trees.sort(function(a,b){ return b.z-a.z; });
   for(var m=0;m<trees.length;m++) drawTree(trees[m],t);
 
   // fog banks
-  var fAll = loc.fog*(1+fogBoost*0.6);
+  var fAll = loc.fog;
   for(var f=0;f<fogs.length;f++){
     var fo=fogs[f];
     fo.x += fo.s*(1+camSpeed*0.6);
@@ -747,9 +837,9 @@ function loop(ts){
   gm.addColorStop(1,'rgba('+loc.fogCol+','+(0.2*fAll)+')');
   ctx.fillStyle=gm; ctx.fillRect(0,H*0.58,W,H*0.42);
 
-  // travel whiteout
-  if(fogBoost>0.001){
-    ctx.fillStyle='rgba('+loc.fogCol+','+(fogBoost*0.9)+')';
+  // >>> travel BLACKOUT (was white) <<<
+  if(blackout>0.001){
+    ctx.fillStyle='rgba(0,0,0,'+Math.min(1,blackout*1.18)+')';
     ctx.fillRect(0,0,W,H);
   }
 
@@ -789,13 +879,11 @@ function startMusic(){
     oscs.push(o1,o2,lfo);
   });
 
-  // wind
   var wn=a.createBufferSource(); wn.buffer=noiseLoop(a,3); wn.loop=true;
   var wf=a.createBiquadFilter(); wf.type='bandpass'; wf.frequency.value=400; wf.Q.value=0.7;
   var wg=a.createGain(); wg.gain.value=0.05;
   wn.connect(wf); wf.connect(wg); wg.connect(master); wn.start();
 
-  // water (silent until river/lake)
   var wa=a.createBufferSource(); wa.buffer=noiseLoop(a,3); wa.loop=true;
   var waf=a.createBiquadFilter(); waf.type='bandpass'; waf.frequency.value=1100; waf.Q.value=0.5;
   waterGain=a.createGain(); waterGain.gain.value=0;
@@ -820,7 +908,9 @@ function setAmbience(key){
   waterGain.gain.cancelScheduledValues(now);
   waterGain.gain.setValueAtTime(waterGain.gain.value,now);
   waterGain.gain.linearRampToValueAtTime(wv, now+2);
-  var lpv = (key==='cliff'||key==='clearing'||key==='lake')?1500 : (key==='deep'||key==='hollow')?520 : 860;
+  var lpv = (key==='cliff'||key==='clearing'||key==='lake')?1500
+          : (key==='deep'||key==='hollow')?520
+          : (key==='castle')?1050 : 860;
   lpFilter.frequency.cancelScheduledValues(now);
   lpFilter.frequency.setValueAtTime(lpFilter.frequency.value,now);
   lpFilter.frequency.linearRampToValueAtTime(lpv, now+2.5);
@@ -936,8 +1026,8 @@ function showIntro(){
   s.innerHTML=
     '<div class="title-xl">Get to Know<br>Each Other</div>'+
     '<div class="sub-xl">— a walk through the fog with Aether —</div>'+
-    '<p class="intro-text">Lets take a walk and get to know etch other better. '+
-    'This place is a little creepy but well I have always liked scary stuff a little. '+
+    '<p class="intro-text">Let\'s take a walk and get to know each other better. '+
+    'This place is a little creepy but well, I have always liked scary stuff a little. '+
     'When you are ready, we begin.</p>'+
     '<div class="btn-row" style="margin-top:2.4rem"><button class="cta" id="beginBtn">Begin the walk</button></div>';
   mount(s);
