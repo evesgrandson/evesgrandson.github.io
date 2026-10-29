@@ -1,558 +1,1595 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AETHER</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gothic: {
-                            900: '#0a0a0a',
-                            800: '#141414',
-                            700: '#1f1f1f',
-                            600: '#2a2a2a',
-                            accent: '#8b0000',
-                            accent2: '#4a0080',
-                            muted: '#888888',
-                            light: '#e0e0e0'
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Crimson Text', 'serif'],
-                        display: ['Cinzel', 'serif'],
-                        body: ['Cormorant Garamond', 'serif']
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'flicker': 'flicker 3s linear infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate'
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        flicker: {
-                            '0%, 100%': { opacity: 1 },
-                            '50%': { opacity: 0.8 },
-                        },
-                        glow: {
-                            '0%': { textShadow: '0 0 5px #8b0000' },
-                            '100%': { textShadow: '0 0 20px #8b0000, 0 0 40px #8b0000' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            overflow-x: hidden;
-        }
-        
-        #rain-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-        
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .gothic-border {
-            position: relative;
-        }
-        
-        .gothic-border::before,
-        .gothic-border::after {
-            content: '❦';
-            position: absolute;
-            color: #8b0000;
-            font-size: 1.5rem;
-            opacity: 0.6;
-        }
-        
-        .gothic-border::before {
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%) rotate(180deg);
-        }
-        
-        .gothic-border::after {
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .text-glow {
-            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
-        }
-        
-        .hover-gothic:hover {
-            color: #8b0000;
-            text-shadow: 0 0 10px rgba(139, 0, 0, 0.8);
-            transition: all 0.3s ease;
-        }
-        
-        .art-card:hover .art-overlay {
-            opacity: 1;
-        }
-        
-        .art-card:hover img {
-            transform: scale(1.05);
-            filter: grayscale(0%);
-        }
-        
-        .art-overlay {
-            opacity: 0;
-            transition: all 0.4s ease;
-            background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, transparent 100%);
-        }
-        
-        .writing-excerpt {
-            border-left: 3px solid #8b0000;
-            background: linear-gradient(90deg, rgba(139, 0, 0, 0.1) 0%, transparent 100%);
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a2a2a;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8b0000;
-        }
-        
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-        
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to My World</title>
+<style>
+  /* ===================== RESET & BASE ===================== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap');
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow-x: hidden;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  body {
+    background: #000;
+    color: #fff;
+    position: relative;
+  }
+
+  /* ===================== THEME CANVASES ===================== */
+  #bgCanvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  .overlay-gradient {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ===================== MENU ===================== */
+  .menu-btn {
+    position: fixed; top: 20px; right: 20px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+    width: 48px; height: 48px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 5px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .menu-btn:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.1);
+  }
+
+  .menu-btn span {
+    display: block;
+    width: 5px; height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .menu-btn.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg) scaleX(4);
+    border-radius: 2px;
+  }
+  .menu-btn.active span:nth-child(2) { opacity: 0; }
+  .menu-btn.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg) scaleX(4);
+    border-radius: 2px;
+  }
+
+  /* ===================== SIDE MENU ===================== */
+  .side-menu {
+    position: fixed; top: 0; right: -350px;
+    width: 320px; height: 100%;
+    z-index: 999;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 100px 40px 40px;
+    display: flex; flex-direction: column;
+  }
+
+  .side-menu.open { right: 0; }
+
+  .side-menu a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+    display: flex; align-items: center; gap: 15px;
+    letter-spacing: 1px;
+  }
+
+  .side-menu a:hover {
+    color: #fff;
+    padding-left: 15px;
+  }
+
+  .side-menu a .menu-icon {
+    font-size: 1.2rem;
+    width: 30px;
+    text-align: center;
+  }
+
+  .menu-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 20px;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .menu-footer {
+    margin-top: auto;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  /* ===================== MAIN CONTENT ===================== */
+  .content {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .name-container {
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeInUp 1.2s ease 0.3s forwards;
+  }
+
+  .greeting {
+    font-family: 'Spectral', serif;
+    font-weight: 200;
+    font-size: 1rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 15px;
+  }
+
+  .main-name {
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-family: 'Spectral', serif;
+    font-weight: 200;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+  }
+
+  .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    margin: 30px auto;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1s forwards;
+  }
+
+  .bio-text {
+    max-width: 600px;
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeInUp 1.2s ease 0.8s forwards;
+    margin-bottom: 40px;
+  }
+
+  /* ===================== SOCIALS ===================== */
+  .socials {
+    display: flex; gap: 20px;
+    opacity: 0;
+    animation: fadeInUp 1.2s ease 1.2s forwards;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+
+  .social-link {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.4s ease;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .social-link:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 8px 30px rgba(255,255,255,0.1);
+  }
+
+  /* ===================== QUOTE SECTION ===================== */
+  .quote-section {
+    position: relative;
+    z-index: 2;
+    padding: 80px 20px;
+    text-align: center;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 50px;
+  }
+
+  .quote-card {
+    max-width: 700px;
+    padding: 50px 40px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    margin-bottom: 40px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .quote-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    line-height: 1.8;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 25px;
+  }
+
+  .quote-text::before { content: '"'; }
+  .quote-text::after { content: '"'; }
+
+  .quote-author {
+    font-family: 'Spectral', serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 200;
+  }
+
+  .quote-author::before { content: '— '; }
+
+  .quote-nav {
+    display: flex; gap: 12px; margin-top: 30px;
+  }
+
+  .quote-nav button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .quote-nav button:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ===================== POEM SECTION ===================== */
+  .poem-section {
+    position: relative;
+    z-index: 2;
+    padding: 80px 20px;
+    text-align: center;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .poem-card {
+    max-width: 550px;
+    padding: 60px 50px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+  }
+
+  .poem-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 30px;
+    letter-spacing: 3px;
+  }
+
+  .poem-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 2.2;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    white-space: pre-line;
+  }
+
+  .poem-poet {
+    font-family: 'Spectral', serif;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 30px;
+    letter-spacing: 2px;
+    font-weight: 200;
+  }
+
+  /* ===================== FOOTER ===================== */
+  .site-footer {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 60px 20px 40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.15);
+    text-transform: uppercase;
+  }
+
+  /* ===================== THEME INDICATOR ===================== */
+  .theme-indicator {
+    position: fixed;
+    bottom: 20px; left: 20px;
+    z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0;
+    animation: fadeIn 2s ease 2s forwards;
+  }
+
+  .theme-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .theme-dot.active {
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+  }
+
+  .theme-dot:hover { background: rgba(255,255,255,0.6); }
+
+  .theme-name-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+  }
+
+  /* ===================== SCROLL INDICATOR ===================== */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: fadeIn 2s ease 2.5s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-indicator span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    transform: rotate(45deg);
+    animation: scrollBounce 2s ease infinite;
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.3; }
+    50% { transform: rotate(45deg) translateY(8px); opacity: 0.8; }
+  }
+
+  /* ===================== ANIMATIONS ===================== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ===================== THEME SPECIFIC TYPOGRAPHY ===================== */
+  .theme-rain .main-name { font-family: 'Cormorant Garamond', serif; }
+  .theme-rain .greeting { color: rgba(100,150,200,0.5); }
+
+  .theme-gothic .main-name { font-family: 'Cinzel Decorative', cursive; }
+  .theme-gothic .greeting { color: rgba(180,50,50,0.5); }
+
+  .theme-cosmos .main-name { font-family: 'Playfair Display', serif; }
+  .theme-cosmos .greeting { color: rgba(150,130,255,0.5); }
+
+  .theme-futuristic .main-name { font-family: 'Orbitron', sans-serif; font-size: clamp(2rem, 6vw, 4rem); }
+  .theme-futuristic .greeting { color: rgba(0,255,200,0.5); font-family: 'Orbitron', sans-serif; }
+
+  .theme-poetic .main-name { font-family: 'Playfair Display', serif; font-style: italic; }
+  .theme-poetic .greeting { color: rgba(255,200,150,0.5); }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .side-menu { width: 100%; right: -100%; }
+    .poem-card { padding: 40px 25px; }
+    .quote-card { padding: 35px 25px; }
+  }
+
+  /* ===================== MENU OVERLAY ===================== */
+  .menu-overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .menu-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Selection */
+  ::selection {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  /* Loading screen */
+  .loader {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+
+  .loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 8px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+
+  .loader-bar {
+    width: 120px; height: 1px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loader-bar::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    background: rgba(255,255,255,0.5);
+    animation: loaderSlide 1.2s ease infinite;
+  }
+
+  @keyframes loaderSlide {
+    0% { left: -40%; }
+    100% { left: 100%; }
+  }
+</style>
 </head>
-<body class="font-body antialiased selection:bg-gothic-accent selection:text-white">
+<body>
 
-    <canvas id="rain-canvas"></canvas>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-text">Entering</div>
+  <div class="loader-bar"></div>
+</div>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 transition-all duration-300" id="navbar">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="font-display text-xl tracking-widest text-white hover-gothic cursor-pointer font-bold">
-                    AETHER
-                </div>
-                
-                <div class="hidden md:flex space-x-8 font-serif text-gray-300 tracking-wide">
-                    <a href="#about" class="hover-gothic transition-colors">About</a>
-                    <a href="#writings" class="hover-gothic transition-colors">Writing</a>
-                    <a href="#contact" class="hover-gothic transition-colors">Contact</a>
-                </div>
+<!-- BACKGROUND CANVAS -->
+<canvas id="bgCanvas"></canvas>
+<div class="overlay-gradient" id="overlayGradient"></div>
 
-                <button class="md:hidden text-white" onclick="toggleMenu()">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-white/10">
-            <div class="px-4 pt-2 pb-6 space-y-2 font-serif">
-                <a href="#about" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">About</a>
-                <a href="#contact" class="block px-3 py-2 text-gray-300 hover:text-gothic-accent">Contact</a>
-            </div>
-        </div>
-    </nav>
+<!-- MENU BUTTON -->
+<div class="menu-btn" id="menuBtn" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</div>
 
-    <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
-        <div class="text-center z-10 max-w-4xl mx-auto">
-            <div class="mb-6 text-gothic-accent opacity-80">
-                <i data-lucide="feather" class="w-12 h-12 mx-auto animate-float"></i>
-            </div>
-            <h1 id="hero-title-display" class="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-2 tracking-wider text-glow animate-flicker">
-                AETHER
-            </h1>
-            <p class="font-display text-sm md:text-base text-gothic-accent tracking-[0.3em] mb-8 uppercase">evesgrandson</p>
-            <p id="hero-subtitle-display" class="font-body text-xl md:text-2xl text-gothic-muted italic mb-8 tracking-wide">
-                I'm the fear of the unknown
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="#writings" id="hero-btn1-display" class="group px-8 py-3 border border-gothic-accent text-gothic-accent font-serif tracking-widest hover:bg-gothic-accent hover:text-white transition-all duration-300">
-                    <span class="flex items-center gap-2">
-                        <i data-lucide="book-open" class="w-4 h-4"></i>
-                        CONTACTA
-                    </span>
-                </a>
-            </div>
-        </div>
-        
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-gothic-muted">
-            <i data-lucide="chevron-down" class="w-6 h-6"></i>
-        </div>
-    </section>
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay"></div>
 
-    <!-- About Section -->
-    <section id="about" class="py-24 px-4 relative">
-        <div class="max-w-4xl mx-auto">
-            <div class="gothic-border text-center mb-16 reveal">
-                <h2 id="about-title-display" class="font-display text-4xl md:text-5xl font-bold text-white mb-4">About The Creator</h2>
-                <div class="w-24 h-0.5 bg-gothic-accent mx-auto"></div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="reveal delay-200">
-                    <div class="relative aspect-[3/4] overflow-hidden border border-gothic-700">
-                        <div class="absolute inset-0 border-4 border-gothic-900 pointer-events-none"></div>
-                    </div>
-                </div>
-                
-                <div class="space-y-6 font-body text-lg leading-relaxed text-gray-300 reveal delay-400">
-                    <p id="about-p1-display" class="first-letter:text-5xl first-letter:font-display first-letter:text-gothic-accent first-letter:float-left first-letter:mr-3 first-letter:mt-[-6px]">
-                        In a dream. Dreaming 25/8 fighting demons & nightmares from both worlds.
-                    </p>
-                    <p id="about-p2-display">
-                        My writing can be diverse, but to sum it up in one word, it's abstract.... You surely wouldn't get it, you surely wouldn't understand it, and you surely would go insane. It's all gibberish.
-                    </p>
-                    <p id="about-p3-display">
-                        I think a lot. There has been no moment of quietness in my life. That’s why I decided to pursue Philosophy. I surely will find answers to all my thoughts and questions or go insane trying.... if I am not already insane, that is.
-                    </p>
-                    
-                    <div class="flex gap-4 pt-4">
-                        <div class="flex items-center gap-2 text-gothic-accent">
-                            <i data-lucide="pen-tool" class="w-5 h-5"></i>
-                            <span class="font-serif">Writer</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-gothic-accent">
-                            <i data-lucide="palette" class="w-5 h-5"></i>
-                            <span class="font-serif">Philosopher</span>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- SIDE MENU -->
+<nav class="side-menu" id="sideMenu">
+  <div class="menu-label">Navigation</div>
+  <a href="#home" onclick="closeMenu()">
+    <span class="menu-icon">✦</span> Home
+  </a>
+  <a href="#quotes" onclick="closeMenu()">
+    <span class="menu-icon">❝</span> Words I Live By
+  </a>
+  <a href="#poems" onclick="closeMenu()">
+    <span class="menu-icon">⚘</span> Poetry
+  </a>
+  <a href="know.html" onclick="closeMenu()">
+    <span class="menu-icon">☽</span> Get to Know Each Other
+  </a>
+  <a href="#" onclick="switchTheme(); closeMenu();">
+    <span class="menu-icon">◐</span> Change Atmosphere
+  </a>
+  <div class="menu-footer">
+    crafted with soul
+  </div>
+</nav>
 
-    <!-- Featured Writings -->
-    <section id="writings" class="py-24 px-4 bg-gothic-800/50 relative">
-        <div class="max-w-5xl mx-auto">
-            <div class="gothic-border text-center mb-16 reveal">
-                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Writings</h2>
-                <p class="font-body text-gothic-muted italic">Gibberish</p>
-            </div>
+<!-- =================== HOME =================== -->
+<section class="content" id="home">
+  <div class="name-container">
+    <div class="greeting">Welcome, wanderer</div>
+    <!-- CHANGE YOUR NAME HERE -->
+    <h1 class="main-name">Your Name</h1>
+    <p class="subtitle">dreamer · thinker · creator</p>
+  </div>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 px-4 bg-gothic-800/50">
-        <div class="max-w-2xl mx-auto text-center">
-            <div class="gothic-border mb-12 reveal">
-                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Summon Contact</h2>
-                <p class="font-body text-gothic-muted italic">It won't work</p>
-            </div>
+  <div class="divider"></div>
 
-            <h3 id="contact-title-display" class="font-display text-3xl font-bold text-white mb-8">Summon Contact</h3>
-            
-            <form class="space-y-6 reveal text-left max-w-lg mx-auto">
-                <div>
-                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">YOUR NAME</label>
-                    <input type="text" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700" placeholder="Enter your name">
-                </div>
-                <div>
-                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">YOUR EMAIL</label>
-                    <input type="email" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700" placeholder="Enter your email">
-                </div>
-                <div>
-                    <label class="block font-serif text-gray-400 mb-2 text-sm tracking-widest">MESSAGE</label>
-                    <textarea rows="5" class="w-full bg-gothic-900 border border-gothic-600 text-white px-4 py-3 font-body focus:outline-none focus:border-gothic-accent transition-colors placeholder-gothic-700 resize-none" placeholder="Speak your mind..."></textarea>
-                </div>
-                <button type="submit" class="w-full py-4 bg-gothic-accent text-white font-serif tracking-widest hover:bg-red-900 transition-all duration-300 flex items-center justify-center gap-2 group">
-                    <span>SEND MESSAGE</span>
-                    <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                </button>
-            </form>
+  <p class="bio-text">
+    <!-- CHANGE YOUR BIO HERE -->
+    I am a soul navigating the vast corridors of existence,
+    collecting moments, words, and fragments of beauty along the way.
+    Welcome to my small corner of the universe.
+  </p>
 
-            <div class="flex justify-center gap-8 mt-12 reveal">
-                <a href="https://discord.com/users/1068768841238331433" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i>
-                </a>
-                <a href="https://www.instagram.com/evesgrandson" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
-                    <i data-lucide="instagram" class="w-6 h-6"></i>
-                </a>
-                <a href="" target="_blank" rel="noopener noreferrer" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
-                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                </a>
-                <a href="mailto:loriant980@gmail.com" class="text-gothic-muted hover:text-white transition-all hover:scale-110">
-                    <i data-lucide="mail" class="w-6 h-6"></i>
-                </a>
-            </div>
-        </div>
-    </section>
+  <!-- SOCIALS — CHANGE LINKS BELOW -->
+  <div class="socials">
+    <a href="https://instagram.com/YOURUSERNAME" target="_blank" rel="noopener" class="social-link" title="Instagram">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+    </a>
+    <a href="https://twitter.com/YOURUSERNAME" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://github.com/YOURUSERNAME" target="_blank" rel="noopener" class="social-link" title="GitHub">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+    </a>
+    <a href="https://discord.com/users/YOURID" target="_blank" rel="noopener" class="social-link" title="Discord">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+    </a>
+    <a href="mailto:your@email.com" class="social-link" title="Email">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </a>
+  </div>
 
-    <!-- Footer -->
-    <footer class="py-8 px-4 border-t border-white/5 text-center">
-        <p id="footer-text-display" class="font-serif text-gothic-muted text-sm mb-4">
-            © 2026 Aether, Evesgrandson shared with the world.
-        </p>
-        <a href="admin.html" class="text-gothic-700 hover:text-gothic-accent transition-colors text-xs tracking-widest">
-            ◆ SANCTUM ◆
-        </a>
-    </footer>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
 
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeLightbox()">
-        <button class="absolute top-4 right-4 text-white hover:text-gothic-accent transition-colors">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] object-contain border border-gothic-700">
-    </div>
+<!-- =================== QUOTES =================== -->
+<section class="quote-section" id="quotes">
+  <div class="section-label">Words I Live By</div>
+  <div class="quote-card" id="quoteCard">
+    <p class="quote-text" id="quoteText">The only way to do great work is to love what you do.</p>
+    <p class="quote-author" id="quoteAuthor">Steve Jobs</p>
+  </div>
+  <div class="quote-nav">
+    <button onclick="prevQuote()" aria-label="Previous quote">←</button>
+    <button onclick="nextQuote()" aria-label="Next quote">→</button>
+  </div>
+</section>
 
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
+<!-- =================== POEMS =================== -->
+<section class="poem-section" id="poems">
+  <div class="section-label">Poetry That Moves Me</div>
+  <div class="poem-card" id="poemCard">
+    <h3 class="poem-title" id="poemTitle">Invictus</h3>
+    <p class="poem-body" id="poemBody">Out of the night that covers me,
+Black as the pit from pole to pole,
+I thank whatever gods may be
+For my unconquerable soul.
 
-        // Rain Animation
-        const canvas = document.getElementById('rain-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        
-        const drops = [];
-        const splashes = [];
-        
-        class RainDrop {
-            constructor() {
-                this.reset();
-            }
-            
-            reset() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * -100;
-                this.length = Math.random() * 20 + 10;
-                this.speed = Math.random() * 4 + 3;
-                this.opacity = Math.random() * 0.5 + 0.1;
-            }
-            
-            update() {
-                this.y += this.speed;
-                if (this.y > height) {
-                    // Create splash
-                    if (Math.random() > 0.7) {
-                        splashes.push(new Splash(this.x, height));
-                    }
-                    this.reset();
-                }
-            }
-            
-            draw() {
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x, this.y + this.length);
-                ctx.strokeStyle = `rgba(174, 174, 174, ${this.opacity})`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-        }
-        
-        class Splash {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.radius = 0;
-                this.maxRadius = Math.random() * 10 + 5;
-                this.opacity = 0.5;
-                this.speed = Math.random() * 1 + 0.5;
-            }
-            
-            update() {
-                this.radius += this.speed;
-                this.opacity -= 0.02;
-            }
-            
-            draw() {
-                if (this.opacity <= 0) return;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI, false);
-                ctx.strokeStyle = `rgba(174, 174, 174, ${this.opacity})`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-        }
-        
-        // Create drops
-        for (let i = 0; i < 150; i++) {
-            drops.push(new RainDrop());
-        }
-        
-        function animateRain() {
-            ctx.clearRect(0, 0, width, height);
-            
-            drops.forEach(drop => {
-                drop.update();
-                drop.draw();
-            });
-            
-            // Update and draw splashes
-            for (let i = splashes.length - 1; i >= 0; i--) {
-                splashes[i].update();
-                splashes[i].draw();
-                if (splashes[i].opacity <= 0) {
-                    splashes.splice(i, 1);
-                }
-            }
-            
-            requestAnimationFrame(animateRain);
-        }
-        
-        animateRain();
-        
-        // Resize handler
-        window.addEventListener('resize', () => {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-        });
+It matters not how strait the gate,
+How charged with punishments the scroll,
+I am the master of my fate,
+I am the captain of my soul.</p>
+    <p class="poem-poet" id="poemPoet">— William Ernest Henley</p>
+  </div>
+  <div class="quote-nav">
+    <button onclick="prevPoem()" aria-label="Previous poem">←</button>
+    <button onclick="nextPoem()" aria-label="Next poem">→</button>
+  </div>
+</section>
 
-        // Scroll Reveal Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
+<!-- =================== FOOTER =================== -->
+<footer class="site-footer">
+  <p class="footer-text">© 2025 · All rights reserved · Built with soul</p>
+</footer>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
+<!-- THEME INDICATOR -->
+<div class="theme-indicator" id="themeIndicator">
+  <div class="theme-dot" data-theme="0" onclick="setTheme(0)"></div>
+  <div class="theme-dot" data-theme="1" onclick="setTheme(1)"></div>
+  <div class="theme-dot" data-theme="2" onclick="setTheme(2)"></div>
+  <div class="theme-dot" data-theme="3" onclick="setTheme(3)"></div>
+  <div class="theme-dot" data-theme="4" onclick="setTheme(4)"></div>
+  <div class="theme-name-label" id="themeName"></div>
+</div>
 
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
+<script>
+// ================================================================
+// CONFIGURATION — EDIT YOUR DETAILS HERE
+// ================================================================
+const MY_NAME = "Your Name";          // <-- CHANGE THIS
+const MY_SUBTITLE = "dreamer · thinker · creator"; // <-- CHANGE THIS
+const MY_BIO = `I am a soul navigating the vast corridors of existence,
+collecting moments, words, and fragments of beauty along the way.
+Welcome to my small corner of the universe.`; // <-- CHANGE THIS
 
-        // Mobile Menu Toggle
-        function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
+// Add/remove quotes as you like
+const QUOTES = [
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+  { text: "Not all those who wander are lost.", author: "J.R.R. Tolkien" },
+  { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
+  { text: "The wound is the place where the Light enters you.", author: "Rumi" },
+  { text: "To live is the rarest thing in the world. Most people exist, that is all.", author: "Oscar Wilde" },
+  { text: "I have loved the stars too fondly to be fearful of the night.", author: "Sarah Williams" },
+  { text: "What you seek is seeking you.", author: "Rumi" },
+  { text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" },
+  { text: "One must still have chaos in oneself to be able to give birth to a dancing star.", author: "Friedrich Nietzsche" },
+];
 
-        // Writing Excerpt Toggle
-        function toggleExcerpt(element) {
-            const preview = element.querySelector('.excerpt-preview');
-            const full = element.querySelector('.excerpt-full');
-            const icon = element.querySelector('.excerpt-icon');
-            
-            if (full.classList.contains('hidden')) {
-                preview.classList.add('hidden');
-                full.classList.remove('hidden');
-                icon.setAttribute('data-lucide', 'minus');
-                lucide.createIcons();
-            } else {
-                preview.classList.remove('hidden');
-                full.classList.add('hidden');
-                icon.setAttribute('data-lucide', 'plus');
-                lucide.createIcons();
-            }
-        }
+// Add/remove poems as you like
+const POEMS = [
+  {
+    title: "Invictus",
+    body: `Out of the night that covers me,
+Black as the pit from pole to pole,
+I thank whatever gods may be
+For my unconquerable soul.
 
-        // Lightbox Functions
-        function openLightbox(card) {
-            const lightbox = document.getElementById('lightbox');
-            const img = document.getElementById('lightbox-img');
-            const src = card.querySelector('img').src;
-            img.src = src.replace('600x600', '1200x1200');
-            lightbox.classList.remove('hidden');
-            lucide.createIcons();
-        }
+It matters not how strait the gate,
+How charged with punishments the scroll,
+I am the master of my fate,
+I am the captain of my soul.`,
+    poet: "William Ernest Henley"
+  },
+  {
+    title: "The Road Not Taken",
+    body: `Two roads diverged in a yellow wood,
+And sorry I could not travel both
+And be one traveler, long I stood
+And looked down one as far as I could
+To where it bent in the undergrowth;
 
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.add('hidden');
-        }
+I took the one less traveled by,
+And that has made all the difference.`,
+    poet: "Robert Frost"
+  },
+  {
+    title: "Do Not Go Gentle",
+    body: `Do not go gentle into that good night,
+Old age should burn and rave at close of day;
+Rage, rage against the dying of the light.
 
-        // Navbar scroll effect
-        let lastScroll = 0;
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll > 100) {
-                navbar.classList.add('bg-gothic-900/95');
-            } else {
-                navbar.classList.remove('bg-gothic-900/95');
-            }
-            
-            lastScroll = currentScroll;
-        });
+Though wise men at their end know dark is right,
+Because their words had forked no lightning they
+Do not go gentle into that good night.`,
+    poet: "Dylan Thomas"
+  },
+  {
+    title: "Ozymandias",
+    body: `I met a traveller from an antique land,
+Who said — Two vast and trunkless legs of stone
+Stand in the desert. Near them, on the sand,
+Half sunk a shattered visage lies, whose frown,
+And wrinkled lip, and sneer of cold command,
 
-        // Load content from admin edits
-        const STORAGE_KEY = 'aether_site_content';
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            const data = JSON.parse(saved);
-            Object.keys(data).forEach(key => {
-                const el = document.getElementById(key + '-display');
-                if (el) {
-                    if (el.tagName === 'P' || el.tagName === 'H3' || el.tagName === 'H2' || el.tagName === 'SPAN') {
-                        el.textContent = data[key];
-                    } else if (el.tagName === 'A') {
-                        // For buttons, keep the inner span structure but update text
-                        const span = el.querySelector('span');
-                        if (span) {
-                            // Extract text without icon
-                            span.innerHTML = `<i data-lucide="book-open" class="w-4 h-4"></i> ${data[key]}`;
-                            if (key === 'hero-btn2') {
-                                span.innerHTML = `<i data-lucide="image" class="w-4 h-4"></i> ${data[key]}`;
-                            }
-                        }
-                    } else if (el.tagName === 'IMG') {
-                        el.src = data[key];
-                    } else {
-                        el.innerHTML = data[key];
-                    }
-                }
-            });
-            lucide.createIcons();
-        }
+"My name is Ozymandias, King of Kings;
+Look on my Works, ye Mighty, and despair!"
+Nothing beside remains.`,
+    poet: "Percy Bysshe Shelley"
+  },
+];
 
-        // Prevent form submission (demo)
-        document.querySelector('form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Message sent into the void... (Demo only)');
-        });
-    </script>
+// ================================================================
+// THEME ENGINE
+// ================================================================
+const THEME_NAMES = ['Rain', 'Gothic', 'Cosmos', 'Futuristic', 'Poetic'];
+const THEME_CLASSES = ['theme-rain', 'theme-gothic', 'theme-cosmos', 'theme-futuristic', 'theme-poetic'];
+let currentTheme = Math.floor(Math.random() * 5);
+let currentQuote = 0;
+let currentPoem = 0;
+let animFrame;
+
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+const overlay = document.getElementById('overlayGradient');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ================================================================
+// THEME 0: RAIN
+// ================================================================
+let raindrops = [];
+let rainInitialized = false;
+
+function initRain() {
+  raindrops = [];
+  for (let i = 0; i < 300; i++) {
+    raindrops.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      length: Math.random() * 25 + 10,
+      speed: Math.random() * 8 + 4,
+      opacity: Math.random() * 0.3 + 0.1,
+      width: Math.random() * 1.5 + 0.5
+    });
+  }
+  rainInitialized = true;
+}
+
+function drawRain() {
+  ctx.fillStyle = 'rgba(10, 15, 25, 0.15)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Moon
+  const moonX = canvas.width * 0.78;
+  const moonY = canvas.height * 0.15;
+  const moonGrad = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, 80);
+  moonGrad.addColorStop(0, 'rgba(200, 210, 230, 0.15)');
+  moonGrad.addColorStop(0.5, 'rgba(150, 170, 200, 0.05)');
+  moonGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = moonGrad;
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 80, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(200, 215, 240, 0.12)';
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 35, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Raindrops
+  for (let drop of raindrops) {
+    ctx.strokeStyle = `rgba(140, 170, 220, ${drop.opacity})`;
+    ctx.lineWidth = drop.width;
+    ctx.beginPath();
+    ctx.moveTo(drop.x, drop.y);
+    ctx.lineTo(drop.x - 1, drop.y + drop.length);
+    ctx.stroke();
+
+    drop.y += drop.speed;
+    drop.x -= 0.5;
+
+    if (drop.y > canvas.height) {
+      drop.y = -drop.length;
+      drop.x = Math.random() * canvas.width;
+    }
+  }
+
+  overlay.style.background = 'radial-gradient(ellipse at 78% 15%, rgba(100,130,180,0.08) 0%, transparent 50%), linear-gradient(to bottom, rgba(10,15,30,0.3) 0%, rgba(10,15,25,0.6) 100%)';
+}
+
+// ================================================================
+// THEME 1: GOTHIC
+// ================================================================
+let crows = [];
+let sittingCrows = [];
+let gothicTime = 0;
+let gothicInitialized = false;
+
+function initGothic() {
+  crows = [];
+  sittingCrows = [];
+  for (let i = 0; i < 12; i++) {
+    crows.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5 + 50,
+      speed: Math.random() * 1.5 + 0.5,
+      wingPhase: Math.random() * Math.PI * 2,
+      wingSpeed: Math.random() * 0.08 + 0.04,
+      size: Math.random() * 8 + 6,
+      swayAmp: Math.random() * 30 + 10,
+      swaySpeed: Math.random() * 0.01 + 0.005,
+      swayOffset: Math.random() * Math.PI * 2
+    });
+  }
+  // Sitting crows on building tops
+  for (let i = 0; i < 6; i++) {
+    sittingCrows.push({
+      x: Math.random() * canvas.width,
+      buildingIndex: Math.floor(Math.random() * 8),
+      headPhase: Math.random() * Math.PI * 2,
+      headSpeed: Math.random() * 0.02 + 0.01,
+      size: Math.random() * 5 + 5
+    });
+  }
+  gothicInitialized = true;
+}
+
+function drawCrow(x, y, size, wingAngle) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = 'rgba(20, 15, 15, 0.9)';
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(0, 0, size * 0.6, size * 0.35, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Left wing
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.3, 0);
+  ctx.quadraticCurveTo(-size, -size * wingAngle, -size * 1.3, -size * 0.2 * wingAngle);
+  ctx.quadraticCurveTo(-size * 0.8, size * 0.1, -size * 0.3, 0);
+  ctx.fill();
+  // Right wing
+  ctx.beginPath();
+  ctx.moveTo(size * 0.3, 0);
+  ctx.quadraticCurveTo(size, -size * wingAngle, size * 1.3, -size * 0.2 * wingAngle);
+  ctx.quadraticCurveTo(size * 0.8, size * 0.1, size * 0.3, 0);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSittingCrow(x, y, size, headTilt) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = 'rgba(20, 15, 15, 0.9)';
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(0, -size * 0.3, size * 0.4, size * 0.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Head
+  ctx.beginPath();
+  ctx.arc(size * 0.15 + headTilt * 3, -size * 0.8, size * 0.22, 0, Math.PI * 2);
+  ctx.fill();
+  // Beak
+  ctx.beginPath();
+  ctx.moveTo(size * 0.35 + headTilt * 3, -size * 0.8);
+  ctx.lineTo(size * 0.55 + headTilt * 3, -size * 0.75);
+  ctx.lineTo(size * 0.35 + headTilt * 3, -size * 0.7);
+  ctx.fill();
+  // Legs
+  ctx.strokeStyle = 'rgba(20, 15, 15, 0.7)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.1, size * 0.15);
+  ctx.lineTo(-size * 0.15, size * 0.5);
+  ctx.moveTo(size * 0.1, size * 0.15);
+  ctx.lineTo(size * 0.15, size * 0.5);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawGothic() {
+  gothicTime++;
+  ctx.fillStyle = 'rgba(15, 8, 12, 0.12)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Red moon
+  const moonX = canvas.width * 0.82;
+  const moonY = canvas.height * 0.12;
+  const moonGrad = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, 70);
+  moonGrad.addColorStop(0, 'rgba(180, 50, 40, 0.15)');
+  moonGrad.addColorStop(0.5, 'rgba(120, 30, 30, 0.06)');
+  moonGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = moonGrad;
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(200, 80, 60, 0.1)';
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 30, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Gothic buildings silhouette
+  const buildingData = [];
+  const bw = canvas.width / 8;
+  for (let i = 0; i < 8; i++) {
+    const h = canvas.height * (0.25 + Math.sin(i * 1.7) * 0.15);
+    const x = i * bw;
+    const y = canvas.height - h;
+    buildingData.push({ x: x + bw / 2, y });
+
+    ctx.fillStyle = 'rgba(12, 5, 8, 0.95)';
+    ctx.fillRect(x + 5, y, bw - 10, h);
+
+    // Spires
+    ctx.beginPath();
+    ctx.moveTo(x + bw / 2 - 8, y);
+    ctx.lineTo(x + bw / 2, y - 40 - Math.sin(i * 2.3) * 20);
+    ctx.lineTo(x + bw / 2 + 8, y);
+    ctx.fill();
+
+    // Windows with flicker
+    for (let wy = y + 30; wy < canvas.height - 30; wy += 40) {
+      for (let wx = x + 15; wx < x + bw - 15; wx += 20) {
+        const flicker = Math.random() > 0.97 ? 0.15 : 0.06;
+        ctx.fillStyle = `rgba(200, 120, 50, ${flicker})`;
+        ctx.fillRect(wx, wy, 6, 10);
+      }
+    }
+  }
+
+  // Flying crows
+  for (let crow of crows) {
+    crow.wingPhase += crow.wingSpeed;
+    const wingAngle = Math.sin(crow.wingPhase) * 0.8 + 0.5;
+    crow.x += crow.speed;
+    crow.y += Math.sin(gothicTime * crow.swaySpeed + crow.swayOffset) * 0.3;
+
+    if (crow.x > canvas.width + 50) {
+      crow.x = -50;
+      crow.y = Math.random() * canvas.height * 0.4 + 50;
+    }
+
+    drawCrow(crow.x, crow.y, crow.size, wingAngle);
+  }
+
+  // Sitting crows
+  for (let sc of sittingCrows) {
+    const bd = buildingData[sc.buildingIndex % buildingData.length];
+    const headTilt = Math.sin(gothicTime * sc.headSpeed + sc.headPhase);
+    drawSittingCrow(bd.x + (sc.x % 40) - 20, bd.y - 5, sc.size, headTilt);
+  }
+
+  overlay.style.background = 'radial-gradient(ellipse at 82% 12%, rgba(150,30,30,0.06) 0%, transparent 50%), linear-gradient(to bottom, rgba(15,8,12,0.2) 0%, rgba(10,5,8,0.7) 100%)';
+}
+
+// ================================================================
+// THEME 2: COSMOS
+// ================================================================
+let stars = [];
+let shootingStars = [];
+let nebulaParticles = [];
+let cosmosAngle = 0;
+let cosmosInitialized = false;
+
+function initCosmos() {
+  stars = [];
+  nebulaParticles = [];
+  for (let i = 0; i < 600; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * Math.max(canvas.width, canvas.height) * 0.7;
+    stars.push({
+      angle, dist,
+      size: Math.random() * 2 + 0.3,
+      brightness: Math.random() * 0.7 + 0.3,
+      twinkleSpeed: Math.random() * 0.03 + 0.01,
+      twinkleOffset: Math.random() * Math.PI * 2,
+      color: ['255,255,255', '200,220,255', '255,220,200', '200,200,255', '255,255,220'][Math.floor(Math.random() * 5)]
+    });
+  }
+  for (let i = 0; i < 80; i++) {
+    nebulaParticles.push({
+      angle: Math.random() * Math.PI * 2,
+      dist: Math.random() * Math.max(canvas.width, canvas.height) * 0.5 + 100,
+      size: Math.random() * 100 + 50,
+      color: [
+        `rgba(80, 50, 150, ${Math.random() * 0.03 + 0.01})`,
+        `rgba(50, 80, 150, ${Math.random() * 0.03 + 0.01})`,
+        `rgba(150, 50, 100, ${Math.random() * 0.02 + 0.005})`,
+        `rgba(50, 150, 130, ${Math.random() * 0.02 + 0.005})`
+      ][Math.floor(Math.random() * 4)]
+    });
+  }
+  cosmosInitialized = true;
+}
+
+function drawCosmos() {
+  ctx.fillStyle = 'rgba(5, 5, 15, 0.08)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  cosmosAngle += 0.0003;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+
+  // Nebula
+  for (let np of nebulaParticles) {
+    const a = np.angle + cosmosAngle;
+    const x = cx + Math.cos(a) * np.dist;
+    const y = cy + Math.sin(a) * np.dist;
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, np.size);
+    grad.addColorStop(0, np.color);
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, np.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Stars
+  const time = Date.now() * 0.001;
+  for (let star of stars) {
+    const a = star.angle + cosmosAngle;
+    const x = cx + Math.cos(a) * star.dist;
+    const y = cy + Math.sin(a) * star.dist;
+    const twinkle = (Math.sin(time * star.twinkleSpeed + star.twinkleOffset) + 1) / 2;
+    const alpha = star.brightness * (0.5 + twinkle * 0.5);
+
+    ctx.fillStyle = `rgba(${star.color}, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(x, y, star.size * (0.7 + twinkle * 0.3), 0, Math.PI * 2);
+    ctx.fill();
+
+    if (star.size > 1.5) {
+      ctx.fillStyle = `rgba(${star.color}, ${alpha * 0.15})`;
+      ctx.beginPath();
+      ctx.arc(x, y, star.size * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Milky way band
+  const mwGrad = ctx.createLinearGradient(0, cy - 100, canvas.width, cy + 100);
+  mwGrad.addColorStop(0, 'transparent');
+  mwGrad.addColorStop(0.3, 'rgba(100, 80, 150, 0.015)');
+  mwGrad.addColorStop(0.5, 'rgba(120, 100, 170, 0.025)');
+  mwGrad.addColorStop(0.7, 'rgba(100, 80, 150, 0.015)');
+  mwGrad.addColorStop(1, 'transparent');
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(cosmosAngle * 2 + 0.3);
+  ctx.fillStyle = mwGrad;
+  ctx.fillRect(-canvas.width, -150, canvas.width * 2, 300);
+  ctx.restore();
+
+  // Shooting stars
+  if (Math.random() < 0.005) {
+    shootingStars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5,
+      vx: (Math.random() - 0.3) * 12,
+      vy: Math.random() * 6 + 3,
+      life: 1,
+      length: Math.random() * 60 + 30
+    });
+  }
+
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const ss = shootingStars[i];
+    ss.x += ss.vx;
+    ss.y += ss.vy;
+    ss.life -= 0.02;
+
+    const grad = ctx.createLinearGradient(ss.x, ss.y, ss.x - ss.vx * 5, ss.y - ss.vy * 5);
+    grad.addColorStop(0, `rgba(255, 255, 255, ${ss.life})`);
+    grad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ss.x, ss.y);
+    ctx.lineTo(ss.x - ss.vx * 5, ss.y - ss.vy * 5);
+    ctx.stroke();
+
+    if (ss.life <= 0) shootingStars.splice(i, 1);
+  }
+
+  overlay.style.background = 'radial-gradient(ellipse at center, rgba(30,20,60,0.1) 0%, rgba(5,5,15,0.4) 100%)';
+}
+
+// ================================================================
+// THEME 3: FUTURISTIC
+// ================================================================
+let gridOffset = 0;
+let futuristicParticles = [];
+let hexagons = [];
+let futuristicTime = 0;
+let futuristicInitialized = false;
+
+function initFuturistic() {
+  futuristicParticles = [];
+  hexagons = [];
+  for (let i = 0; i < 50; i++) {
+    futuristicParticles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: -Math.random() * 1 - 0.3,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.5 + 0.1
+    });
+  }
+  for (let i = 0; i < 5; i++) {
+    hexagons.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 80 + 40,
+      rotation: Math.random() * Math.PI,
+      rotSpeed: (Math.random() - 0.5) * 0.005,
+      opacity: Math.random() * 0.08 + 0.02
+    });
+  }
+  futuristicInitialized = true;
+}
+
+function drawHexagon(x, y, size, rotation, opacity) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.strokeStyle = `rgba(0, 255, 200, ${opacity})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i;
+    const px = size * Math.cos(angle);
+    const py = size * Math.sin(angle);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawFuturistic() {
+  futuristicTime++;
+  ctx.fillStyle = 'rgba(5, 10, 15, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Perspective grid
+  gridOffset = (gridOffset + 0.5) % 40;
+  ctx.strokeStyle = 'rgba(0, 255, 200, 0.04)';
+  ctx.lineWidth = 0.5;
+
+  // Horizontal perspective lines
+  const vanishY = canvas.height * 0.4;
+  const vanishX = canvas.width * 0.5;
+  for (let i = 0; i < 30; i++) {
+    const y = vanishY + (i + gridOffset / 40) * (canvas.height - vanishY) / 25;
+    if (y > canvas.height) continue;
+    const spread = ((y - vanishY) / (canvas.height - vanishY));
+    const leftX = vanishX - spread * canvas.width * 0.8;
+    const rightX = vanishX + spread * canvas.width * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(leftX, y);
+    ctx.lineTo(rightX, y);
+    ctx.stroke();
+  }
+
+  // Vertical perspective lines
+  for (let i = -15; i <= 15; i++) {
+    const bottomX = vanishX + i * 60;
+    ctx.beginPath();
+    ctx.moveTo(vanishX, vanishY);
+    ctx.lineTo(bottomX, canvas.height);
+    ctx.stroke();
+  }
+
+  // Data streams
+  for (let i = 0; i < 3; i++) {
+    const x = (canvas.width * (i + 1)) / 4;
+    for (let j = 0; j < 15; j++) {
+      const y = ((futuristicTime * 2 + j * 30 + i * 100) % canvas.height);
+      const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+      ctx.fillStyle = `rgba(0, 255, 200, ${0.08 - j * 0.005})`;
+      ctx.font = '12px monospace';
+      ctx.fillText(char, x + Math.sin(j) * 5, y);
+    }
+  }
+
+  // Hexagons
+  for (let hex of hexagons) {
+    hex.rotation += hex.rotSpeed;
+    drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity);
+    drawHexagon(hex.x, hex.y, hex.size * 0.6, -hex.rotation, hex.opacity * 0.5);
+  }
+
+  // Floating particles
+  for (let p of futuristicParticles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+    if (p.x < -10) p.x = canvas.width + 10;
+    if (p.x > canvas.width + 10) p.x = -10;
+
+    ctx.fillStyle = `rgba(0, 255, 200, ${p.opacity})`;
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+  }
+
+  // Scan line
+  const scanY = (futuristicTime * 1.5) % canvas.height;
+  const scanGrad = ctx.createLinearGradient(0, scanY - 20, 0, scanY + 20);
+  scanGrad.addColorStop(0, 'transparent');
+  scanGrad.addColorStop(0.5, 'rgba(0, 255, 200, 0.03)');
+  scanGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = scanGrad;
+  ctx.fillRect(0, scanY - 20, canvas.width, 40);
+
+  // HUD corners
+  ctx.strokeStyle = 'rgba(0, 255, 200, 0.12)';
+  ctx.lineWidth = 1;
+  const margin = 40;
+  const cornerSize = 30;
+  // Top-left
+  ctx.beginPath();
+  ctx.moveTo(margin, margin + cornerSize);
+  ctx.lineTo(margin, margin);
+  ctx.lineTo(margin + cornerSize, margin);
+  ctx.stroke();
+  // Top-right
+  ctx.beginPath();
+  ctx.moveTo(canvas.width - margin - cornerSize, margin);
+  ctx.lineTo(canvas.width - margin, margin);
+  ctx.lineTo(canvas.width - margin, margin + cornerSize);
+  ctx.stroke();
+  // Bottom-left
+  ctx.beginPath();
+  ctx.moveTo(margin, canvas.height - margin - cornerSize);
+  ctx.lineTo(margin, canvas.height - margin);
+  ctx.lineTo(margin + cornerSize, canvas.height - margin);
+  ctx.stroke();
+  // Bottom-right
+  ctx.beginPath();
+  ctx.moveTo(canvas.width - margin - cornerSize, canvas.height - margin);
+  ctx.lineTo(canvas.width - margin, canvas.height - margin);
+  ctx.lineTo(canvas.width - margin, canvas.height - margin - cornerSize);
+  ctx.stroke();
+
+  overlay.style.background = 'radial-gradient(ellipse at 50% 40%, rgba(0,255,200,0.03) 0%, transparent 60%), linear-gradient(to bottom, rgba(5,10,15,0.3) 0%, rgba(5,10,15,0.6) 100%)';
+}
+
+// ================================================================
+// THEME 4: POETIC
+// ================================================================
+let petals = [];
+let poeticTime = 0;
+let poeticInitialized = false;
+
+function initPoetic() {
+  petals = [];
+  for (let i = 0; i < 30; i++) {
+    petals.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 12 + 5,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.02,
+      speedX: Math.random() * 0.8 - 0.2,
+      speedY: Math.random() * 0.5 + 0.2,
+      swayAmp: Math.random() * 1.5 + 0.5,
+      swaySpeed: Math.random() * 0.02 + 0.01,
+      swayOffset: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.3 + 0.1,
+      color: [
+        [255, 200, 200],
+        [255, 220, 210],
+        [255, 210, 220],
+        [240, 200, 210],
+        [255, 230, 220]
+      ][Math.floor(Math.random() * 5)]
+    });
+  }
+  poeticInitialized = true;
+}
+
+function drawPetal(x, y, size, rotation, opacity, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${opacity})`;
+  ctx.beginPath();
+  ctx.moveTo(0, -size);
+  ctx.quadraticCurveTo(size * 0.6, -size * 0.3, 0, size * 0.3);
+  ctx.quadraticCurveTo(-size * 0.6, -size * 0.3, 0, -size);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawPoetic() {
+  poeticTime++;
+
+  // Warm sunset gradient background
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  bgGrad.addColorStop(0, 'rgba(25, 15, 20, 0.06)');
+  bgGrad.addColorStop(0.5, 'rgba(30, 18, 22, 0.06)');
+  bgGrad.addColorStop(1, 'rgba(20, 12, 18, 0.06)');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Warm light source
+  const warmGrad = ctx.createRadialGradient(
+    canvas.width * 0.3, canvas.height * 0.2, 0,
+    canvas.width * 0.3, canvas.height * 0.2, canvas.width * 0.5
+  );
+  warmGrad.addColorStop(0, 'rgba(255, 180, 100, 0.015)');
+  warmGrad.addColorStop(0.5, 'rgba(255, 150, 100, 0.008)');
+  warmGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = warmGrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Soft bokeh
+  for (let i = 0; i < 8; i++) {
+    const bx = canvas.width * (0.1 + (i * 0.12));
+    const by = canvas.height * (0.3 + Math.sin(poeticTime * 0.005 + i) * 0.15);
+    const bSize = 30 + Math.sin(poeticTime * 0.01 + i * 2) * 15;
+    const bGrad = ctx.createRadialGradient(bx, by, 0, bx, by, bSize);
+    bGrad.addColorStop(0, `rgba(255, 200, 150, ${0.02 + Math.sin(poeticTime * 0.008 + i) * 0.01})`);
+    bGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = bGrad;
+    ctx.beginPath();
+    ctx.arc(bx, by, bSize, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Falling petals
+  for (let petal of petals) {
+    petal.rotation += petal.rotSpeed;
+    petal.x += petal.speedX + Math.sin(poeticTime * petal.swaySpeed + petal.swayOffset) * petal.swayAmp * 0.05;
+    petal.y += petal.speedY;
+
+    if (petal.y > canvas.height + 20) {
+      petal.y = -20;
+      petal.x = Math.random() * canvas.width;
+    }
+    if (petal.x > canvas.width + 20) petal.x = -20;
+    if (petal.x < -20) petal.x = canvas.width + 20;
+
+    drawPetal(petal.x, petal.y, petal.size, petal.rotation, petal.opacity, petal.color);
+  }
+
+  // Floating text fragments (barely visible)
+  const fragments = ['love', 'dream', 'soul', 'light', 'stars', 'hope', 'time', 'silence'];
+  ctx.font = 'italic 14px "Cormorant Garamond", serif';
+  for (let i = 0; i < 3; i++) {
+    const fx = (canvas.width * (i + 0.5)) / 3 + Math.sin(poeticTime * 0.003 + i * 2) * 50;
+    const fy = canvas.height * 0.5 + Math.cos(poeticTime * 0.004 + i * 3) * 100;
+    ctx.fillStyle = `rgba(255, 220, 200, ${0.04 + Math.sin(poeticTime * 0.01 + i) * 0.02})`;
+    ctx.fillText(fragments[(Math.floor(poeticTime * 0.01) + i) % fragments.length], fx, fy);
+  }
+
+  overlay.style.background = 'radial-gradient(ellipse at 30% 20%, rgba(255,180,120,0.05) 0%, transparent 60%), linear-gradient(to bottom, rgba(25,15,20,0.2) 0%, rgba(20,12,18,0.5) 100%)';
+}
+
+// ================================================================
+// THEME CONTROLLER
+// ================================================================
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Fill with appropriate base color
+  const bases = [
+    'rgb(10, 15, 25)',   // rain
+    'rgb(15, 8, 12)',    // gothic
+    'rgb(5, 5, 15)',     // cosmos
+    'rgb(5, 10, 15)',    // futuristic
+    'rgb(25, 15, 20)'    // poetic
+  ];
+  ctx.fillStyle = bases[currentTheme];
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function setThemeClass() {
+  document.body.className = THEME_CLASSES[currentTheme];
+  document.querySelectorAll('.theme-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentTheme);
+  });
+  document.getElementById('themeName').textContent = THEME_NAMES[currentTheme];
+}
+
+function animate() {
+  switch (currentTheme) {
+    case 0:
+      if (!rainInitialized) initRain();
+      drawRain();
+      break;
+    case 1:
+      if (!gothicInitialized) initGothic();
+      drawGothic();
+      break;
+    case 2:
+      if (!cosmosInitialized) initCosmos();
+      drawCosmos();
+      break;
+    case 3:
+      if (!futuristicInitialized) initFuturistic();
+      drawFuturistic();
+      break;
+    case 4:
+      if (!poeticInitialized) initPoetic();
+      drawPoetic();
+      break;
+  }
+  animFrame = requestAnimationFrame(animate);
+}
+
+function setTheme(index) {
+  cancelAnimationFrame(animFrame);
+  currentTheme = index;
+  rainInitialized = gothicInitialized = cosmosInitialized = futuristicInitialized = poeticInitialized = false;
+  clearCanvas();
+  setThemeClass();
+  animate();
+}
+
+function switchTheme() {
+  setTheme((currentTheme + 1) % 5);
+}
+
+// ================================================================
+// QUOTES & POEMS NAVIGATION
+// ================================================================
+function updateQuote() {
+  const q = QUOTES[currentQuote];
+  document.getElementById('quoteText').textContent = q.text;
+  document.getElementById('quoteAuthor').textContent = q.author;
+  const card = document.getElementById('quoteCard');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    card.style.transition = 'all 0.5s ease';
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  }, 50);
+}
+
+function nextQuote() {
+  currentQuote = (currentQuote + 1) % QUOTES.length;
+  updateQuote();
+}
+
+function prevQuote() {
+  currentQuote = (currentQuote - 1 + QUOTES.length) % QUOTES.length;
+  updateQuote();
+}
+
+function updatePoem() {
+  const p = POEMS[currentPoem];
+  document.getElementById('poemTitle').textContent = p.title;
+  document.getElementById('poemBody').textContent = p.body;
+  document.getElementById('poemPoet').textContent = '— ' + p.poet;
+  const card = document.getElementById('poemCard');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    card.style.transition = 'all 0.5s ease';
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  }, 50);
+}
+
+function nextPoem() {
+  currentPoem = (currentPoem + 1) % POEMS.length;
+  updatePoem();
+}
+
+function prevPoem() {
+  currentPoem = (currentPoem - 1 + POEMS.length) % POEMS.length;
+  updatePoem();
+}
+
+// ================================================================
+// MENU
+// ================================================================
+function toggleMenu() {
+  const menu = document.getElementById('sideMenu');
+  const btn = document.getElementById('menuBtn');
+  const overlay = document.getElementById('menuOverlay');
+  menu.classList.toggle('open');
+  btn.classList.toggle('active');
+  overlay.classList.toggle('active');
+}
+
+function closeMenu() {
+  document.getElementById('sideMenu').classList.remove('open');
+  document.getElementById('menuBtn').classList.remove('active');
+  document.getElementById('menuOverlay').classList.remove('active');
+}
+
+document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+
+// Escape key closes menu
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeMenu();
+});
+
+// ================================================================
+// INIT
+// ================================================================
+window.addEventListener('load', () => {
+  // Set content from config
+  document.querySelector('.main-name').textContent = Aether;
+  document.querySelector('.subtitle').textContent = evesgrandson;
+  document.querySelector('.bio-text').textContent = MY_BIO;
+
+  // Start theme
+  setThemeClass();
+  clearCanvas();
+  animate();
+
+  // Hide loader
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1500);
+});
+
+// Handle resize for canvas
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  rainInitialized = gothicInitialized = cosmosInitialized = futuristicInitialized = poeticInitialized = false;
+});
+</script>
+
 </body>
 </html>
