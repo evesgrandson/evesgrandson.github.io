@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philosophy — Aether</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a12;font-family:'Rajdhani',sans-serif;color:#fff}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block}
+
+.page{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px 80px;
+}
+
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;letter-spacing:3px;
+  margin-bottom:4px;
+  background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.subtitle{
+  font-size:13px;color:rgba(255,255,255,.35);margin-bottom:40px;letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+/* ── Quote card ── */
+.quote-card{
+  width:100%;max-width:600px;min-height:260px;
+  background:rgba(12,12,28,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:22px;padding:48px 36px 40px;
+  box-shadow:0 0 80px rgba(100,80,255,.06),0 0 2px rgba(167,139,250,.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;position:relative;overflow:hidden;
+  transition:border-color .5s;
+}
+.quote-card:hover{border-color:rgba(167,139,250,.18)}
+
+/* Decorative corner marks */
+.quote-card::before,.quote-card::after{
+  content:'';position:absolute;width:40px;height:40px;
+  border-color:rgba(167,139,250,.15);border-style:solid;
+}
+.quote-card::before{top:16px;left:16px;border-width:2px 0 0 2px;border-radius:4px 0 0 0}
+.quote-card::after{bottom:16px;right:16px;border-width:0 2px 2px 0;border-radius:0 0 4px 0}
+
+.quote-mark{
+  font-family:'Cormorant Garamond',serif;font-size:72px;line-height:1;
+  color:rgba(167,139,250,.2);margin-bottom:-10px;user-select:none;
+}
+
+.quote-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:400;font-style:italic;
+  line-height:1.7;color:rgba(255,255,255,.88);
+  margin-bottom:20px;
+  opacity:1;transition:opacity .5s ease;
+}
+.quote-text.fade-out{opacity:0}
+
+.quote-author{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(167,139,250,.6);
+  opacity:1;transition:opacity .5s ease;
+}
+.quote-author.fade-out{opacity:0}
+
+.quote-source{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;color:rgba(255,255,255,.2);
+  margin-top:4px;letter-spacing:1px;
+  opacity:1;transition:opacity .5s ease;
+}
+.quote-source.fade-out{opacity:0}
+
+/* ── Button ── */
+.fetch-btn{
+  margin-top:36px;padding:14px 40px;border-radius:14px;
+  border:1px solid rgba(167,139,250,.25);
+  background:linear-gradient(135deg,rgba(110,80,255,.18),rgba(244,114,182,.12));
+  color:rgba(255,255,255,.75);
+  font:700 15px 'Rajdhani',sans-serif;letter-spacing:1.5px;
+  cursor:pointer;transition:all .35s ease;
+  position:relative;overflow:hidden;
+}
+.fetch-btn:hover{
+  background:linear-gradient(135deg,rgba(110,80,255,.35),rgba(244,114,182,.25));
+  color:#fff;transform:scale(1.03);
+  box-shadow:0 0 30px rgba(167,139,250,.15);
+  border-color:rgba(167,139,250,.4);
+}
+.fetch-btn:active{transform:scale(0.97)}
+.fetch-btn.loading{pointer-events:none;opacity:.5}
+
+.fetch-btn .spinner{
+  display:none;width:16px;height:16px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top-color:rgba(167,139,250,.7);
+  border-radius:50%;animation:spin .6s linear infinite;
+  margin-right:8px;vertical-align:middle;
+}
+.fetch-btn.loading .spinner{display:inline-block}
+.fetch-btn.loading .btn-label{opacity:.6}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Counter ── */
+.counter{
+  margin-top:16px;font-size:11px;color:rgba(255,255,255,.15);
+  letter-spacing:1px;
+}
+
+/* ── Back link ── */
+.backlink{
+  position:fixed;bottom:12px;left:16px;z-index:9999;
+  color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
+  text-decoration:none;letter-spacing:.5px;transition:color .3s;
+}
+.backlink:hover{color:#fff}
+
+/* ── Responsive ── */
+@media(max-width:480px){
+  .quote-card{padding:36px 24px 32px;min-height:220px}
+  .quote-text{font-size:18px}
+  .quote-mark{font-size:56px}
+  h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="page">
+  <h1>PHILOSOPHY</h1>
+  <div class="subtitle">words that outlived their speakers</div>
+
+  <div class="quote-card">
+    <div class="quote-mark">&ldquo;</div>
+    <div class="quote-text" id="quoteText">Click the button to summon a thought from the void.</div>
+    <div class="quote-author" id="quoteAuthor"></div>
+    <div class="quote-source" id="quoteSource"></div>
+  </div>
+
+  <button class="fetch-btn" id="fetchBtn">
+    <span class="spinner"></span>
+    <span class="btn-label">SEEK WISDOM</span>
+  </button>
+
+  <div class="counter" id="counter"></div>
+</div>
+
+<a class="backlink" href="index.html">&larr; home</a>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════════════════════════════════════════════════
+   CURATED FALLBACK QUOTES
+   Used when the API is unavailable. Add your own here.
+   ══════════════════════════════════════════════════════ */
+var LOCAL_QUOTES = [
+  {text:"The unexamined life is not worth living.",author:"Socrates",source:"Apology, 38a"},
+  {text:"I think, therefore I am.",author:"René Descartes",source:"Discourse on the Method, 1637"},
+  {text:"One cannot step into the same river twice.",author:"Heraclitus",source:"Fragments"},
+  {text:"Man is condemned to be free; because once thrown into the world, he is responsible for everything he does.",author:"Jean-Paul Sartre",source:"Being and Nothingness, 1943"},
+  {text:"The only true wisdom is in knowing you know nothing.",author:"Socrates",source:"attributed by Plato"},
+  {text:"He who has a why to live for can bear almost any how.",author:"Friedrich Nietzsche",source:"Twilight of the Idols, 1889"},
+  {text:"Happiness depends upon ourselves.",author:"Aristotle",source:"Nicomachean Ethics"},
+  {text:"The mind is everything. What you think you become.",author:"Buddha",source:"Dhammapada"},
+  {text:"No man ever steps in the same river twice, for it's not the same river and he's not the same man.",author:"Heraclitus",source:"Fragments"},
+  {text:"To be is to be perceived.",author:"George Berkeley",source:"A Treatise Concerning the Principles of Human Knowledge, 1710"},
+  {text:"The life of man is solitary, poor, nasty, brutish, and short.",author:"Thomas Hobbes",source:"Leviathan, 1651"},
+  {text:"Man is born free, and everywhere he is in chains.",author:"Jean-Jacques Rousseau",source:"The Social Contract, 1762"},
+  {text:"God is dead. God remains dead. And we have killed him.",author:"Friedrich Nietzsche",source:"The Gay Science, 1882"},
+  {text:"The only thing I know is that I know nothing.",author:"Socrates",source:"attributed by Plato"},
+  {text:"Act only according to that maxim whereby you can at the same time will that it should become a universal law.",author:"Immanuel Kant",source:"Groundwork of the Metaphysics of Morals, 1785"},
+  {text:"That which does not kill us makes us stronger.",author:"Friedrich Nietzsche",source:"Twilight of the Idols, 1888"},
+  {text:"The greatest happiness of the greatest number is the foundation of morals and legislation.",author:"Jeremy Bentham",source:"A Fragment on Government, 1776"},
+  {text:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",author:"Aristotle",source:"attributed by Will Durant"},
+  {text:"The heart has its reasons which reason knows nothing of.",author:"Blaise Pascal",source:"Pensées, 1670"},
+  {text:"In the middle of difficulty lies opportunity.",author:"Albert Einstein",source:"attributed"},
+  {text:"The measure of intelligence is the ability to change.",author:"Albert Einstein",source:"attributed"},
+  {text:"He who fears he shall suffer, already suffers what he fears.",author:"Michel de Montaigne",source:"Essays, 1580"},
+  {text:"The soul becomes dyed with the colour of its thoughts.",author:"Marcus Aurelius",source:"Meditations, Book V"},
+  {text:"Waste no more time arguing about what a good man should be. Be one.",author:"Marcus Aurelius",source:"Meditations, Book X"},
+  {text:"It is not death that a man should fear, but he should fear never beginning to live.",author:"Marcus Aurelius",source:"Meditations"},
+  {text:"The price good men pay for indifference to public affairs is to be ruled by evil men.",author:"Plato",source:"attributed"},
+  {text:"Knowing yourself is the beginning of all wisdom.",author:"Aristotle",source:"attributed"},
+  {text:"The only way to deal with an unfree world is to become so absolutely free that your very existence is an act of rebellion.",author:"Albert Camus",source:"attributed"},
+  {text:"One must imagine Sisyphus happy.",author:"Albert Camus",source:"The Myth of Sisyphus, 1942"},
+  {text:"The real question is not whether machines think but whether men do.",author:"B.F. Skinner",source:"Contingencies of Reinforcement, 1969"},
+  {text:"Whereof one cannot speak, thereof one must be silent.",author:"Ludwig Wittgenstein",source:"Tractatus Logico-Philosophicus, 1921"},
+  {text:"The limits of my language mean the limits of my world.",author:"Ludwig Wittgenstein",source:"Tractatus Logico-Philosophicus, 1921"},
+  {text:"Hell is other people.",author:"Jean-Paul Sartre",source:"No Exit, 1944"},
+  {text:"Existence precedes essence.",author:"Jean-Paul Sartre",source:"Existentialism Is a Humanism, 1946"},
+  {text:"The greater the difficulty, the more glory in surmounting it.",author:"Epicurus",source:"attributed"},
+  {text:"Do not spoil what you have by desiring what you have not.",author:"Epicurus",source:"Letter to Menoeceus"},
+  {text:"We suffer more often in imagination than in reality.",author:"Seneca",source:"Letters from a Stoic, c. 65 AD"},
+  {text:"It is not that we have a short time to live, but that we waste a great deal of it.",author:"Seneca",source:"On the Shortness of Life, 49 AD"},
+  {text:"Difficulties strengthen the mind, as labor does the body.",author:"Seneca",source:"attributed"},
+  {text:"The whole future lies in uncertainty: live immediately.",author:"Seneca",source:"On the Shortness of Life"}
+];
+
+/* ══════════════════════════════════════════════════════
+   API CONFIGURATION
+   Change the URL if you want a different API.
+   ══════════════════════════════════════════════════════ */
+var API_URL = 'https://api.quotable.io/quotes/random?tags=philosophy|wisdom|history|truth';
+
+/* ══════════════════════════════════════════════════════ */
+
+var quoteText = document.getElementById('quoteText');
+var quoteAuthor = document.getElementById('quoteAuthor');
+var quoteSource = document.getElementById('quoteSource');
+var fetchBtn = document.getElementById('fetchBtn');
+var counterEl = document.getElementById('counter');
+var fetchCount = 0;
+var usedLocal = [];
+
+function displayQuote(text, author, source){
+  // Fade out
+  quoteText.classList.add('fade-out');
+  quoteAuthor.classList.add('fade-out');
+  quoteSource.classList.add('fade-out');
+
+  setTimeout(function(){
+    quoteText.textContent = text;
+    quoteAuthor.textContent = '— ' + author;
+    quoteSource.textContent = source || '';
+
+    // Fade in
+    quoteText.classList.remove('fade-out');
+    quoteAuthor.classList.remove('fade-out');
+    quoteSource.classList.remove('fade-out');
+  }, 450);
+}
+
+function getRandomLocal(){
+  // Avoid repeats until all used
+  if(usedLocal.length >= LOCAL_QUOTES.length) usedLocal = [];
+  var available = [];
+  for(var i=0;i<LOCAL_QUOTES.length;i++){
+    if(usedLocal.indexOf(i)===-1) available.push(i);
+  }
+  var pick = available[Math.floor(Math.random()*available.length)];
+  usedLocal.push(pick);
+  return LOCAL_QUOTES[pick];
+}
+
+function fetchQuote(){
+  fetchBtn.classList.add('loading');
+
+  var controller = new AbortController();
+  var timeout = setTimeout(function(){ controller.abort(); }, 4000);
+
+  fetch(API_URL, { signal: controller.signal })
+    .then(function(res){
+      clearTimeout(timeout);
+      if(!res.ok) throw new Error('API error');
+      return res.json();
+    })
+    .then(function(data){
+      // Quotable returns an array
+      var q = Array.isArray(data) ? data[0] : data;
+      if(q && q.content && q.author){
+        displayQuote(q.content, q.author, q.tags ? q.tags.join(', ') : '');
+      } else {
+        throw new Error('Bad format');
+      }
+    })
+    .catch(function(){
+      clearTimeout(timeout);
+      // Fallback to local
+      var q = getRandomLocal();
+      displayQuote(q.text, q.author, q.source);
+    })
+    .finally(function(){
+      fetchBtn.classList.remove('loading');
+      fetchCount++;
+      counterEl.textContent = fetchCount + ' thought' + (fetchCount>1?'s':'') + ' summoned';
+    });
+}
+
+fetchBtn.addEventListener('click', fetchQuote);
+
+/* ── CANVAS BACKGROUND — drifting particles ── */
+var C = document.getElementById('bg');
+var ctx = C.getContext('2d');
+var W, H;
+var dpr = Math.min(window.devicePixelRatio||1, 2);
+var particles = [];
+
+function resize(){
+  W = window.innerWidth; H = window.innerHeight;
+  C.width = W*dpr; C.height = H*dpr;
+  C.style.width = W+'px'; C.style.height = H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  initParticles();
+}
+
+function initParticles(){
+  particles = [];
+  for(var i=0;i<60;i++){
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.5+0.3,
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.1 - 0.05,
+      a: Math.random()*0.3+0.05,
+      phase: Math.random()*Math.PI*2
+    });
+  }
+}
+
+function drawBg(t){
+  var grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#06050e');
+  grad.addColorStop(0.4,'#0c0a1a');
+  grad.addColorStop(0.7,'#0e0b1e');
+  grad.addColorStop(1,'#080612');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+
+  // Subtle radial glow
+  var rg = ctx.createRadialGradient(W*0.5,H*0.4,0,W*0.5,H*0.4,H*0.5);
+  rg.addColorStop(0,'rgba(167,139,250,.025)');
+  rg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = rg;
+  ctx.fillRect(0,0,W,H);
+
+  var ts = t*0.001;
+  for(var i=0;i<particles.length;i++){
+    var p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    if(p.x<-5) p.x=W+5;
+    if(p.x>W+5) p.x=-5;
+    if(p.y<-5) p.y=H+5;
+    if(p.y>H+5) p.y=-5;
+
+    var a = p.a*(0.5+0.5*Math.sin(ts+p.phase));
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(180,170,220,'+a+')';
+    ctx.fill();
+  }
+
+  // Faint connecting lines between nearby particles
+  for(var i=0;i<particles.length;i++){
+    for(var j=i+1;j<particles.length;j++){
+      var dx=particles[i].x-particles[j].x;
+      var dy=particles[i].y-particles[j].y;
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle='rgba(167,139,250,'+(0.03*(1-dist/120))+')';
+        ctx.lineWidth=0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop(t){
+  requestAnimationFrame(loop);
+  drawBg(t);
+}
+
+resize();
+window.addEventListener('resize', resize);
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
