@@ -9,88 +9,71 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a12;font-family:'Rajdhani',sans-serif;color:#fff}
-
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
-  background:linear-gradient(135deg,#0a0814 0%,#110e24 40%,#0d1128 70%,#08060f 100%);
-}
-body::after{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
-  background:radial-gradient(ellipse at 30% 20%,rgba(167,139,250,.06) 0%,transparent 60%),
-             radial-gradient(ellipse at 70% 80%,rgba(244,114,182,.04) 0%,transparent 60%);
-}
-
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block}
 .page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px}
-
 h1{
   font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:3px;
-  margin-bottom:6px;
+  margin-bottom:6px;text-shadow:0 0 30px rgba(0,0,0,.5);
   background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.subtitle{font-size:14px;color:rgba(255,255,255,.35);margin-bottom:36px;letter-spacing:1px}
-
+.subtitle{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:36px;letter-spacing:1px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 .toggle-bar{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
-
 .toggle-btn{
-  padding:12px 28px;border-radius:14px;border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);
+  padding:12px 28px;border-radius:14px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(0,0,0,.35);color:rgba(255,255,255,.6);
   font:700 15px 'Rajdhani',sans-serif;letter-spacing:1px;cursor:pointer;
-  transition:all .3s ease;position:relative;overflow:hidden;
+  transition:all .4s ease;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.toggle-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75)}
-
+.toggle-btn:hover{background:rgba(255,255,255,.12);color:#fff}
 .toggle-btn.active-happy{
-  background:linear-gradient(135deg,rgba(110,231,168,.2),rgba(251,191,36,.15));
-  border-color:rgba(110,231,168,.35);color:#6ee7a8;
-  box-shadow:0 0 25px rgba(110,231,168,.12);
+  background:linear-gradient(135deg,rgba(255,180,50,.3),rgba(255,220,100,.15));
+  border-color:rgba(255,200,80,.5);color:#ffd76a;
+  box-shadow:0 0 25px rgba(255,180,50,.2);
 }
 .toggle-btn.active-sad{
-  background:linear-gradient(135deg,rgba(111,148,255,.2),rgba(167,139,250,.18));
-  border-color:rgba(111,148,255,.35);color:#6f94ff;
-  box-shadow:0 0 25px rgba(111,148,255,.12);
+  background:linear-gradient(135deg,rgba(60,100,180,.3),rgba(80,140,220,.15));
+  border-color:rgba(80,140,220,.5);color:#7eb8ff;
+  box-shadow:0 0 25px rgba(60,100,180,.2);
 }
 .toggle-btn.active-idk{
-  background:linear-gradient(135deg,rgba(244,114,182,.2),rgba(192,139,255,.18));
-  border-color:rgba(244,114,182,.35);color:#f472b6;
-  box-shadow:0 0 25px rgba(244,114,182,.12);
+  background:linear-gradient(135deg,rgba(220,60,80,.3),rgba(255,120,140,.15));
+  border-color:rgba(220,80,80,.5);color:#ff8a95;
+  box-shadow:0 0 25px rgba(220,60,80,.2);
 }
-
 .playlist-container{
   width:100%;max-width:420px;
-  background:rgba(12,12,28,.6);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.08);
   border-radius:18px;padding:16px;
-  box-shadow:0 0 50px rgba(100,80,255,.06);
+  box-shadow:0 0 50px rgba(0,0,0,.3);
 }
-
 .playlist-frame{width:100%;border-radius:12px;overflow:hidden}
 .playlist-frame iframe{width:100%;border:none;border-radius:12px;display:block}
-
 .playlist-label{
   font:600 12px 'Rajdhani',sans-serif;
-  color:rgba(255,255,255,.3);letter-spacing:1.5px;
+  color:rgba(255,255,255,.4);letter-spacing:1.5px;
   text-transform:uppercase;text-align:center;
   margin-bottom:10px;
 }
-
 .hidden{display:none}
-
 .backlink{
   position:fixed;bottom:12px;left:16px;z-index:9999;
-  color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
+  color:rgba(255,255,255,.5);font:600 13px 'Rajdhani',sans-serif;
   text-decoration:none;letter-spacing:.5px;transition:color .3s;
+  text-shadow:0 1px 6px rgba(0,0,0,.5);
 }
 .backlink:hover{color:#fff}
-
 .note{
-  margin-top:20px;font-size:12px;color:rgba(255,255,255,.2);
+  margin-top:20px;font-size:12px;color:rgba(255,255,255,.25);
   max-width:380px;text-align:center;line-height:1.6;
+  text-shadow:0 1px 4px rgba(0,0,0,.4);
 }
 </style>
 </head>
 <body>
+<canvas id="bg"></canvas>
 
 <div class="page">
   <h1>MUSIC</h1>
@@ -99,57 +82,38 @@ h1{
   <div class="toggle-bar">
     <button class="toggle-btn active-happy" id="btnHappy">☀ Happy</button>
     <button class="toggle-btn" id="btnSad">☾ Sad</button>
-    <button class="toggle-btn" id="btnIdk">✧ idk</button>
+    <button class="toggle-btn" id="btnIdk">✿ idk</button>
   </div>
 
-  <!-- ════════════════════════════════════════════════
-       HOW TO ADD YOUR PLAYLISTS:
-
-       1. Open Spotify → go to your playlist
-       2. Click ••• → Share → Copy link to playlist
-       3. The link looks like:
-          https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC
-       4. Paste it below in the HAPPY_LINK, SAD_LINK, or IDK_LINK
-       ════════════════════════════════════════════════ -->
-
-  <!-- Happy playlist -->
   <div class="playlist-container" id="happyPlaylist">
     <div class="playlist-label">Happy Vibes</div>
     <div class="playlist-frame">
-      <iframe id="happyFrame"
-        height="480"
+      <iframe id="happyFrame" height="480"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
-      </iframe>
+        loading="lazy"></iframe>
     </div>
   </div>
 
-  <!-- Sad playlist -->
   <div class="playlist-container hidden" id="sadPlaylist">
     <div class="playlist-label">Sad Hours</div>
     <div class="playlist-frame">
-      <iframe id="sadFrame"
-        height="480"
+      <iframe id="sadFrame" height="480"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
-      </iframe>
+        loading="lazy"></iframe>
     </div>
   </div>
 
-  <!-- idk playlist -->
   <div class="playlist-container hidden" id="idkPlaylist">
     <div class="playlist-label">idk, just vibes</div>
     <div class="playlist-frame">
-      <iframe id="idkFrame"
-        height="480"
+      <iframe id="idkFrame" height="480"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
-      </iframe>
+        loading="lazy"></iframe>
     </div>
   </div>
 
   <div class="note">
-    Playback requires a Spotify account. Free accounts will hear previews; Premium gets full tracks.
+    Playback requires a Spotify account. Free accounts hear previews; Premium gets full tracks.
   </div>
 </div>
 
@@ -161,16 +125,13 @@ h1{
 
 /* ══════════════════════════════════════════════════════
    PASTE YOUR SPOTIFY PLAYLIST LINKS HERE
-   Just replace the full URLs below with your own.
    ══════════════════════════════════════════════════════ */
 
 var HAPPY_LINK = 'https://open.spotify.com/playlist/34UlalESScclj0lDLIDpHg?si=zJFA362PRN6zaT581PY5-Q&utm_source=copy-link&pi=VtlIzTyzRTa2Q';
 var SAD_LINK   = 'https://open.spotify.com/playlist/1isQ5e77FcGqxZTOExEOiz?si=eblbcEmmThuDvm_GTcEa5g&utm_source=copy-link&pi=J-VXp-__QmGcp';
 var IDK_LINK   = 'https://open.spotify.com/playlist/1W9njYkZJ1jmenGHnt0dow?si=rw4QN3zPTTGzMS-oD5hObQ&utm_source=copy-link&pi=QyzTnC70TwaGZ';
 
-/* ══════════════════════════════════════════════════════
-   That's it! Everything below is automatic.
-   ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════ */
 
 function extractId(link){
   var m = link.match(/playlist[\/:]([A-Za-z0-9]+)/);
@@ -178,48 +139,524 @@ function extractId(link){
   if(/^[A-Za-z0-9]{15,}$/.test(link.trim())) return link.trim();
   return link;
 }
-
 function embedUrl(link){
-  var id = extractId(link);
-  return 'https://open.spotify.com/embed/playlist/' + id + '?utm_source=generator&theme=0';
+  return 'https://open.spotify.com/embed/playlist/'+extractId(link)+'?utm_source=generator&theme=0';
 }
 
-var frames = {
-  happy: { frame: document.getElementById('happyFrame'), div: document.getElementById('happyPlaylist'), btn: document.getElementById('btnHappy'), link: HAPPY_LINK, loaded: false, activeClass: 'active-happy' },
-  sad:   { frame: document.getElementById('sadFrame'),   div: document.getElementById('sadPlaylist'),   btn: document.getElementById('btnSad'),   link: SAD_LINK,   loaded: false, activeClass: 'active-sad' },
-  idk:   { frame: document.getElementById('idkFrame'),   div: document.getElementById('idkPlaylist'),   btn: document.getElementById('btnIdk'),   link: IDK_LINK,   loaded: false, activeClass: 'active-idk' }
+var playlists = {
+  happy:{frame:document.getElementById('happyFrame'),div:document.getElementById('happyPlaylist'),btn:document.getElementById('btnHappy'),link:HAPPY_LINK,loaded:false,activeClass:'active-happy'},
+  sad:{frame:document.getElementById('sadFrame'),div:document.getElementById('sadPlaylist'),btn:document.getElementById('btnSad'),link:SAD_LINK,loaded:false,activeClass:'active-sad'},
+  idk:{frame:document.getElementById('idkFrame'),div:document.getElementById('idkPlaylist'),btn:document.getElementById('btnIdk'),link:IDK_LINK,loaded:false,activeClass:'active-idk'}
 };
-
-// Preload the first (happy) one
-frames.happy.frame.src = embedUrl(frames.happy.link);
-frames.happy.loaded = true;
+playlists.happy.frame.src = embedUrl(HAPPY_LINK);
+playlists.happy.loaded = true;
 
 var current = 'happy';
+var targetMood = 'happy';
+var transitionAlpha = 0;
 
 function switchTo(mood){
-  if(mood === current) return;
-
-  var next = frames[mood];
-  if(!next.loaded){
-    next.frame.src = embedUrl(next.link);
-    next.loaded = true;
-  }
-
-  // Hide all, deactivate all buttons
-  Object.keys(frames).forEach(function(k){
-    frames[k].div.classList.add('hidden');
-    frames[k].btn.className = 'toggle-btn';
+  if(mood===current) return;
+  Object.keys(playlists).forEach(function(k){
+    playlists[k].div.classList.add('hidden');
+    playlists[k].btn.className='toggle-btn';
   });
-
-  // Show chosen
+  var next = playlists[mood];
+  if(!next.loaded){ next.frame.src=embedUrl(next.link); next.loaded=true; }
   next.div.classList.remove('hidden');
-  next.btn.className = 'toggle-btn ' + next.activeClass;
-  current = mood;
+  next.btn.className='toggle-btn '+next.activeClass;
+  targetMood = mood;
+  transitionAlpha = 0;
 }
 
-frames.happy.btn.addEventListener('click', function(){ switchTo('happy'); });
-frames.sad.btn.addEventListener('click',   function(){ switchTo('sad'); });
-frames.idk.btn.addEventListener('click',   function(){ switchTo('idk'); });
+playlists.happy.btn.addEventListener('click',function(){switchTo('happy');});
+playlists.sad.btn.addEventListener('click',function(){switchTo('sad');});
+playlists.idk.btn.addEventListener('click',function(){switchTo('idk');});
+
+/* ── CANVAS ── */
+var C = document.getElementById('bg');
+var ctx = C.getContext('2d');
+var W, H;
+var dpr = Math.min(window.devicePixelRatio||1,2);
+
+function resize(){
+  W=window.innerWidth; H=window.innerHeight;
+  C.width=W*dpr; C.height=H*dpr;
+  C.style.width=W+'px'; C.style.height=H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  initScenes();
+}
+
+/* ── HAPPY SCENE: Bustling city with skyscrapers ── */
+var cityBuildings=[], cityLights=[], cityCars=[], cityStars=[];
+
+function initCity(){
+  cityBuildings=[];
+  // Background buildings
+  for(var i=0;i<25;i++){
+    var bw=30+Math.random()*60;
+    var bh=H*0.2+Math.random()*H*0.35;
+    cityBuildings.push({
+      x:i*(W/25)-10+Math.random()*20, w:bw, h:bh,
+      color:'hsl('+(200+Math.random()*40)+',15%,'+(8+Math.random()*8)+'%)',
+      windows:[], layer:0
+    });
+  }
+  // Foreground buildings
+  for(var i=0;i<15;i++){
+    var bw=40+Math.random()*80;
+    var bh=H*0.25+Math.random()*H*0.4;
+    cityBuildings.push({
+      x:i*(W/15)-20+Math.random()*30, w:bw, h:bh,
+      color:'hsl('+(210+Math.random()*30)+',12%,'+(5+Math.random()*6)+'%)',
+      windows:[], layer:1
+    });
+  }
+  // Generate windows for each building
+  cityBuildings.forEach(function(b){
+    var cols=Math.floor(b.w/12);
+    var rows=Math.floor(b.h/16);
+    for(var r=1;r<rows;r++){
+      for(var c=1;c<cols;c++){
+        if(Math.random()>0.35){
+          b.windows.push({
+            rx:c/cols, ry:r/rows,
+            on:Math.random()>0.3,
+            hue:30+Math.random()*30,
+            flicker:Math.random()*Math.PI*2,
+            flickerSpeed:Math.random()*0.003+0.001
+          });
+        }
+      }
+    }
+  });
+  // Cars
+  cityCars=[];
+  for(var i=0;i<12;i++){
+    cityCars.push({
+      x:Math.random()*W, y:H-30-Math.random()*25,
+      speed:(Math.random()*1.5+0.5)*(Math.random()>0.5?1:-1),
+      color:Math.random()>0.5?'#ff4444':'#ffcc44',
+      tail:Math.random()>0.5?'#ff2222':'#ffaa00',
+      w:12+Math.random()*8
+    });
+  }
+  // Stars
+  cityStars=[];
+  for(var i=0;i<40;i++){
+    cityStars.push({x:Math.random()*W,y:Math.random()*H*0.3,r:Math.random()*1+0.3,phase:Math.random()*Math.PI*2});
+  }
+}
+
+function drawCity(t){
+  // Sky gradient — warm city night
+  var sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#0a0e1a');
+  sky.addColorStop(0.3,'#121830');
+  sky.addColorStop(0.6,'#1a1520');
+  sky.addColorStop(0.85,'#1e1018');
+  sky.addColorStop(1,'#1a0e10');
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,W,H);
+
+  // City glow
+  var glow=ctx.createRadialGradient(W*0.5,H,0,W*0.5,H,H*0.8);
+  glow.addColorStop(0,'rgba(255,160,60,.08)');
+  glow.addColorStop(0.5,'rgba(255,100,40,.03)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,W,H);
+
+  // Stars
+  for(var i=0;i<cityStars.length;i++){
+    var s=cityStars[i];
+    var a=0.3+0.4*Math.sin(t*0.001+s.phase);
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,240,'+a+')';ctx.fill();
+  }
+
+  // Buildings
+  cityBuildings.sort(function(a,b){return a.layer-b.layer;});
+  for(var i=0;i<cityBuildings.length;i++){
+    var b=cityBuildings[i];
+    var by=H-b.h;
+    ctx.fillStyle=b.color;
+    ctx.fillRect(b.x,by,b.w,b.h);
+
+    // Roof antenna
+    if(Math.random()<0.01||(!b.antenna&&Math.random()<0.5)){
+      b.antenna=true;
+    }
+    if(b.antenna){
+      ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(b.x+b.w*0.5,by);ctx.lineTo(b.x+b.w*0.5,by-12-b.w*0.1);ctx.stroke();
+      var blink=Math.sin(t*0.003+i)>0.7?0.8:0.1;
+      ctx.beginPath();ctx.arc(b.x+b.w*0.5,by-12-b.w*0.1,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,50,50,'+blink+')';ctx.fill();
+    }
+
+    // Windows
+    for(var j=0;j<b.windows.length;j++){
+      var w=b.windows[j];
+      var wx=b.x+w.rx*b.w;
+      var wy=by+w.ry*b.h;
+      if(w.on){
+        var fa=0.5+0.3*Math.sin(t*w.flickerSpeed+w.flicker);
+        ctx.fillStyle='hsla('+w.hue+',70%,65%,'+fa+')';
+        ctx.fillRect(wx,wy,6,5);
+        ctx.fillStyle='hsla('+w.hue+',70%,80%,'+fa*0.3+')';
+        ctx.fillRect(wx-1,wy-1,8,7);
+      } else {
+        ctx.fillStyle='rgba(20,25,40,.6)';
+        ctx.fillRect(wx,wy,6,5);
+      }
+    }
+  }
+
+  // Road
+  ctx.fillStyle='#0d0d0d';
+  ctx.fillRect(0,H-35,W,35);
+  // Road lines
+  for(var x=0;x<W;x+=60){
+    var offset=(t*0.03)%60;
+    ctx.fillStyle='rgba(255,200,50,.3)';
+    ctx.fillRect(x+offset,H-19,25,2);
+  }
+
+  // Cars
+  for(var i=0;i<cityCars.length;i++){
+    var c=cityCars[i];
+    c.x+=c.speed;
+    if(c.x>W+30) c.x=-30;
+    if(c.x<-30) c.x=W+30;
+    ctx.fillStyle='rgba(30,30,40,.9)';
+    ctx.fillRect(c.x-c.w/2,c.y-4,c.w,8);
+    // Headlights
+    var hlx=c.speed>0?c.x+c.w/2:c.x-c.w/2;
+    ctx.beginPath();ctx.arc(hlx,c.y,3,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,200,.7)';ctx.fill();
+    // Tail lights
+    var tlx=c.speed>0?c.x-c.w/2:c.x+c.w/2;
+    ctx.beginPath();ctx.arc(tlx,c.y,2,0,Math.PI*2);
+    ctx.fillStyle=c.tail;ctx.globalAlpha=0.6;ctx.fill();ctx.globalAlpha=1;
+  }
+}
+
+/* ── SAD SCENE: Night blue sea with crashing waves ── */
+var seaWaves=[], seaFoam=[], seaMoonStars=[];
+
+function initSea(){
+  seaWaves=[];
+  for(var i=0;i<8;i++){
+    seaWaves.push({
+      y:H*0.45+i*H*0.07,
+      amplitude:8+i*3,
+      frequency:0.008-i*0.0005,
+      speed:0.0008+i*0.0002,
+      phase:Math.random()*Math.PI*2,
+      alpha:0.15+i*0.06,
+      color:i<3?'40,80,160':'20,50,120'
+    });
+  }
+  seaFoam=[];
+  for(var i=0;i<30;i++){
+    seaFoam.push({
+      x:Math.random()*W, y:H*0.44+Math.random()*H*0.08,
+      r:Math.random()*3+1, life:Math.random(),
+      speed:Math.random()*0.5+0.2, phase:Math.random()*Math.PI*2
+    });
+  }
+  seaMoonStars=[];
+  for(var i=0;i<60;i++){
+    seaMoonStars.push({
+      x:Math.random()*W, y:Math.random()*H*0.4,
+      r:Math.random()*1.2+0.2, phase:Math.random()*Math.PI*2
+    });
+  }
+}
+
+function drawSea(t){
+  // Sky
+  var sky=ctx.createLinearGradient(0,0,0,H*0.5);
+  sky.addColorStop(0,'#04060e');
+  sky.addColorStop(0.4,'#0a1025');
+  sky.addColorStop(0.8,'#0e1a3a');
+  sky.addColorStop(1,'#142040');
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,W,H*0.5);
+
+  // Stars
+  for(var i=0;i<seaMoonStars.length;i++){
+    var s=seaMoonStars[i];
+    var a=0.25+0.5*Math.sin(t*0.0008+s.phase);
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(180,200,255,'+a+')';ctx.fill();
+  }
+
+  // Moon
+  var mx=W*0.75, my=H*0.12, mr=35;
+  ctx.beginPath();ctx.arc(mx,my,mr,0,Math.PI*2);
+  ctx.fillStyle='rgba(200,215,240,.85)';ctx.fill();
+  ctx.beginPath();ctx.arc(mx,my,mr+8,0,Math.PI*2);
+  ctx.fillStyle='rgba(150,180,220,.06)';ctx.fill();
+  ctx.beginPath();ctx.arc(mx,my,mr+20,0,Math.PI*2);
+  ctx.fillStyle='rgba(130,160,210,.03)';ctx.fill();
+  // Moon reflection
+  for(var i=0;i<15;i++){
+    var ry=H*0.45+i*8;
+    var rw=20-i*0.8+Math.sin(t*0.002+i)*3;
+    ctx.fillStyle='rgba(180,200,230,'+(0.06-i*0.003)+')';
+    ctx.fillRect(mx-rw/2+Math.sin(t*0.001+i*0.5)*5, ry, rw, 3);
+  }
+
+  // Ocean base
+  ctx.fillStyle='#0a1428';
+  ctx.fillRect(0,H*0.45,W,H*0.55);
+
+  // Waves
+  for(var i=0;i<seaWaves.length;i++){
+    var w=seaWaves[i];
+    ctx.beginPath();
+    ctx.moveTo(0,H);
+    for(var x=0;x<=W;x+=4){
+      var y=w.y+Math.sin(x*w.frequency+t*w.speed+w.phase)*w.amplitude
+              +Math.sin(x*w.frequency*2.3+t*w.speed*1.5)*w.amplitude*0.3;
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(W,H);ctx.closePath();
+    ctx.fillStyle='rgba('+w.color+','+w.alpha+')';
+    ctx.fill();
+  }
+
+  // Foam/spray
+  for(var i=0;i<seaFoam.length;i++){
+    var f=seaFoam[i];
+    f.x+=Math.sin(t*0.001+f.phase)*0.3;
+    var fy=f.y+Math.sin(t*0.002+f.phase)*4;
+    var fa=0.2+0.3*Math.sin(t*0.002+f.phase);
+    ctx.beginPath();ctx.arc(f.x,fy,f.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(180,210,240,'+Math.max(0,fa)+')';ctx.fill();
+  }
+
+  // Crashing wave highlight near shore
+  var crashX=W*0.3+Math.sin(t*0.0005)*W*0.2;
+  var crashY=H*0.48;
+  var crashA=0.15+0.1*Math.sin(t*0.001);
+  ctx.beginPath();
+  for(var x=crashX-60;x<crashX+60;x+=3){
+    var cy=crashY+Math.sin((x-crashX)*0.08+t*0.003)*6;
+    ctx.lineTo(x,cy);
+  }
+  ctx.strokeStyle='rgba(200,225,255,'+crashA+')';
+  ctx.lineWidth=2;ctx.stroke();
+}
+
+/* ── IDK SCENE: Red flower field in rolling hills with wind ── */
+var flowers=[], grassBlades=[], hillSeeds=[], clouds=[];
+
+function initFlowers(){
+  flowers=[];
+  grassBlades=[];
+  clouds=[];
+
+  // Clouds
+  for(var i=0;i<5;i++){
+    clouds.push({
+      x:Math.random()*W, y:H*0.08+Math.random()*H*0.15,
+      w:80+Math.random()*120, h:25+Math.random()*20,
+      speed:0.15+Math.random()*0.2, alpha:0.06+Math.random()*0.04
+    });
+  }
+
+  // Grass
+  for(var i=0;i<200;i++){
+    var gx=Math.random()*W;
+    var hillY=getHillY(gx);
+    grassBlades.push({
+      x:gx, baseY:hillY,
+      h:10+Math.random()*18,
+      phase:Math.random()*Math.PI*2,
+      hue:80+Math.random()*50,
+      sat:40+Math.random()*25
+    });
+  }
+
+  // Flowers
+  for(var i=0;i<120;i++){
+    var fx=Math.random()*W;
+    var hillY=getHillY(fx);
+    flowers.push({
+      x:fx, baseY:hillY-Math.random()*5,
+      stemH:15+Math.random()*20,
+      petalR:3+Math.random()*4,
+      petals:5+Math.floor(Math.random()*3),
+      hue:350+Math.random()*20, // reds
+      phase:Math.random()*Math.PI*2,
+      sway:Math.random()*0.4+0.2
+    });
+  }
+}
+
+function getHillY(x){
+  return H*0.55
+    +Math.sin(x*0.004)*H*0.06
+    +Math.sin(x*0.009+2)*H*0.04
+    +Math.sin(x*0.002+5)*H*0.05;
+}
+
+function drawFlowers(t){
+  // Sky — warm golden/pink
+  var sky=ctx.createLinearGradient(0,0,0,H*0.6);
+  sky.addColorStop(0,'#4a2040');
+  sky.addColorStop(0.2,'#6a3050');
+  sky.addColorStop(0.5,'#c06848');
+  sky.addColorStop(0.75,'#e8a050');
+  sky.addColorStop(1,'#e8c878');
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,W,H);
+
+  // Sun
+  var sx=W*0.7, sy=H*0.18;
+  ctx.beginPath();ctx.arc(sx,sy,40,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,220,150,.6)';ctx.fill();
+  ctx.beginPath();ctx.arc(sx,sy,55,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,200,120,.08)';ctx.fill();
+  ctx.beginPath();ctx.arc(sx,sy,80,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,180,100,.04)';ctx.fill();
+
+  // Clouds
+  for(var i=0;i<clouds.length;i++){
+    var c=clouds[i];
+    c.x+=c.speed;
+    if(c.x>W+c.w) c.x=-c.w;
+    ctx.fillStyle='rgba(255,230,200,'+c.alpha+')';
+    ctx.beginPath();
+    ctx.ellipse(c.x,c.y,c.w/2,c.h/2,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(c.x-c.w*0.25,c.y+5,c.w*0.3,c.h*0.4,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(c.x+c.w*0.2,c.y-3,c.w*0.35,c.h*0.45,0,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Hills — multiple layers
+  // Far hills
+  ctx.beginPath();
+  ctx.moveTo(0,H);
+  for(var x=0;x<=W;x+=3){
+    var y=H*0.5+Math.sin(x*0.003+1)*H*0.04+Math.sin(x*0.007)*H*0.02;
+    ctx.lineTo(x,y);
+  }
+  ctx.lineTo(W,H);ctx.closePath();
+  ctx.fillStyle='#5a7a3a';ctx.fill();
+
+  // Mid hills
+  ctx.beginPath();
+  ctx.moveTo(0,H);
+  for(var x=0;x<=W;x+=3){
+    var y=H*0.53+Math.sin(x*0.005+3)*H*0.035+Math.sin(x*0.011+1)*H*0.02;
+    ctx.lineTo(x,y);
+  }
+  ctx.lineTo(W,H);ctx.closePath();
+  ctx.fillStyle='#4a6a2e';ctx.fill();
+
+  // Near hills (main flower field)
+  ctx.beginPath();
+  ctx.moveTo(0,H);
+  for(var x=0;x<=W;x+=3){
+    ctx.lineTo(x,getHillY(x));
+  }
+  ctx.lineTo(W,H);ctx.closePath();
+  ctx.fillStyle='#3a5a22';ctx.fill();
+
+  // Wind factor
+  var wind=Math.sin(t*0.0008)*0.8+Math.sin(t*0.002)*0.4;
+
+  // Grass
+  for(var i=0;i<grassBlades.length;i++){
+    var g=grassBlades[i];
+    var sway=Math.sin(t*0.002+g.phase+g.x*0.01)*g.h*0.3*wind;
+    ctx.strokeStyle='hsla('+g.hue+','+g.sat+'%,30%,.5)';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(g.x,g.baseY);
+    ctx.quadraticCurveTo(g.x+sway*0.5,g.baseY-g.h*0.5,g.x+sway,g.baseY-g.h);
+    ctx.stroke();
+  }
+
+  // Flowers
+  for(var i=0;i<flowers.length;i++){
+    var f=flowers[i];
+    var sway=Math.sin(t*0.002+f.phase+f.x*0.008)*f.sway*8*wind;
+    var tipX=f.x+sway;
+    var tipY=f.baseY-f.stemH;
+
+    // Stem
+    ctx.strokeStyle='rgba(50,90,30,.7)';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.moveTo(f.x,f.baseY);
+    ctx.quadraticCurveTo(f.x+sway*0.4,f.baseY-f.stemH*0.5,tipX,tipY);
+    ctx.stroke();
+
+    // Petals
+    for(var p=0;p<f.petals;p++){
+      var angle=(p/f.petals)*Math.PI*2+t*0.0003;
+      var px=tipX+Math.cos(angle)*f.petalR;
+      var py=tipY+Math.sin(angle)*f.petalR*0.7;
+      ctx.beginPath();ctx.arc(px,py,f.petalR*0.55,0,Math.PI*2);
+      ctx.fillStyle='hsla('+f.hue+',75%,45%,.8)';ctx.fill();
+    }
+    // Center
+    ctx.beginPath();ctx.arc(tipX,tipY,f.petalR*0.35,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,220,100,.8)';ctx.fill();
+  }
+
+  // Wind particles — petals drifting
+  for(var i=0;i<8;i++){
+    var px=((t*0.05+i*137)%W);
+    var py=H*0.3+Math.sin(t*0.001+i*2)*H*0.15+Math.sin(t*0.003+i)*20;
+    var pa=0.3+0.3*Math.sin(t*0.002+i);
+    ctx.beginPath();ctx.arc(px,py,2,0,Math.PI*2);
+    ctx.fillStyle='rgba(220,80,80,'+pa+')';ctx.fill();
+  }
+}
+
+/* ── INIT & LOOP ── */
+function initScenes(){
+  initCity();
+  initSea();
+  initFlowers();
+}
+
+resize();
+window.addEventListener('resize',resize);
+
+function loop(time){
+  requestAnimationFrame(loop);
+
+  // Draw target mood scene
+  if(targetMood==='happy') drawCity(time);
+  else if(targetMood==='sad') drawSea(time);
+  else drawFlowers(time);
+
+  // Smooth transition overlay
+  if(targetMood!==current){
+    transitionAlpha+=0.025;
+    if(transitionAlpha>=1){
+      current=targetMood;
+      transitionAlpha=0;
+    }
+  }
+  if(transitionAlpha>0&&transitionAlpha<1){
+    ctx.fillStyle='rgba(0,0,0,'+Math.sin(transitionAlpha*Math.PI)*0.6+')';
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+requestAnimationFrame(loop);
 
 })();
 </script>
