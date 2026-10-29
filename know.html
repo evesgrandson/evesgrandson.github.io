@@ -1,1 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get to Know Each Other — Aether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:#05080a;
+  color:#e8e8ea;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  position:relative;
+}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.vignette{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 30%,rgba(0,0,0,.72) 100%);
+}
 
+/* ----- top-right back link + sound toggle ----- */
+.topbar{
+  position:fixed;top:22px;right:22px;z-index:50;
+  display:flex;gap:14px;align-items:center;
+}
+.topbar a, .topbar button{
+  background:rgba(10,14,16,.5);
+  border:1px solid rgba(255,255,255,.18);
+  color:#e8e8ea;
+  font-family:'Cormorant Garamond',serif;
+  font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;
+  padding:.55rem 1rem;border-radius:999px;
+  text-decoration:none;cursor:pointer;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background .3s,border-color .3s,transform .3s;
+}
+.topbar a:hover, .topbar button:hover{
+  background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);transform:translateY(-2px);
+}
+
+/* ----- stage (fade area) ----- */
+.stage{
+  position:relative;z-index:5;
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem 1.25rem;
+}
+.scene{
+  max-width:760px;width:100%;
+  text-align:center;
+  opacity:0;transform:translateY(14px);
+  transition:opacity 1.4s ease, transform 1.4s ease;
+}
+.scene.show{opacity:1;transform:translateY(0)}
+.scene.leaving{opacity:0;transform:translateY(-14px);transition:opacity .9s ease, transform .9s ease}
+
+.whisper{
+  font-size:.7rem;letter-spacing:.5em;text-transform:uppercase;
+  opacity:.42;margin-bottom:1.6rem;
+}
+.question{
+  font-family:'Spectral',serif;font-weight:300;font-style:italic;
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  line-height:1.4;color:#f1ece0;
+  text-shadow:0 0 24px rgba(0,0,0,.6);
+  margin-bottom:2rem;
+}
+.answer-wrap{
+  margin:0 auto;max-width:560px;
+  display:flex;flex-direction:column;align-items:stretch;gap:1.2rem;
+}
+.answer-wrap input, .answer-wrap textarea{
+  width:100%;
+  background:rgba(10,14,16,.42);
+  border:none;border-bottom:1px solid rgba(255,255,255,.3);
+  color:#f3f0e8;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.25rem;
+  padding:.9rem .6rem;
+  text-align:center;
+  outline:none;
+  transition:border-color .3s,background .3s;
+  resize:none;
+}
+.answer-wrap textarea{min-height:110px;border:1px solid rgba(255,255,255,.2);border-radius:4px}
+.answer-wrap input:focus, .answer-wrap textarea:focus{
+  border-color:rgba(255,255,255,.75);
+  background:rgba(255,255,255,.05);
+}
+.answer-wrap input::placeholder, .answer-wrap textarea::placeholder{
+  color:rgba(230,230,230,.3);font-style:italic;
+}
+
+.btn-row{display:flex;justify-content:center;gap:1rem;margin-top:.6rem}
+.cta{
+  background:transparent;
+  border:1px solid rgba(255,255,255,.35);
+  color:#eee;
+  font-family:'Cormorant Garamond',serif;
+  font-size:.78rem;letter-spacing:.4em;text-transform:uppercase;
+  padding:.9rem 2.2rem;border-radius:999px;
+  cursor:pointer;
+  transition:background .35s,border-color .35s,transform .35s,letter-spacing .35s;
+}
+.cta:hover{background:rgba(255,255,255,.12);border-color:#fff;transform:translateY(-2px);letter-spacing:.5em}
+.cta:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+/* Aether response bubble */
+.aether{
+  margin-top:1.6rem;
+  font-family:'Spectral',serif;font-style:italic;font-weight:300;
+  font-size:clamp(1.1rem,2.4vw,1.4rem);
+  line-height:1.7;
+  color:#dcd3bf;
+  opacity:0;transform:translateY(10px);
+  transition:opacity 1.4s ease .3s, transform 1.4s ease .3s;
+  white-space:pre-line;
+  text-shadow:0 0 18px rgba(0,0,0,.6);
+}
+.aether.show{opacity:1;transform:translateY(0)}
+.aether-label{
+  display:block;
+  font-family:'Cormorant Garamond',serif;font-style:normal;
+  font-size:.62rem;letter-spacing:.5em;text-transform:uppercase;
+  color:rgba(220,211,191,.55);margin-bottom:.6rem;
+}
+
+/* progress */
+.progress{
+  position:fixed;left:0;top:0;height:2px;width:0;z-index:40;
+  background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.75));
+  transition:width 1s ease;
+}
+
+/* intro + outro */
+.title-xl{
+  font-family:'Spectral',serif;font-weight:300;
+  font-size:clamp(2.4rem,7vw,5rem);
+  letter-spacing:.1em;
+  color:#f3eee2;
+}
+.sub-xl{
+  margin-top:1.4rem;
+  font-size:clamp(.75rem,2vw,1rem);letter-spacing:.42em;text-transform:uppercase;opacity:.55;
+}
+.intro-text{
+  margin-top:2.4rem;max-width:600px;margin-left:auto;margin-right:auto;
+  font-size:clamp(1.05rem,2.2vw,1.2rem);line-height:1.9;font-style:italic;opacity:.78;
+}
+
+/* status pill after submit */
+.status{
+  margin-top:1.6rem;font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;opacity:.6;
+}
+
+@media(max-width:600px){
+  .topbar{top:14px;right:14px}
+  .question{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="vignette"></div>
+<div class="progress" id="prog"></div>
+
+<div class="topbar">
+  <button id="soundBtn" aria-label="Toggle sound">♪ sound: on</button>
+  <a href="index.html">← back</a>
+</div>
+
+<main class="stage" id="stage"></main>
+
+<script>
+(function(){
+'use strict';
+
+/* ================================================================
+   >>>  EMAIL SETUP  <<<
+   Replace this with your own Formspree endpoint.
+   1. Go to  https://formspree.io/
+   2. Sign up free, create a form, confirm your email
+   3. Copy your endpoint (looks like https://formspree.io/f/abcdwxyz)
+   4. Paste below
+   ================================================================ */
+var FORM_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_ID";
+
+/* ================================================================
+   QUESTIONS & AETHER'S RESPONSES
+   ================================================================ */
+var QUESTIONS = [
+  { q: "What is your name?",
+    ph: "whisper it softly…",
+    type: "input",
+    key: "name",
+    a: "Quite an unusual name." },
+
+  { q: "If you had a genie, what are the three wishes you would ask it?",
+    ph: "three wishes…",
+    type: "area",
+    key: "wishes",
+    a: "I see. I will wish for —\nThe power to have any superpowers,\nThe power to give any superpowers,\nAnd an infinite number of worlds to go on adventure." },
+
+  { q: "If you could only eat three foods for the rest of your life, what would those be?",
+    ph: "three forever foods…",
+    type: "area",
+    key: "foods",
+    a: "Quite a unique choice. For me — Steak, Pizza with all the good toppings, and ice cream." },
+
+  { q: "What is your favorite drink?",
+    ph: "a favorite sip…",
+    type: "input",
+    key: "drink",
+    a: "Oh, I prefer chocolate Milkshake and Hot Chocolate." },
+
+  { q: "If you could have any superpower, what would it be and why?",
+    ph: "one impossible gift…",
+    type: "area",
+    key: "superpower",
+    a: "All of them." },
+
+  { q: "If you could become a king or queen tomorrow, what is the first law you are making?",
+    ph: "the first law of your reign…",
+    type: "area",
+    key: "law",
+    a: "I haven't thought much of it." },
+
+  { q: "What do you want to be when you grow up?",
+    ph: "a quiet ambition…",
+    type: "input",
+    key: "future",
+    a: "Powerful and rich." },
+
+  { q: "If you could change one thing about yourself, what would it be?",
+    ph: "a secret wish…",
+    type: "area",
+    key: "change",
+    a: "Well, I won't change myself." }
+];
+
+/* ================================================================
+   FOGGY FOREST CANVAS
+   ================================================================ */
+var canvas = document.getElementById('bg');
+var ctx = canvas.getContext('2d');
+var W, H, DPR;
+function resize(){
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W*DPR; canvas.height = H*DPR;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  buildTrees();
+}
+window.addEventListener('resize', resize);
+function rnd(a,b){ return a+Math.random()*(b-a); }
+
+var trees = [];
+function buildTrees(){
+  trees = [];
+  // 5 depth layers of silhouette trees, farther = lighter + smaller
+  var layers = 5;
+  for(var l=0; l<layers; l++){
+    var depth = l/(layers-1);               // 0 near .. 1 far
+    var count = Math.round(6 + l*5);
+    for(var i=0;i<count;i++){
+      var hBase = H * (0.55 - depth*0.22);
+      trees.push({
+        x: rnd(-80, W+80),
+        baseY: H + 20 - depth*20,
+        h: rnd(hBase*0.6, hBase*1.3),
+        w: rnd(14, 42) * (1 - depth*0.55),
+        depth: depth,
+        sway: rnd(0,6.28),
+        swaySpeed: rnd(0.0004, 0.0009)
+      });
+    }
+  }
+  trees.sort(function(a,b){ return a.depth - b.depth; }); // far first? we want FAR first so near drawn on top:
+  trees.reverse(); // actually we want depth 1 (far) first, 0 (near) last. Reverse to that.
+}
+
+// fog particles
+var fogs = [];
+function buildFog(){
+  fogs = [];
+  for(var i=0;i<10;i++){
+    fogs.push({
+      x: rnd(-200, W+200),
+      y: rnd(H*0.35, H*0.95),
+      r: rnd(220, 460),
+      s: rnd(0.08, 0.25) * (Math.random()<0.5?-1:1),
+      a: rnd(0.05, 0.14),
+      p: rnd(0, 6.28)
+    });
+  }
+}
+buildFog();
+
+// fireflies
+var flies = [];
+function buildFlies(){
+  flies = [];
+  for(var i=0;i<22;i++){
+    flies.push({
+      x: rnd(0,W), y: rnd(H*0.3, H*0.95),
+      vx: rnd(-0.25,0.25), vy: rnd(-0.15,0.15),
+      p: rnd(0,6.28),
+      r: rnd(1.1, 2.2)
+    });
+  }
+}
+buildFlies();
+
+function drawTree(tr, t){
+  var sway = Math.sin(t*tr.swaySpeed + tr.sway) * (6 - tr.depth*5);
+  var alpha = 0.95 - tr.depth*0.75;
+  var tint  = Math.round(6 + tr.depth*26);
+  ctx.fillStyle = 'rgba('+tint+','+(tint+2)+','+(tint+4)+','+alpha+')';
+  // trunk
+  var tx = tr.x + sway;
+  var ty = tr.baseY;
+  ctx.beginPath();
+  ctx.moveTo(tx - tr.w*0.18, ty);
+  ctx.lineTo(tx + tr.w*0.18, ty);
+  ctx.lineTo(tx + tr.w*0.08, ty - tr.h);
+  ctx.lineTo(tx - tr.w*0.08, ty - tr.h);
+  ctx.closePath();
+  ctx.fill();
+  // crown — rough pine shape
+  var top = ty - tr.h;
+  ctx.beginPath();
+  ctx.moveTo(tx, top - tr.h*0.35);
+  ctx.lineTo(tx - tr.w*1.3, top + tr.h*0.1);
+  ctx.lineTo(tx - tr.w*0.5, top + tr.h*0.08);
+  ctx.lineTo(tx - tr.w*1.6, top + tr.h*0.35);
+  ctx.lineTo(tx - tr.w*0.6, top + tr.h*0.32);
+  ctx.lineTo(tx - tr.w*1.9, top + tr.h*0.62);
+  ctx.lineTo(tx + tr.w*1.9, top + tr.h*0.62);
+  ctx.lineTo(tx + tr.w*0.6, top + tr.h*0.32);
+  ctx.lineTo(tx + tr.w*1.6, top + tr.h*0.35);
+  ctx.lineTo(tx + tr.w*0.5, top + tr.h*0.08);
+  ctx.lineTo(tx + tr.w*1.3, top + tr.h*0.1);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function loop(t){
+  // sky gradient (deep mossy teal)
+  var g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0, '#0a1216');
+  g.addColorStop(0.55,'#0f1a1c');
+  g.addColorStop(1,  '#122225');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  // distant moon haze
+  var mg = ctx.createRadialGradient(W*0.72, H*0.22, 10, W*0.72, H*0.22, Math.max(W,H)*0.5);
+  mg.addColorStop(0, 'rgba(200,220,220,0.14)');
+  mg.addColorStop(1, 'rgba(200,220,220,0)');
+  ctx.fillStyle = mg; ctx.fillRect(0,0,W,H);
+
+  // trees (depth back to front, we already ordered)
+  for(var i=0; i<trees.length; i++) drawTree(trees[i], t);
+
+  // fog
+  for(var f=0; f<fogs.length; f++){
+    var fo = fogs[f];
+    fo.x += fo.s;
+    if(fo.s>0 && fo.x - fo.r > W+100) fo.x = -fo.r-100;
+    if(fo.s<0 && fo.x + fo.r < -100) fo.x = W+fo.r+100;
+    var fy = fo.y + Math.sin(t*0.0002 + fo.p)*20;
+    var fg2 = ctx.createRadialGradient(fo.x, fy, 0, fo.x, fy, fo.r);
+    fg2.addColorStop(0, 'rgba(200,210,210,'+fo.a+')');
+    fg2.addColorStop(1, 'rgba(200,210,210,0)');
+    ctx.fillStyle = fg2;
+    ctx.beginPath(); ctx.arc(fo.x, fy, fo.r, 0, 6.2832); ctx.fill();
+  }
+
+  // fireflies
+  for(var k=0; k<flies.length; k++){
+    var fl = flies[k];
+    fl.x += fl.vx + Math.sin(t*0.001 + fl.p)*0.3;
+    fl.y += fl.vy + Math.cos(t*0.0012 + fl.p)*0.2;
+    if(fl.x<-10) fl.x=W+10; if(fl.x>W+10) fl.x=-10;
+    if(fl.y<H*0.25) fl.vy=Math.abs(fl.vy); if(fl.y>H) fl.vy=-Math.abs(fl.vy);
+    var glow = 0.5 + 0.5*Math.sin(t*0.004 + fl.p);
+    var fg3 = ctx.createRadialGradient(fl.x,fl.y,0,fl.x,fl.y,14);
+    fg3.addColorStop(0,'rgba(255,230,150,'+(0.55*glow)+')');
+    fg3.addColorStop(1,'rgba(255,230,150,0)');
+    ctx.fillStyle = fg3;
+    ctx.beginPath(); ctx.arc(fl.x,fl.y,14,0,6.2832); ctx.fill();
+    ctx.fillStyle = 'rgba(255,240,190,'+(0.8*glow)+')';
+    ctx.beginPath(); ctx.arc(fl.x,fl.y,fl.r,0,6.2832); ctx.fill();
+  }
+
+  // ground mist tint
+  var mist = ctx.createLinearGradient(0, H*0.6, 0, H);
+  mist.addColorStop(0,'rgba(170,180,180,0)');
+  mist.addColorStop(1,'rgba(170,180,180,0.22)');
+  ctx.fillStyle = mist; ctx.fillRect(0, H*0.6, W, H*0.4);
+
+  requestAnimationFrame(loop);
+}
+resize();
+requestAnimationFrame(loop);
+
+/* ================================================================
+   AMBIENT MUSIC (Web Audio drone pad)
+   ================================================================ */
+var AC = null, musicOn = true, musicNodes = null;
+function initAudio(){
+  if(AC) return AC;
+  try{ AC = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  return AC;
+}
+function startMusic(){
+  var a = initAudio(); if(!a || musicNodes) return;
+  if(a.state === 'suspended') a.resume();
+
+  var master = a.createGain(); master.gain.value = 0; master.connect(a.destination);
+  master.gain.linearRampToValueAtTime(0.12, a.currentTime + 3);
+
+  var lp = a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=900; lp.Q.value=0.6;
+  lp.connect(master);
+
+  // chord: Em9ish — E2, B2, G3, D4, F#4
+  var freqs = [82.41, 123.47, 196.00, 293.66, 369.99];
+  var oscs = [];
+  freqs.forEach(function(f, i){
+    var o1 = a.createOscillator(); o1.type = i<2 ? 'sine' : 'triangle'; o1.frequency.value = f;
+    var o2 = a.createOscillator(); o2.type = 'sine';     o2.frequency.value = f*1.003; // slow beating
+    var g = a.createGain(); g.gain.value = 0.18 / (i*0.6 + 1);
+    o1.connect(g); o2.connect(g); g.connect(lp);
+    // very slow LFO on gain for breath
+    var lfo = a.createOscillator(); lfo.type='sine'; lfo.frequency.value = 0.06 + i*0.02;
+    var lfoG = a.createGain(); lfoG.gain.value = g.gain.value * 0.5;
+    lfo.connect(lfoG); lfoG.connect(g.gain);
+    o1.start(); o2.start(); lfo.start();
+    oscs.push(o1,o2,lfo);
+  });
+
+  // soft wind noise
+  var bufLen = a.sampleRate * 2;
+  var buf = a.createBuffer(1, bufLen, a.sampleRate);
+  var d = buf.getChannelData(0);
+  for(var i=0;i<bufLen;i++) d[i] = (Math.random()*2-1)*0.5;
+  var noise = a.createBufferSource(); noise.buffer = buf; noise.loop = true;
+  var bp = a.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=420; bp.Q.value=0.8;
+  var ng = a.createGain(); ng.gain.value = 0.06;
+  noise.connect(bp); bp.connect(ng); ng.connect(master);
+  noise.start();
+
+  musicNodes = { master:master, oscs:oscs, noise:noise };
+}
+function stopMusic(){
+  if(!musicNodes || !AC) return;
+  var now = AC.currentTime;
+  musicNodes.master.gain.cancelScheduledValues(now);
+  musicNodes.master.gain.setValueAtTime(musicNodes.master.gain.value, now);
+  musicNodes.master.gain.linearRampToValueAtTime(0, now + 1.5);
+  setTimeout(function(){
+    try{
+      musicNodes.oscs.forEach(function(o){ o.stop(); });
+      musicNodes.noise.stop();
+    }catch(e){}
+    musicNodes = null;
+  }, 1700);
+}
+function softClick(){
+  var a = initAudio(); if(!a) return;
+  var now = a.currentTime;
+  var o = a.createOscillator(); o.type='sine';
+  o.frequency.setValueAtTime(660, now);
+  o.frequency.exponentialRampToValueAtTime(240, now+0.2);
+  var g = a.createGain();
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.exponentialRampToValueAtTime(0.05, now+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, now+0.3);
+  o.connect(g); g.connect(a.destination);
+  o.start(now); o.stop(now+0.32);
+}
+
+var soundBtn = document.getElementById('soundBtn');
+soundBtn.addEventListener('click', function(){
+  musicOn = !musicOn;
+  if(musicOn){ startMusic(); soundBtn.textContent = '♪ sound: on'; }
+  else { stopMusic(); soundBtn.textContent = '♪ sound: off'; }
+});
+// start on first user gesture
+function firstGesture(){
+  if(musicOn) startMusic();
+  window.removeEventListener('click', firstGesture);
+  window.removeEventListener('keydown', firstGesture);
+}
+window.addEventListener('click', firstGesture);
+window.addEventListener('keydown', firstGesture);
+
+/* ================================================================
+   SCENE FLOW
+   ================================================================ */
+var stage = document.getElementById('stage');
+var prog = document.getElementById('prog');
+var answers = {};
+var step = -1; // -1 = intro
+
+function clearStage(cb){
+  var kid = stage.firstElementChild;
+  if(!kid){ cb(); return; }
+  kid.classList.remove('show');
+  kid.classList.add('leaving');
+  setTimeout(function(){ stage.innerHTML=''; cb(); }, 900);
+}
+
+function mountScene(node){
+  stage.appendChild(node);
+  // force reflow then animate in
+  void node.offsetHeight;
+  setTimeout(function(){ node.classList.add('show'); }, 40);
+}
+
+function updateProgress(){
+  var total = QUESTIONS.length + 2; // intro + Qs + outro
+  var cur = step + 2;
+  prog.style.width = Math.min(100, (cur/total)*100) + '%';
+}
+
+/* ---------- INTRO ---------- */
+function showIntro(){
+  step = -1;
+  updateProgress();
+  var s = document.createElement('div');
+  s.className = 'scene';
+  s.innerHTML = `
+    <div class="title-xl">Get to Know<br>Each Other</div>
+    <div class="sub-xl">— a quiet exchange with Aether —</div>
+    <p class="intro-text">
+      Step softly into the forest. The fog will not harm you.
+      Some questions have no right answer — only yours.
+      When you are ready, we begin.
+    </p>
+    <div class="btn-row" style="margin-top:2.4rem">
+      <button class="cta" id="beginBtn">Begin</button>
+    </div>
+  `;
+  mountScene(s);
+  document.getElementById('beginBtn').addEventListener('click', function(){
+    softClick();
+    next();
+  });
+}
+
+/* ---------- A QUESTION ---------- */
+function showQuestion(i){
+  step = i;
+  updateProgress();
+  var q = QUESTIONS[i];
+  var s = document.createElement('div');
+  s.className = 'scene';
+  var inputHTML = q.type === 'area'
+    ? `<textarea id="ansField" placeholder="${q.ph}" rows="4"></textarea>`
+    : `<input id="ansField" type="text" placeholder="${q.ph}" autocomplete="off">`;
+  s.innerHTML = `
+    <div class="whisper">Question ${i+1} of ${QUESTIONS.length}</div>
+    <div class="question">${q.q}</div>
+    <div class="answer-wrap">
+      ${inputHTML}
+      <div class="btn-row">
+        <button class="cta" id="answerBtn" disabled>Answer</button>
+      </div>
+      <div class="aether" id="aetherResp">
+        <span class="aether-label">Aether</span>
+        <span id="aetherText"></span>
+      </div>
+      <div class="btn-row" id="nextRow" style="display:none">
+        <button class="cta" id="nextBtn">${i === QUESTIONS.length-1 ? 'Finish' : 'Continue'}</button>
+      </div>
+    </div>
+  `;
+  mountScene(s);
+
+  var field = document.getElementById('ansField');
+  var answerBtn = document.getElementById('answerBtn');
+  var aetherResp = document.getElementById('aetherResp');
+  var aetherText = document.getElementById('aetherText');
+  var nextRow = document.getElementById('nextRow');
+
+  setTimeout(function(){ field.focus(); }, 500);
+
+  field.addEventListener('input', function(){
+    answerBtn.disabled = field.value.trim().length === 0;
+  });
+  field.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && q.type === 'input' && !answerBtn.disabled){
+      e.preventDefault(); answerBtn.click();
+    }
+    if(e.key === 'Enter' && e.ctrlKey && !answerBtn.disabled){
+      answerBtn.click();
+    }
+  });
+
+  answerBtn.addEventListener('click', function(){
+    var val = field.value.trim();
+    if(!val) return;
+    answers[q.key] = val;
+    field.disabled = true;
+    answerBtn.style.display = 'none';
+    softClick();
+    // type Aether response in gently
+    aetherResp.classList.add('show');
+    typeText(aetherText, q.a, 24, function(){
+      nextRow.style.display = 'flex';
+      document.getElementById('nextBtn').addEventListener('click', function(){
+        softClick();
+        next();
+      });
+    });
+  });
+}
+
+function typeText(el, text, speed, done){
+  el.textContent = '';
+  var i = 0;
+  (function tick(){
+    if(i >= text.length){ if(done) done(); return; }
+    el.textContent += text.charAt(i);
+    i++;
+    setTimeout(tick, speed);
+  })();
+}
+
+/* ---------- OUTRO + SUBMIT ---------- */
+function showOutro(){
+  step = QUESTIONS.length;
+  updateProgress();
+  var s = document.createElement('div');
+  s.className = 'scene';
+  s.innerHTML = `
+    <div class="title-xl">Thank you.</div>
+    <p class="intro-text">
+      Your answers drift through the fog toward me.
+      I will keep them where the fireflies rest.
+    </p>
+    <div class="status" id="status">sending your words…</div>
+    <div class="btn-row" style="margin-top:2.4rem">
+      <a class="cta" href="index.html" style="text-decoration:none;display:inline-block">Return Home</a>
+    </div>
+  `;
+  mountScene(s);
+  submitAnswers();
+}
+
+function submitAnswers(){
+  var status = document.getElementById('status');
+  // Build body
+  var body = {};
+  QUESTIONS.forEach(function(q){ body[q.q] = answers[q.key] || ''; });
+  body._subject = 'New answers from Get to Know Each Other';
+
+  if(!FORM_ENDPOINT || FORM_ENDPOINT.indexOf('REPLACE_WITH_YOUR_ID') !== -1){
+    status.textContent = 'form not configured — see FORM_ENDPOINT in know.html';
+    console.log('ANSWERS:', body);
+    return;
+  }
+
+  fetch(FORM_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Accept':'application/json', 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r){
+    if(r.ok) status.textContent = 'your words have arrived ✦';
+    else     status.textContent = 'something stirred in the fog — please try again later';
+  }).catch(function(){
+    status.textContent = 'the forest swallowed the message — check your connection';
+  });
+}
+
+/* ---------- FLOW CONTROL ---------- */
+function next(){
+  clearStage(function(){
+    var nextStep = step + 1;
+    if(nextStep < QUESTIONS.length) showQuestion(nextStep);
+    else showOutro();
+  });
+}
+
+// kick off
+showIntro();
+
+})();
+</script>
+</body>
+</html>
