@@ -10,13 +10,11 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow-x:hidden;background:#060810;font-family:'Rajdhani',sans-serif;color:#fff}
 canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block}
-
 .page{
   position:relative;z-index:1;min-height:100vh;
   display:flex;flex-direction:column;align-items:center;
   padding:40px 20px 80px;
 }
-
 h1{
   font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;letter-spacing:3px;
   margin-bottom:4px;
@@ -27,19 +25,20 @@ h1{
   font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px;letter-spacing:1.5px;
   text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.6);
 }
-
-/* ── Poem card ── */
 .poem-card{
-  width:100%;max-width:620px;
+  width:100%;max-width:620px;max-height:70vh;overflow-y:auto;
   background:rgba(8,8,20,.55);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.06);
   border-radius:22px;padding:44px 38px 40px;
   box-shadow:0 0 80px rgba(0,0,0,.25);
-  text-align:center;position:relative;overflow:hidden;
+  text-align:center;position:relative;overflow-x:hidden;
   margin-bottom:20px;
   transition:border-color .5s;
+  scrollbar-width:thin;scrollbar-color:rgba(167,139,250,.2) transparent;
 }
+.poem-card::-webkit-scrollbar{width:4px}
+.poem-card::-webkit-scrollbar-thumb{background:rgba(167,139,250,.2);border-radius:2px}
 .poem-card:hover{border-color:rgba(167,139,250,.15)}
 .poem-card::before,.poem-card::after{
   content:'';position:absolute;width:36px;height:36px;
@@ -47,7 +46,6 @@ h1{
 }
 .poem-card::before{top:14px;left:14px;border-width:2px 0 0 2px;border-radius:4px 0 0 0}
 .poem-card::after{bottom:14px;right:14px;border-width:0 2px 2px 0;border-radius:0 0 4px 0}
-
 .poem-title{
   font-family:'Cormorant Garamond',serif;
   font-size:26px;font-weight:600;
@@ -55,7 +53,6 @@ h1{
   opacity:1;transition:opacity .6s ease;
 }
 .poem-title.fade-out{opacity:0}
-
 .poem-body{
   font-family:'Cormorant Garamond',serif;
   font-size:19px;font-weight:400;font-style:italic;
@@ -64,7 +61,6 @@ h1{
   opacity:1;transition:opacity .6s ease;
 }
 .poem-body.fade-out{opacity:0}
-
 .poem-author{
   font-family:'Rajdhani',sans-serif;
   font-size:13px;font-weight:600;letter-spacing:2px;
@@ -73,8 +69,6 @@ h1{
   opacity:1;transition:opacity .6s ease;
 }
 .poem-author.fade-out{opacity:0}
-
-/* ── Navigation ── */
 .poem-nav{
   display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap;justify-content:center;
 }
@@ -92,19 +86,39 @@ h1{
 }
 .nav-btn:active{transform:scale(.97)}
 .nav-btn:disabled{opacity:.25;pointer-events:none}
-
+.nav-btn.api-btn{
+  background:linear-gradient(135deg,rgba(110,80,255,.18),rgba(244,114,182,.12));
+  border-color:rgba(167,139,250,.25);
+}
+.nav-btn.api-btn:hover{
+  background:linear-gradient(135deg,rgba(110,80,255,.35),rgba(244,114,182,.25));
+  border-color:rgba(167,139,250,.4);
+}
+.nav-btn.api-btn.loading{pointer-events:none;opacity:.5}
+.nav-btn .spinner{
+  display:none;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top-color:rgba(167,139,250,.7);
+  border-radius:50%;animation:spin .6s linear infinite;
+  margin-right:6px;vertical-align:middle;
+}
+.nav-btn.loading .spinner{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 .poem-counter{
   font:400 12px 'Rajdhani',sans-serif;
   color:rgba(255,255,255,.25);letter-spacing:1px;
   min-width:60px;text-align:center;
 }
-
-/* ── Add your own poems instructions ── */
+.api-badge{
+  display:inline-block;font:600 10px 'Rajdhani',sans-serif;
+  color:rgba(110,231,168,.5);letter-spacing:1px;
+  margin-top:8px;opacity:0;transition:opacity .4s;
+}
+.api-badge.visible{opacity:1}
 .add-note{
   margin-top:16px;font-size:11px;color:rgba(255,255,255,.15);
   max-width:400px;text-align:center;line-height:1.6;
 }
-
 .backlink{
   position:fixed;bottom:12px;left:16px;z-index:9999;
   color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
@@ -112,7 +126,6 @@ h1{
   text-shadow:0 1px 6px rgba(0,0,0,.6);
 }
 .backlink:hover{color:#fff}
-
 @media(max-width:480px){
   .poem-card{padding:32px 22px 30px}
   .poem-title{font-size:22px}
@@ -128,10 +141,11 @@ h1{
   <h1>POEMS</h1>
   <div class="subtitle">ink that bleeds louder than words</div>
 
-  <div class="poem-card">
+  <div class="poem-card" id="poemCard">
     <div class="poem-title" id="poemTitle"></div>
     <div class="poem-body" id="poemBody"></div>
     <div class="poem-author" id="poemAuthor"></div>
+    <div class="api-badge" id="apiBadge">✦ from poetrydb</div>
   </div>
 
   <div class="poem-nav">
@@ -139,12 +153,16 @@ h1{
     <div class="poem-counter" id="poemCounter">1 / 1</div>
     <button class="nav-btn" id="btnNext">NEXT →</button>
   </div>
-  <div style="margin-top:10px">
-    <button class="nav-btn" id="btnRandom" style="font-size:12px;padding:8px 20px">✦ RANDOM</button>
+  <div class="poem-nav" style="margin-top:8px">
+    <button class="nav-btn" id="btnRandomLocal">✦ RANDOM LOCAL</button>
+    <button class="nav-btn api-btn" id="btnRandomApi">
+      <span class="spinner"></span>
+      <span class="btn-label">⚡ RANDOM FROM API</span>
+    </button>
   </div>
 
   <div class="add-note">
-    To add poems, edit the POEMS array at the top of the script in this file.
+    Local poems: edit the POEMS array in the script. API poems: fetched live from PoetryDB.
   </div>
 </div>
 
@@ -155,9 +173,8 @@ h1{
 "use strict";
 
 /* ══════════════════════════════════════════════════════
-   YOUR POEMS — Add, remove, or edit freely.
-   Format: { title:"...", body:"...", author:"..." }
-   Use \n for line breaks in the body.
+   YOUR LOCAL POEMS — Add, remove, or edit freely.
+   Use \n for line breaks.
    ══════════════════════════════════════════════════════ */
 
 var POEMS = [
@@ -203,59 +220,152 @@ var POEMS = [
   }
 ];
 
+/* ══════════════════════════════════════════════════════
+   API CONFIGURATION
+   PoetryDB — free, no API key, no CORS issues.
+   Docs: https://poetrydb.org/
+   Change the URL if you want a different source.
+   ══════════════════════════════════════════════════════ */
+
+var POEM_API_URL = 'https://poetrydb.org/random';
+
 /* ══════════════════════════════════════════════════════ */
 
 var poemTitle = document.getElementById('poemTitle');
 var poemBody = document.getElementById('poemBody');
 var poemAuthor = document.getElementById('poemAuthor');
 var poemCounter = document.getElementById('poemCounter');
+var apiBadge = document.getElementById('apiBadge');
 var btnPrev = document.getElementById('btnPrev');
 var btnNext = document.getElementById('btnNext');
-var btnRandom = document.getElementById('btnRandom');
+var btnRandomLocal = document.getElementById('btnRandomLocal');
+var btnRandomApi = document.getElementById('btnRandomApi');
 var currentIdx = 0;
+var isApiPoem = false;
 
-function showPoem(idx, animate){
+function fadeOut(cb){
+  poemTitle.classList.add('fade-out');
+  poemBody.classList.add('fade-out');
+  poemAuthor.classList.add('fade-out');
+  setTimeout(cb, 500);
+}
+
+function fadeIn(){
+  poemTitle.classList.remove('fade-out');
+  poemBody.classList.remove('fade-out');
+  poemAuthor.classList.remove('fade-out');
+}
+
+function showLocalPoem(idx, animate){
   if(idx<0) idx=POEMS.length-1;
   if(idx>=POEMS.length) idx=0;
   currentIdx = idx;
+  isApiPoem = false;
+  apiBadge.classList.remove('visible');
 
   if(animate){
-    poemTitle.classList.add('fade-out');
-    poemBody.classList.add('fade-out');
-    poemAuthor.classList.add('fade-out');
-    setTimeout(function(){ setPoem(idx); },500);
+    fadeOut(function(){
+      setLocalPoem(idx);
+      fadeIn();
+    });
   } else {
-    setPoem(idx);
+    setLocalPoem(idx);
   }
 }
 
-function setPoem(idx){
+function setLocalPoem(idx){
   var p = POEMS[idx];
   poemTitle.textContent = p.title;
   poemBody.textContent = p.body;
   poemAuthor.textContent = '— ' + p.author;
   poemCounter.textContent = (idx+1) + ' / ' + POEMS.length;
-  poemTitle.classList.remove('fade-out');
-  poemBody.classList.remove('fade-out');
-  poemAuthor.classList.remove('fade-out');
-  btnPrev.disabled = false;
-  btnNext.disabled = false;
+  // Scroll card to top
+  document.getElementById('poemCard').scrollTop = 0;
 }
 
-btnPrev.addEventListener('click', function(){ showPoem(currentIdx-1, true); });
-btnNext.addEventListener('click', function(){ showPoem(currentIdx+1, true); });
-btnRandom.addEventListener('click', function(){
+function fetchRandomPoem(){
+  btnRandomApi.classList.add('loading');
+
+  var ctrl = new AbortController();
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 5000);
+
+  fetch(POEM_API_URL, { signal: ctrl.signal })
+    .then(function(res){
+      clearTimeout(timeout);
+      if(!res.ok) throw new Error('API error');
+      return res.json();
+    })
+    .then(function(data){
+      // PoetryDB returns an array of poem objects
+      var p = Array.isArray(data) ? data[0] : data;
+      if(!p || !p.title || !p.lines) throw new Error('Bad format');
+
+      isApiPoem = true;
+      apiBadge.classList.add('visible');
+
+      fadeOut(function(){
+        poemTitle.textContent = p.title;
+        // PoetryDB gives lines as an array — join with newlines
+        // Trim very long poems to keep the card readable
+        var lines = p.lines;
+        if(lines.length > 40){
+          lines = lines.slice(0, 40);
+          lines.push('\n[… poem continues — ' + p.linecount + ' lines total]');
+        }
+        poemBody.textContent = lines.join('\n');
+        poemAuthor.textContent = '— ' + p.author;
+        poemCounter.textContent = 'API';
+        document.getElementById('poemCard').scrollTop = 0;
+        fadeIn();
+      });
+    })
+    .catch(function(){
+      clearTimeout(timeout);
+      // Fallback: show a random local poem instead
+      isApiPoem = false;
+      apiBadge.classList.remove('visible');
+      fadeOut(function(){
+        var r = Math.floor(Math.random()*POEMS.length);
+        currentIdx = r;
+        setLocalPoem(r);
+        fadeIn();
+      });
+    })
+    .finally(function(){
+      btnRandomApi.classList.remove('loading');
+    });
+}
+
+btnPrev.addEventListener('click', function(){
+  if(isApiPoem){ showLocalPoem(POEMS.length-1, true); }
+  else { showLocalPoem(currentIdx-1, true); }
+});
+btnNext.addEventListener('click', function(){
+  if(isApiPoem){ showLocalPoem(0, true); }
+  else { showLocalPoem(currentIdx+1, true); }
+});
+btnRandomLocal.addEventListener('click', function(){
   var r;
   do { r=Math.floor(Math.random()*POEMS.length); } while(r===currentIdx && POEMS.length>1);
-  showPoem(r, true);
+  showLocalPoem(r, true);
 });
+btnRandomApi.addEventListener('click', fetchRandomPoem);
 
 document.addEventListener('keydown', function(e){
-  if(e.key==='ArrowLeft') showPoem(currentIdx-1, true);
-  else if(e.key==='ArrowRight') showPoem(currentIdx+1, true);
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowLeft'){
+    if(isApiPoem) showLocalPoem(POEMS.length-1, true);
+    else showLocalPoem(currentIdx-1, true);
+  } else if(e.key==='ArrowRight'){
+    if(isApiPoem) showLocalPoem(0, true);
+    else showLocalPoem(currentIdx+1, true);
+  } else if(e.key===' '){
+    e.preventDefault();
+    fetchRandomPoem();
+  }
 });
 
-showPoem(0, false);
+showLocalPoem(0, false);
 
 /* ══════════════════════════════════════════════════════
    CANVAS — Storm ↔ Calm Ocean Cycle
@@ -264,437 +374,134 @@ showPoem(0, false);
 var C = document.getElementById('bg');
 var ctx = C.getContext('2d');
 var W, H, dpr = Math.min(window.devicePixelRatio||1, 2);
-
-// Cycle: 60s total — 30s storm, 30s calm, smooth transitions
 var CYCLE_MS = 60000;
 
-var waves = [];
-var raindrops = [];
-var foam = [];
-var debris = [];
-var lightningFlash = 0;
-var lightningBolts = [];
-var lastLightning = 0;
+var waves=[], raindrops=[], foam=[], debris=[];
+var lightningFlash=0, lightningBolts=[], lastLightning=0;
 
 function resize(){
-  W = window.innerWidth; H = window.innerHeight;
-  C.width = W*dpr; C.height = H*dpr;
-  C.style.width = W+'px'; C.style.height = H+'px';
+  W=window.innerWidth; H=window.innerHeight;
+  C.width=W*dpr; C.height=H*dpr;
+  C.style.width=W+'px'; C.style.height=H+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
   initOcean();
 }
 
 function initOcean(){
-  waves = [];
-  for(var i=0;i<10;i++){
-    waves.push({
-      baseY: H*0.4 + i*H*0.06,
-      amp: 6 + i*2.5,
-      freq: 0.006 - i*0.0003,
-      speed: 0.0006 + i*0.00015,
-      phase: Math.random()*Math.PI*2,
-      baseAlpha: 0.12 + i*0.05
-    });
-  }
-
-  raindrops = [];
-  for(var i=0;i<250;i++){
-    raindrops.push({
-      x: Math.random()*W*1.3 - W*0.15,
-      y: Math.random()*H,
-      len: 8 + Math.random()*18,
-      speed: 12 + Math.random()*10,
-      wind: 0,
-      alpha: Math.random()*0.3 + 0.15
-    });
-  }
-
-  foam = [];
-  for(var i=0;i<40;i++){
-    foam.push({
-      x: Math.random()*W,
-      y: H*0.38 + Math.random()*H*0.12,
-      r: Math.random()*3 + 1,
-      phase: Math.random()*Math.PI*2,
-      driftSpeed: Math.random()*0.3 + 0.1
-    });
-  }
-
-  debris = [];
-  for(var i=0;i<15;i++){
-    debris.push({
-      x: Math.random()*W,
-      y: H*0.35 + Math.random()*H*0.1,
-      vx: (Math.random()-0.5)*2,
-      phase: Math.random()*Math.PI*2,
-      size: 1 + Math.random()*2
-    });
-  }
+  waves=[];
+  for(var i=0;i<10;i++) waves.push({baseY:H*.4+i*H*.06,amp:6+i*2.5,freq:.006-i*.0003,speed:.0006+i*.00015,phase:Math.random()*Math.PI*2,baseAlpha:.12+i*.05});
+  raindrops=[];
+  for(var i=0;i<250;i++) raindrops.push({x:Math.random()*W*1.3-W*.15,y:Math.random()*H,len:8+Math.random()*18,speed:12+Math.random()*10,alpha:Math.random()*.3+.15});
+  foam=[];
+  for(var i=0;i<40;i++) foam.push({x:Math.random()*W,y:H*.38+Math.random()*H*.12,r:Math.random()*3+1,phase:Math.random()*Math.PI*2});
+  debris=[];
+  for(var i=0;i<15;i++) debris.push({x:Math.random()*W,y:H*.35+Math.random()*H*.1,vx:(Math.random()-.5)*2,phase:Math.random()*Math.PI*2,size:1+Math.random()*2});
 }
 
-function lerp(a,b,t){ return a+(b-a)*t; }
-function lerpC(c1,c2,t){ return [Math.round(lerp(c1[0],c2[0],t)),Math.round(lerp(c1[1],c2[1],t)),Math.round(lerp(c1[2],c2[2],t))]; }
-function rgb(c){ return 'rgb('+c[0]+','+c[1]+','+c[2]+')'; }
-function rgba(c,a){ return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')'; }
+function lerp(a,b,t){return a+(b-a)*t;}
+function lerpC(c1,c2,t){return[Math.round(lerp(c1[0],c2[0],t)),Math.round(lerp(c1[1],c2[1],t)),Math.round(lerp(c1[2],c2[2],t))];}
+function rgb(c){return'rgb('+c[0]+','+c[1]+','+c[2]+')';}
+function rgba(c,a){return'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+function smoothStep(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);}
 
-// Storm intensity: 0=calm, 1=full storm
 function getStormIntensity(time){
-  var phase = (time % CYCLE_MS) / CYCLE_MS; // 0..1
-  // 0..0.1 = calm→storm transition
-  // 0.1..0.45 = full storm
-  // 0.45..0.55 = storm→calm transition
-  // 0.55..0.95 = full calm
-  // 0.95..1.0 = calm→storm transition
-
-  if(phase < 0.1) return smoothStep(phase / 0.1);
-  if(phase < 0.45) return 1;
-  if(phase < 0.55) return 1 - smoothStep((phase - 0.45) / 0.1);
-  if(phase < 0.95) return 0;
-  return smoothStep((phase - 0.95) / 0.05);
+  var phase=(time%CYCLE_MS)/CYCLE_MS;
+  if(phase<.1) return smoothStep(phase/.1);
+  if(phase<.45) return 1;
+  if(phase<.55) return 1-smoothStep((phase-.45)/.1);
+  if(phase<.95) return 0;
+  return smoothStep((phase-.95)/.05);
 }
 
-function smoothStep(t){ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
-
-function spawnLightning(time, storm){
-  if(storm < 0.5) return;
-  if(time - lastLightning < 800 + Math.random()*3000/storm) return;
-  if(Math.random() > storm*0.04) return;
-
-  lastLightning = time;
-  lightningFlash = 1;
-
-  // Generate branching bolt
-  var bolt = [];
-  var x = W*0.15 + Math.random()*W*0.7;
-  var y = 0;
-  var segments = 8 + Math.floor(Math.random()*8);
-  for(var i=0;i<segments;i++){
-    var nx = x + (Math.random()-0.5)*60;
-    var ny = y + H*0.04 + Math.random()*H*0.05;
+function spawnLightning(time,storm){
+  if(storm<.5) return;
+  if(time-lastLightning<800+Math.random()*3000/storm) return;
+  if(Math.random()>storm*.04) return;
+  lastLightning=time; lightningFlash=1;
+  var bolt=[],x=W*.15+Math.random()*W*.7,y=0,segs=8+Math.floor(Math.random()*8);
+  for(var i=0;i<segs;i++){
+    var nx=x+(Math.random()-.5)*60,ny=y+H*.04+Math.random()*H*.05;
     bolt.push({x1:x,y1:y,x2:nx,y2:ny});
-
-    // Branch
-    if(Math.random()>0.6 && i>1){
-      var bx = nx + (Math.random()-0.5)*80;
-      var by = ny + H*0.03 + Math.random()*H*0.04;
-      bolt.push({x1:nx,y1:ny,x2:bx,y2:by,branch:true});
-    }
-    x=nx; y=ny;
-    if(y > H*0.38) break;
+    if(Math.random()>.6&&i>1){var bx=nx+(Math.random()-.5)*80,by=ny+H*.03+Math.random()*H*.04;bolt.push({x1:nx,y1:ny,x2:bx,y2:by,branch:true});}
+    x=nx;y=ny;if(y>H*.38) break;
   }
-  lightningBolts.push({segments:bolt, life:1, decay:0.04+Math.random()*0.02});
+  lightningBolts.push({segments:bolt,life:1,decay:.04+Math.random()*.02});
 }
 
 function drawScene(time){
-  var storm = getStormIntensity(time);
-  var calm = 1 - storm;
+  var storm=getStormIntensity(time),calm=1-storm;
+  var skyTop=lerpC([15,25,60],[12,14,22],storm);
+  var skyMid=lerpC([40,65,120],[18,20,32],storm);
+  var skyLow=lerpC([70,100,155],[25,28,40],storm);
+  var skyG=ctx.createLinearGradient(0,0,0,H*.42);
+  skyG.addColorStop(0,rgb(skyTop));skyG.addColorStop(.5,rgb(skyMid));skyG.addColorStop(1,rgb(skyLow));
+  ctx.fillStyle=skyG;ctx.fillRect(0,0,W,H);
 
-  // ── SKY ──
-  var stormSkyTop = [12,14,22];
-  var stormSkyMid = [18,20,32];
-  var stormSkyLow = [25,28,40];
-
-  var calmSkyTop = [15,25,60];
-  var calmSkyMid = [40,65,120];
-  var calmSkyLow = [70,100,155];
-
-  var skyTop = lerpC(calmSkyTop, stormSkyTop, storm);
-  var skyMid = lerpC(calmSkyMid, stormSkyMid, storm);
-  var skyLow = lerpC(calmSkyLow, stormSkyLow, storm);
-
-  var skyG = ctx.createLinearGradient(0,0,0,H*0.42);
-  skyG.addColorStop(0, rgb(skyTop));
-  skyG.addColorStop(0.5, rgb(skyMid));
-  skyG.addColorStop(1, rgb(skyLow));
-  ctx.fillStyle = skyG;
-  ctx.fillRect(0,0,W,H);
-
-  // ── Storm clouds ──
-  if(storm > 0.05){
-    drawStormClouds(time, storm);
-  }
-
-  // ── Stars (calm only) ──
-  if(calm > 0.3){
-    var starA = (calm-0.3)/0.7;
-    for(var i=0;i<60;i++){
-      var sx = (i*137.5)%W;
-      var sy = (i*97.3)%(H*0.3);
-      var sa = starA*(0.2+0.4*Math.sin(time*0.001+i*2.7));
-      ctx.beginPath(); ctx.arc(sx,sy,0.8,0,Math.PI*2);
-      ctx.fillStyle='rgba(220,230,255,'+sa+')';ctx.fill();
-    }
-  }
-
-  // ── Moon (calm) ──
-  if(calm > 0.2){
-    var moonA = Math.min(1,(calm-0.2)/0.5)*0.8;
-    var mx = W*0.78, my = H*0.1;
-    ctx.beginPath(); ctx.arc(mx,my,50,0,Math.PI*2);
-    ctx.fillStyle=rgba([150,170,200],moonA*0.03); ctx.fill();
-    ctx.beginPath(); ctx.arc(mx,my,30,0,Math.PI*2);
-    ctx.fillStyle=rgba([150,170,200],moonA*0.05); ctx.fill();
-    ctx.beginPath(); ctx.arc(mx,my,16,0,Math.PI*2);
-    ctx.fillStyle=rgba([215,225,240],moonA); ctx.fill();
-    ctx.beginPath(); ctx.arc(mx+5,my-2,13,0,Math.PI*2);
-    ctx.fillStyle=rgba(skyTop,moonA*0.8); ctx.fill();
-
-    // Moon reflection on calm water
-    if(calm > 0.5){
-      var refA = (calm-0.5)*0.6;
-      for(var i=0;i<12;i++){
-        var ry = H*0.42 + i*6;
-        var rw = 14-i*0.5 + Math.sin(time*0.001+i)*2;
-        ctx.fillStyle=rgba([180,200,225],refA*(0.04-i*0.002));
-        ctx.fillRect(mx-rw/2+Math.sin(time*0.0008+i*0.4)*3, ry, rw, 2);
+  if(storm>.05){
+    for(var layer=0;layer<3;layer++){
+      var cy=H*.02+layer*H*.06,speed=(.015+layer*.008)*storm;
+      var cloudDark=lerpC([30,33,45],[15,17,25],storm);
+      for(var i=0;i<6;i++){
+        var cx=((time*speed+i*W/6+layer*100)%(W+300))-150;
+        var cw=120+layer*40+Math.sin(i*5)*30,ch=30+layer*12,ca=storm*(.4+layer*.15);
+        ctx.fillStyle=rgba(cloudDark,ca);
+        ctx.beginPath();ctx.ellipse(cx,cy,cw/2,ch/2,0,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.ellipse(cx-cw*.2,cy+ch*.2,cw*.35,ch*.35,0,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.ellipse(cx+cw*.25,cy-ch*.1,cw*.3,ch*.4,0,0,Math.PI*2);ctx.fill();
+        if(lightningFlash>.1){ctx.beginPath();ctx.ellipse(cx,cy+ch*.3,cw*.4,ch*.25,0,0,Math.PI*2);ctx.fillStyle=rgba([180,190,220],lightningFlash*.08);ctx.fill();}
       }
     }
   }
 
-  // ── Ocean base ──
-  var oceanDeep = lerpC([8,20,50],[6,10,20],storm);
-  ctx.fillStyle = rgb(oceanDeep);
-  ctx.fillRect(0,H*0.4,W,H*0.6);
+  if(calm>.3){
+    var starA=(calm-.3)/.7;
+    for(var i=0;i<60;i++){var sx=(i*137.5)%W,sy=(i*97.3)%(H*.3),sa=starA*(.2+.4*Math.sin(time*.001+i*2.7));ctx.beginPath();ctx.arc(sx,sy,.8,0,Math.PI*2);ctx.fillStyle='rgba(220,230,255,'+sa+')';ctx.fill();}
+  }
 
-  // ── Waves ──
-  var waveTurbulence = lerp(1, 3.5, storm);
-  var waveSpeedMult = lerp(1, 2.2, storm);
+  if(calm>.2){
+    var moonA=Math.min(1,(calm-.2)/.5)*.8,mx=W*.78,my=H*.1;
+    ctx.beginPath();ctx.arc(mx,my,50,0,Math.PI*2);ctx.fillStyle=rgba([150,170,200],moonA*.03);ctx.fill();
+    ctx.beginPath();ctx.arc(mx,my,30,0,Math.PI*2);ctx.fillStyle=rgba([150,170,200],moonA*.05);ctx.fill();
+    ctx.beginPath();ctx.arc(mx,my,16,0,Math.PI*2);ctx.fillStyle=rgba([215,225,240],moonA);ctx.fill();
+    ctx.beginPath();ctx.arc(mx+5,my-2,13,0,Math.PI*2);ctx.fillStyle=rgba(skyTop,moonA*.8);ctx.fill();
+    if(calm>.5){var refA=(calm-.5)*.6;for(var i=0;i<12;i++){var ry=H*.42+i*6,rw=14-i*.5+Math.sin(time*.001+i)*2;ctx.fillStyle=rgba([180,200,225],refA*(.04-i*.002));ctx.fillRect(mx-rw/2+Math.sin(time*.0008+i*.4)*3,ry,rw,2);}}
+  }
 
+  ctx.fillStyle=rgb(lerpC([8,20,50],[6,10,20],storm));ctx.fillRect(0,H*.4,W,H*.6);
+
+  var waveTurb=lerp(1,3.5,storm),waveSpd=lerp(1,2.2,storm);
   for(var i=0;i<waves.length;i++){
-    var w = waves[i];
-    var amp = w.amp * waveTurbulence;
-    var darkCol = lerpC([15,35,75],[10,18,35],storm);
-    var midCol = lerpC([25,55,105],[15,25,50],storm);
-    var lightCol = lerpC([35,75,135],[20,35,60],storm);
-
-    var waveCol = i<3?lightCol:(i<6?midCol:darkCol);
-    var waveAlpha = w.baseAlpha + storm*0.08;
-
-    ctx.beginPath();
-    ctx.moveTo(0,H);
-    for(var x=0;x<=W;x+=3){
-      var y = w.baseY
-        + Math.sin(x*w.freq + time*w.speed*waveSpeedMult + w.phase)*amp
-        + Math.sin(x*w.freq*2.1 + time*w.speed*1.6*waveSpeedMult + w.phase*1.3)*amp*0.35
-        + Math.sin(x*w.freq*0.5 + time*w.speed*0.7*waveSpeedMult)*amp*0.5*storm;
-      ctx.lineTo(x,y);
-    }
-    ctx.lineTo(W,H); ctx.closePath();
-    ctx.fillStyle = rgba(waveCol, waveAlpha);
-    ctx.fill();
+    var w=waves[i],amp=w.amp*waveTurb;
+    var waveCol=i<3?lerpC([35,75,135],[20,35,60],storm):(i<6?lerpC([25,55,105],[15,25,50],storm):lerpC([15,35,75],[10,18,35],storm));
+    ctx.beginPath();ctx.moveTo(0,H);
+    for(var x=0;x<=W;x+=3){var y=w.baseY+Math.sin(x*w.freq+time*w.speed*waveSpd+w.phase)*amp+Math.sin(x*w.freq*2.1+time*w.speed*1.6*waveSpd+w.phase*1.3)*amp*.35+Math.sin(x*w.freq*.5+time*w.speed*.7*waveSpd)*amp*.5*storm;ctx.lineTo(x,y);}
+    ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=rgba(waveCol,w.baseAlpha+storm*.08);ctx.fill();
   }
 
-  // ── Wave crests / whitecaps (more in storm) ──
-  var crestCount = Math.floor(lerp(3,15,storm));
-  for(var i=0;i<crestCount;i++){
-    var cx = (time*0.03*(i+1)*0.7 + i*W/crestCount)%W;
-    var cy = H*0.4 + i*H*0.04 + Math.sin(time*0.001+i*3)*8*waveTurbulence;
-    var cw = 15 + Math.random()*20 + storm*15;
-    var ca = (0.1 + storm*0.25)*Math.abs(Math.sin(time*0.002+i*2));
+  var crestCount=Math.floor(lerp(3,15,storm));
+  for(var i=0;i<crestCount;i++){var cx=(time*.03*(i+1)*.7+i*W/crestCount)%W,cy=H*.4+i*H*.04+Math.sin(time*.001+i*3)*8*waveTurb,cw=15+Math.random()*20+storm*15,ca=(.1+storm*.25)*Math.abs(Math.sin(time*.002+i*2));ctx.beginPath();ctx.moveTo(cx-cw/2,cy);ctx.quadraticCurveTo(cx,cy-3-storm*4,cx+cw/2,cy);ctx.strokeStyle=rgba([200,220,240],ca);ctx.lineWidth=1.5;ctx.stroke();}
 
-    ctx.beginPath();
-    ctx.moveTo(cx-cw/2, cy);
-    ctx.quadraticCurveTo(cx, cy-3-storm*4, cx+cw/2, cy);
-    ctx.strokeStyle=rgba([200,220,240],ca);
-    ctx.lineWidth=1.5;
-    ctx.stroke();
-  }
+  for(var i=0;i<foam.length;i++){var f=foam[i],fx=f.x+Math.sin(time*.001+f.phase)*5*waveTurb,fy=f.y+Math.sin(time*.002+f.phase)*4*waveTurb,fa=(.1+storm*.2)*(.3+.5*Math.sin(time*.002+f.phase));ctx.beginPath();ctx.arc(fx,fy,f.r*(1+storm*.5),0,Math.PI*2);ctx.fillStyle=rgba([180,210,235],Math.max(0,fa));ctx.fill();}
 
-  // ── Sea foam ──
-  for(var i=0;i<foam.length;i++){
-    var f = foam[i];
-    var fx = f.x + Math.sin(time*0.001+f.phase)*5*waveTurbulence;
-    var fy = f.y + Math.sin(time*0.002+f.phase)*4*waveTurbulence;
-    var fa = (0.1+storm*0.2)*(0.3+0.5*Math.sin(time*0.002+f.phase));
-    ctx.beginPath(); ctx.arc(fx,fy,f.r*(1+storm*0.5),0,Math.PI*2);
-    ctx.fillStyle=rgba([180,210,235],Math.max(0,fa));
-    ctx.fill();
-  }
+  if(storm>.3){for(var i=0;i<20;i++){var sx=(time*.05+i*73)%W,sy=H*.36+Math.sin(time*.002+i)*H*.05+Math.random()*5;ctx.beginPath();ctx.arc(sx,sy,1+Math.random()*2,0,Math.PI*2);ctx.fillStyle=rgba([200,215,230],(storm-.3)*.5*(.2+Math.random()*.3));ctx.fill();}}
 
-  // ── Spray / mist at wave tops (storm) ──
-  if(storm > 0.3){
-    var sprayA = (storm-0.3)*0.5;
-    for(var i=0;i<20;i++){
-      var sx = (time*0.05+i*73)%W;
-      var sy = H*0.36 + Math.sin(time*0.002+i)*H*0.05 + Math.random()*5;
-      ctx.beginPath(); ctx.arc(sx,sy,1+Math.random()*2,0,Math.PI*2);
-      ctx.fillStyle=rgba([200,215,230],sprayA*(0.2+Math.random()*0.3));
-      ctx.fill();
-    }
-  }
+  if(storm>.4){for(var i=0;i<debris.length;i++){var d=debris[i];d.x+=d.vx*storm;if(d.x>W+10)d.x=-10;if(d.x<-10)d.x=W+10;ctx.fillStyle=rgba([80,70,60],(storm-.4)/.6*.5);ctx.fillRect(d.x,d.y+Math.sin(time*.003+d.phase)*6*storm,d.size*3,d.size);}}
 
-  // ── Floating debris in storm ──
-  if(storm > 0.4){
-    var debA = (storm-0.4)/0.6;
-    for(var i=0;i<debris.length;i++){
-      var d = debris[i];
-      d.x += d.vx*storm;
-      if(d.x>W+10) d.x=-10;
-      if(d.x<-10) d.x=W+10;
-      var dy = d.y + Math.sin(time*0.003+d.phase)*6*storm;
-      ctx.fillStyle=rgba([80,70,60],debA*0.5);
-      ctx.fillRect(d.x,dy,d.size*3,d.size);
-    }
-  }
+  if(storm>.1){for(var i=0;i<raindrops.length;i++){var r=raindrops[i];r.y+=r.speed*storm;r.x+=3*storm+storm*.25*r.speed*.5;if(r.y>H+10){r.y=-20;r.x=Math.random()*W*1.3-W*.15;}if(r.x>W+20)r.x=-20;ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x-storm*.25*r.len*storm*.3,r.y-r.len*storm);ctx.strokeStyle=rgba([180,200,220],r.alpha*storm);ctx.lineWidth=.8;ctx.stroke();}}
 
-  // ── Rain (storm) ──
-  if(storm > 0.1){
-    var rainA = storm;
-    var windAngle = storm*0.25;
-    for(var i=0;i<raindrops.length;i++){
-      var r = raindrops[i];
-      r.y += r.speed*storm;
-      r.x += 3*storm + windAngle*r.speed*0.5;
-      if(r.y > H+10){ r.y=-20; r.x=Math.random()*W*1.3-W*0.15; }
-      if(r.x > W+20) r.x=-20;
+  spawnLightning(time,storm);
+  if(lightningFlash>0){lightningFlash*=.92;if(lightningFlash<.01)lightningFlash=0;ctx.fillStyle=rgba([220,225,240],lightningFlash*.15);ctx.fillRect(0,0,W,H);}
+  for(var b=lightningBolts.length-1;b>=0;b--){var bolt=lightningBolts[b];bolt.life-=bolt.decay;if(bolt.life<=0){lightningBolts.splice(b,1);continue;}for(var s=0;s<bolt.segments.length;s++){var seg=bolt.segments[s];ctx.beginPath();ctx.moveTo(seg.x1,seg.y1);ctx.lineTo(seg.x2,seg.y2);if(seg.branch){ctx.strokeStyle=rgba([180,190,255],bolt.life*.4);ctx.lineWidth=1;}else{ctx.strokeStyle=rgba([230,235,255],bolt.life*.8);ctx.lineWidth=2;ctx.shadowColor='rgba(180,190,255,'+bolt.life*.5+')';ctx.shadowBlur=15;}ctx.stroke();ctx.shadowBlur=0;}}
 
-      var rLen = r.len*storm;
-      ctx.beginPath();
-      ctx.moveTo(r.x, r.y);
-      ctx.lineTo(r.x - windAngle*rLen*0.3, r.y - rLen);
-      ctx.strokeStyle=rgba([180,200,220],r.alpha*rainA);
-      ctx.lineWidth=0.8;
-      ctx.stroke();
-    }
+  if(calm>.3){var refA=(calm-.3)/.7;var refG=ctx.createLinearGradient(0,H*.4,0,H*.55);refG.addColorStop(0,rgba(skyLow,refA*.08));refG.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=refG;ctx.fillRect(0,H*.4,W,H*.15);for(var i=0;i<25;i++){var sx=(i*W/25)+Math.sin(time*.0005+i)*20,sy=H*.42+i*3+Math.sin(time*.001+i*2)*3,sa=refA*.12*(.3+.7*Math.sin(time*.002+i*3.7));ctx.fillStyle=rgba([200,220,250],sa);ctx.fillRect(sx,sy,3+Math.random()*2,1);}}
 
-    // Rain impact splashes on water surface
-    if(storm > 0.4){
-      for(var i=0;i<8;i++){
-        var rx = Math.random()*W;
-        var ry = H*0.39 + Math.random()*H*0.04;
-        var ra = storm*0.15*Math.random();
-        ctx.beginPath(); ctx.arc(rx,ry,2+Math.random()*2,0,Math.PI*2);
-        ctx.strokeStyle=rgba([200,215,230],ra);
-        ctx.lineWidth=0.5;
-        ctx.stroke();
-      }
-    }
-  }
-
-  // ── Lightning ──
-  spawnLightning(time, storm);
-
-  // Decay flash
-  if(lightningFlash > 0){
-    lightningFlash *= 0.92;
-    if(lightningFlash < 0.01) lightningFlash = 0;
-    ctx.fillStyle=rgba([220,225,240],lightningFlash*0.15);
-    ctx.fillRect(0,0,W,H);
-  }
-
-  // Draw bolts
-  for(var b=lightningBolts.length-1;b>=0;b--){
-    var bolt = lightningBolts[b];
-    bolt.life -= bolt.decay;
-    if(bolt.life <= 0){ lightningBolts.splice(b,1); continue; }
-
-    for(var s=0;s<bolt.segments.length;s++){
-      var seg = bolt.segments[s];
-      ctx.beginPath();
-      ctx.moveTo(seg.x1,seg.y1);
-      ctx.lineTo(seg.x2,seg.y2);
-
-      if(seg.branch){
-        ctx.strokeStyle=rgba([180,190,255],bolt.life*0.4);
-        ctx.lineWidth=1;
-      } else {
-        ctx.strokeStyle=rgba([230,235,255],bolt.life*0.8);
-        ctx.lineWidth=2;
-        ctx.shadowColor='rgba(180,190,255,'+bolt.life*0.5+')';
-        ctx.shadowBlur=15;
-      }
-      ctx.stroke();
-      ctx.shadowBlur=0;
-    }
-
-    // Glow at bolt origin
-    if(bolt.segments.length>0){
-      var origin=bolt.segments[0];
-      ctx.beginPath(); ctx.arc(origin.x1,origin.y1,30,0,Math.PI*2);
-      ctx.fillStyle=rgba([200,210,255],bolt.life*0.03);
-      ctx.fill();
-    }
-  }
-
-  // ── Thunder rumble clouds illumination ──
-  if(storm > 0.3){
-    var rumbleA = storm*0.02*Math.abs(Math.sin(time*0.005))*Math.abs(Math.sin(time*0.013));
-    if(rumbleA > 0.005){
-      var rx = W*0.3+Math.sin(time*0.001)*W*0.3;
-      var rg = ctx.createRadialGradient(rx,H*0.05,0,rx,H*0.05,H*0.25);
-      rg.addColorStop(0,rgba([200,210,240],rumbleA));
-      rg.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=rg;ctx.fillRect(0,0,W,H*0.3);
-    }
-  }
-
-  // ── Calm water reflections ──
-  if(calm > 0.3){
-    var refA = (calm-0.3)/0.7;
-    // Sky reflection in water
-    var refG = ctx.createLinearGradient(0,H*0.4,0,H*0.55);
-    refG.addColorStop(0,rgba(skyLow,refA*0.08));
-    refG.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=refG;
-    ctx.fillRect(0,H*0.4,W,H*0.15);
-
-    // Gentle sparkle on calm water
-    for(var i=0;i<25;i++){
-      var sx = (i*W/25) + Math.sin(time*0.0005+i)*20;
-      var sy = H*0.42+i*3+Math.sin(time*0.001+i*2)*3;
-      var sa = refA*0.12*(0.3+0.7*Math.sin(time*0.002+i*3.7));
-      ctx.fillStyle=rgba([200,220,250],sa);
-      ctx.fillRect(sx,sy,3+Math.random()*2,1);
-    }
-  }
-
-  // ── Atmospheric fog ──
-  var fogA = lerp(0.01, 0.06, storm);
-  var fogG = ctx.createLinearGradient(0,H*0.3,0,H*0.5);
-  var fogCol = lerpC([100,110,130],[40,45,55],storm);
-  fogG.addColorStop(0,rgba(fogCol,0));
-  fogG.addColorStop(0.5,rgba(fogCol,fogA));
-  fogG.addColorStop(1,rgba(fogCol,0));
-  ctx.fillStyle=fogG;
-  ctx.fillRect(0,H*0.3,W,H*0.2);
-}
-
-function drawStormClouds(time, storm){
-  // Multiple cloud layers
-  for(var layer=0;layer<3;layer++){
-    var cy = H*0.02 + layer*H*0.06;
-    var speed = (0.015+layer*0.008)*storm;
-    var cloudDark = lerpC([30,33,45],[15,17,25],storm);
-
-    for(var i=0;i<6;i++){
-      var cx = ((time*speed + i*W/6 + layer*100)%(W+300)) - 150;
-      var cw = 120+layer*40+Math.sin(i*5)*30;
-      var ch = 30+layer*12;
-      var ca = storm*(0.4+layer*0.15);
-
-      ctx.fillStyle=rgba(cloudDark,ca);
-      ctx.beginPath(); ctx.ellipse(cx,cy,cw/2,ch/2,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(cx-cw*0.2,cy+ch*0.2,cw*0.35,ch*0.35,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(cx+cw*0.25,cy-ch*0.1,cw*0.3,ch*0.4,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(cx+cw*0.1,cy+ch*0.15,cw*0.4,ch*0.3,0,0,Math.PI*2); ctx.fill();
-
-      // Cloud underbelly glow from lightning
-      if(lightningFlash > 0.1){
-        ctx.beginPath(); ctx.ellipse(cx,cy+ch*0.3,cw*0.4,ch*0.25,0,0,Math.PI*2);
-        ctx.fillStyle=rgba([180,190,220],lightningFlash*0.08);
-        ctx.fill();
-      }
-    }
-  }
+  var fogA=lerp(.01,.06,storm),fogCol=lerpC([100,110,130],[40,45,55],storm);
+  var fogG=ctx.createLinearGradient(0,H*.3,0,H*.5);fogG.addColorStop(0,rgba(fogCol,0));fogG.addColorStop(.5,rgba(fogCol,fogA));fogG.addColorStop(1,rgba(fogCol,0));ctx.fillStyle=fogG;ctx.fillRect(0,H*.3,W,H*.2);
 }
 
 resize();
-window.addEventListener('resize', resize);
-
-function loop(t){
-  requestAnimationFrame(loop);
-  drawScene(t);
-}
+window.addEventListener('resize',resize);
+function loop(t){requestAnimationFrame(loop);drawScene(t);}
 requestAnimationFrame(loop);
 
 })();
