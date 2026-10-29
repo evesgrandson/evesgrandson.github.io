@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music — Aether</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0a12;font-family:'Rajdhani',sans-serif;color:#fff}
+
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background:linear-gradient(135deg,#0a0814 0%,#110e24 40%,#0d1128 70%,#08060f 100%);
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(167,139,250,.06) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 80%,rgba(244,114,182,.04) 0%,transparent 60%);
+}
+
+.page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px}
+
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:3px;
+  margin-bottom:6px;
+  background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.subtitle{font-size:14px;color:rgba(255,255,255,.35);margin-bottom:36px;letter-spacing:1px}
+
+.toggle-bar{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+
+.toggle-btn{
+  padding:12px 28px;border-radius:14px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);
+  font:700 15px 'Rajdhani',sans-serif;letter-spacing:1px;cursor:pointer;
+  transition:all .3s ease;position:relative;overflow:hidden;
+}
+.toggle-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75)}
+
+.toggle-btn.active-happy{
+  background:linear-gradient(135deg,rgba(110,231,168,.2),rgba(251,191,36,.15));
+  border-color:rgba(110,231,168,.35);color:#6ee7a8;
+  box-shadow:0 0 25px rgba(110,231,168,.12);
+}
+.toggle-btn.active-sad{
+  background:linear-gradient(135deg,rgba(111,148,255,.2),rgba(167,139,250,.18));
+  border-color:rgba(111,148,255,.35);color:#6f94ff;
+  box-shadow:0 0 25px rgba(111,148,255,.12);
+}
+.toggle-btn.active-idk{
+  background:linear-gradient(135deg,rgba(244,114,182,.2),rgba(192,139,255,.18));
+  border-color:rgba(244,114,182,.35);color:#f472b6;
+  box-shadow:0 0 25px rgba(244,114,182,.12);
+}
+
+.playlist-container{
+  width:100%;max-width:420px;
+  background:rgba(12,12,28,.6);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;padding:16px;
+  box-shadow:0 0 50px rgba(100,80,255,.06);
+}
+
+.playlist-frame{width:100%;border-radius:12px;overflow:hidden}
+.playlist-frame iframe{width:100%;border:none;border-radius:12px;display:block}
+
+.playlist-label{
+  font:600 12px 'Rajdhani',sans-serif;
+  color:rgba(255,255,255,.3);letter-spacing:1.5px;
+  text-transform:uppercase;text-align:center;
+  margin-bottom:10px;
+}
+
+.hidden{display:none}
+
+.backlink{
+  position:fixed;bottom:12px;left:16px;z-index:9999;
+  color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;
+  text-decoration:none;letter-spacing:.5px;transition:color .3s;
+}
+.backlink:hover{color:#fff}
+
+.note{
+  margin-top:20px;font-size:12px;color:rgba(255,255,255,.2);
+  max-width:380px;text-align:center;line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>MUSIC</h1>
+  <div class="subtitle">what's the mood?</div>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn active-happy" id="btnHappy">☀ Happy</button>
+    <button class="toggle-btn" id="btnSad">☾ Sad</button>
+    <button class="toggle-btn" id="btnIdk">✧ idk</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       HOW TO ADD YOUR PLAYLISTS:
+
+       1. Open Spotify → go to your playlist
+       2. Click ••• → Share → Copy link to playlist
+       3. The link looks like:
+          https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC
+       4. Paste it below in the HAPPY_LINK, SAD_LINK, or IDK_LINK
+       ════════════════════════════════════════════════ -->
+
+  <!-- Happy playlist -->
+  <div class="playlist-container" id="happyPlaylist">
+    <div class="playlist-label">Happy Vibes</div>
+    <div class="playlist-frame">
+      <iframe id="happyFrame"
+        height="480"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Sad playlist -->
+  <div class="playlist-container hidden" id="sadPlaylist">
+    <div class="playlist-label">Sad Hours</div>
+    <div class="playlist-frame">
+      <iframe id="sadFrame"
+        height="480"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- idk playlist -->
+  <div class="playlist-container hidden" id="idkPlaylist">
+    <div class="playlist-label">idk, just vibes</div>
+    <div class="playlist-frame">
+      <iframe id="idkFrame"
+        height="480"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    Playback requires a Spotify account. Free accounts will hear previews; Premium gets full tracks.
+  </div>
+</div>
+
+<a class="backlink" href="index.html">&larr; home</a>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════════════════════════════════════════════════
+   PASTE YOUR SPOTIFY PLAYLIST LINKS HERE
+   Just replace the full URLs below with your own.
+   ══════════════════════════════════════════════════════ */
+
+var HAPPY_LINK = 'https://open.spotify.com/playlist/34UlalESScclj0lDLIDpHg?si=zJFA362PRN6zaT581PY5-Q&utm_source=copy-link&pi=VtlIzTyzRTa2Q';
+var SAD_LINK   = 'https://open.spotify.com/playlist/1isQ5e77FcGqxZTOExEOiz?si=eblbcEmmThuDvm_GTcEa5g&utm_source=copy-link&pi=J-VXp-__QmGcp';
+var IDK_LINK   = 'https://open.spotify.com/playlist/1W9njYkZJ1jmenGHnt0dow?si=rw4QN3zPTTGzMS-oD5hObQ&utm_source=copy-link&pi=QyzTnC70TwaGZ';
+
+/* ══════════════════════════════════════════════════════
+   That's it! Everything below is automatic.
+   ══════════════════════════════════════════════════════ */
+
+function extractId(link){
+  var m = link.match(/playlist[\/:]([A-Za-z0-9]+)/);
+  if(m) return m[1];
+  if(/^[A-Za-z0-9]{15,}$/.test(link.trim())) return link.trim();
+  return link;
+}
+
+function embedUrl(link){
+  var id = extractId(link);
+  return 'https://open.spotify.com/embed/playlist/' + id + '?utm_source=generator&theme=0';
+}
+
+var frames = {
+  happy: { frame: document.getElementById('happyFrame'), div: document.getElementById('happyPlaylist'), btn: document.getElementById('btnHappy'), link: HAPPY_LINK, loaded: false, activeClass: 'active-happy' },
+  sad:   { frame: document.getElementById('sadFrame'),   div: document.getElementById('sadPlaylist'),   btn: document.getElementById('btnSad'),   link: SAD_LINK,   loaded: false, activeClass: 'active-sad' },
+  idk:   { frame: document.getElementById('idkFrame'),   div: document.getElementById('idkPlaylist'),   btn: document.getElementById('btnIdk'),   link: IDK_LINK,   loaded: false, activeClass: 'active-idk' }
+};
+
+// Preload the first (happy) one
+frames.happy.frame.src = embedUrl(frames.happy.link);
+frames.happy.loaded = true;
+
+var current = 'happy';
+
+function switchTo(mood){
+  if(mood === current) return;
+
+  var next = frames[mood];
+  if(!next.loaded){
+    next.frame.src = embedUrl(next.link);
+    next.loaded = true;
+  }
+
+  // Hide all, deactivate all buttons
+  Object.keys(frames).forEach(function(k){
+    frames[k].div.classList.add('hidden');
+    frames[k].btn.className = 'toggle-btn';
+  });
+
+  // Show chosen
+  next.div.classList.remove('hidden');
+  next.btn.className = 'toggle-btn ' + next.activeClass;
+  current = mood;
+}
+
+frames.happy.btn.addEventListener('click', function(){ switchTo('happy'); });
+frames.sad.btn.addEventListener('click',   function(){ switchTo('sad'); });
+frames.idk.btn.addEventListener('click',   function(){ switchTo('idk'); });
+
+})();
+</script>
+</body>
+</html>
