@@ -12,20 +12,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a12;font-family:
 canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .backlink{position:fixed;bottom:12px;left:16px;z-index:9999;color:rgba(255,255,255,.45);font:600 13px 'Rajdhani',sans-serif;text-decoration:none;letter-spacing:.5px;transition:color .3s}
 .backlink:hover{color:#fff}
-
-/* Overlay UI */
 #ui{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:flex;align-items:center;justify-content:center;pointer-events:none}
 #ui>div{pointer-events:auto}
 .panel{background:rgba(12,12,28,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:36px 32px;max-width:420px;width:90vw;text-align:center;box-shadow:0 0 60px rgba(100,80,255,.08)}
 .panel h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:28px;letter-spacing:2px;margin-bottom:6px;background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .panel h2{font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;letter-spacing:1.5px;margin-bottom:16px;color:#c4b5fd}
 .panel p{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:18px;line-height:1.5}
-.panel label{font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0;cursor:pointer}
-.panel input[type=text]{width:80%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font:600 16px 'Rajdhani',sans-serif;text-align:center;outline:none;transition:border-color .3s}
-.panel input[type=text]:focus{border-color:rgba(167,139,250,.5)}
-.panel input[type=checkbox]{accent-color:#a78bfa;width:16px;height:16px}
-
-/* Buttons */
 .btn{display:inline-block;padding:10px 28px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(135deg,rgba(110,80,255,.25),rgba(244,114,182,.18));color:#fff;font:700 15px 'Rajdhani',sans-serif;letter-spacing:1px;cursor:pointer;transition:all .25s;margin:4px}
 .btn:hover{background:linear-gradient(135deg,rgba(110,80,255,.45),rgba(244,114,182,.35));transform:scale(1.04);box-shadow:0 0 20px rgba(167,139,250,.25)}
 .btn.small{padding:7px 18px;font-size:13px;border-radius:9px}
@@ -33,8 +25,6 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;z-index:
 .btn.accent:hover{background:linear-gradient(135deg,rgba(110,231,168,.5),rgba(111,212,255,.4))}
 .btn.danger{background:linear-gradient(135deg,rgba(255,80,80,.3),rgba(255,111,147,.2));border-color:rgba(255,80,80,.15)}
 .btn.danger:hover{background:linear-gradient(135deg,rgba(255,80,80,.55),rgba(255,111,147,.4))}
-
-/* Track / difficulty selectors */
 .select-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0}
 .sel-item{padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:space-between}
 .sel-item:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)}
@@ -42,52 +32,18 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;z-index:
 .sel-item .name{font:700 15px 'Rajdhani',sans-serif;letter-spacing:.5px}
 .sel-item .sub{font:400 12px 'Rajdhani',sans-serif;color:rgba(255,255,255,.4)}
 .sel-item .diff-dot{width:10px;height:10px;border-radius:50%}
-
-/* HUD */
 #hud{position:fixed;top:0;left:0;width:100%;z-index:90;pointer-events:none;padding:10px 16px;display:none;justify-content:space-between;align-items:flex-start}
-#hud .hud-l, #hud .hud-r{display:flex;flex-direction:column;gap:2px}
+#hud .hud-l,#hud .hud-r{display:flex;flex-direction:column;gap:2px}
 #hud .hud-r{align-items:flex-end}
 .hud-val{font:700 22px 'Orbitron',sans-serif;letter-spacing:1px}
 .hud-lbl{font:400 10px 'Rajdhani',sans-serif;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase}
 .combo-val{font:900 28px 'Orbitron',sans-serif;background:linear-gradient(135deg,#6ee7ff,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-/* Countdown */
 #countdown{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;display:none;align-items:center;justify-content:center;font:900 72px 'Orbitron',sans-serif;color:#a78bfa;text-shadow:0 0 40px rgba(167,139,250,.5)}
-
-/* Pause overlay */
 #pauseOverlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(6,6,18,.75);backdrop-filter:blur(8px)}
-
-/* Results panel extras */
 .result-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin:14px auto;max-width:260px;text-align:left}
 .result-stats .rs-l{font:400 13px 'Rajdhani',sans-serif;color:rgba(255,255,255,.5)}
 .result-stats .rs-v{font:700 14px 'Rajdhani',sans-serif;text-align:right}
 .grade-display{font:900 52px 'Orbitron',sans-serif;margin:8px 0}
-
-/* Leaderboard in-panel */
-.lb-tabs{display:flex;gap:4px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
-.lb-tab{padding:5px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font:600 12px 'Rajdhani',sans-serif;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.5)}
-.lb-tab.active{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.35);color:#fff}
-.lb-list{max-height:260px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(167,139,250,.3) transparent}
-.lb-list::-webkit-scrollbar{width:4px}
-.lb-list::-webkit-scrollbar-thumb{background:rgba(167,139,250,.3);border-radius:2px}
-.lb-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;transition:background .2s;position:relative}
-.lb-row:nth-child(odd){background:rgba(255,255,255,.02)}
-.lb-row:hover{background:rgba(167,139,250,.08)}
-.lb-rank{font:700 13px 'Orbitron',sans-serif;width:24px;text-align:center;color:rgba(255,255,255,.4)}
-.lb-row:nth-child(1) .lb-rank{color:#ffd700}
-.lb-row:nth-child(2) .lb-rank{color:#c0c0c0}
-.lb-row:nth-child(3) .lb-rank{color:#cd7f32}
-.lb-name{flex:1;font:600 13px 'Rajdhani',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-perf{font:700 13px 'Share Tech Mono',monospace;color:#a78bfa}
-.lb-score{font:400 11px 'Share Tech Mono',monospace;color:rgba(255,255,255,.35);width:52px;text-align:right}
-.lb-del{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,80,80,.3);background:rgba(255,80,80,.12);color:rgba(255,80,80,.7);font:700 12px sans-serif;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s;line-height:1}
-.lb-row:hover .lb-del{display:flex}
-.lb-del:hover{background:rgba(255,80,80,.35);color:#fff}
-.lb-empty{font:400 13px 'Rajdhani',sans-serif;color:rgba(255,255,255,.3);padding:20px 0}
-
-/* Confirm dialog */
-#confirmDialog{position:fixed;top:0;left:0;width:100%;height:100%;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(6,6,18,.8)}
-#confirmDialog .panel{max-width:320px}
 </style>
 </head>
 <body>
@@ -119,16 +75,6 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;z-index:
   </div>
 </div>
 
-<div id="confirmDialog">
-  <div class="panel">
-    <p id="confirmText">Remove this entry?</p>
-    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-      <button class="btn danger" id="confirmYes">REMOVE</button>
-      <button class="btn small" id="confirmNo">CANCEL</button>
-    </div>
-  </div>
-</div>
-
 <div id="ui"><div id="uiContent"></div></div>
 
 <a class="backlink" href="index.html">&larr; home</a>
@@ -137,11 +83,8 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;z-index:
 (function(){
 "use strict";
 
-/* ── CONSTANTS ── */
-var LS_KEY  = 'precisionPulse_lb_v2';
-var LS_NAME = 'precisionPulse_name';
-var LANES   = 4;
-var WIN     = { perfect:42, great:85, good:145 };
+var LANES = 4;
+var WIN = { perfect:42, great:85, good:145 };
 
 var DIFFS = [
   { key:'normal',  label:'Normal',  approach:1850, density:1.00, dur:72000,  col:'#6ee7a8' },
@@ -151,10 +94,10 @@ var DIFFS = [
 ];
 
 var TRACKS = [
-  { key:'nebula',   name:'Nebula Drift',   bpm:104, desc:'Gentle ambient flow' },
-  { key:'circuit',  name:'Circuit Bloom',   bpm:132, desc:'Upbeat rhythmic pulse' },
-  { key:'eclipse',  name:'Eclipse Run',     bpm:146, desc:'Intense driving rhythm' },
-  { key:'shard',    name:'Shardfall',       bpm:0,   desc:'Random — changes every play', random:true }
+  { key:'nebula',  name:'Nebula Drift',  bpm:104, desc:'Gentle ambient flow' },
+  { key:'circuit', name:'Circuit Bloom',  bpm:132, desc:'Upbeat rhythmic pulse' },
+  { key:'eclipse', name:'Eclipse Run',    bpm:146, desc:'Intense driving rhythm' },
+  { key:'shard',   name:'Shardfall',      bpm:0,   desc:'Random — changes every play', random:true }
 ];
 
 var PATTERN_TYPES = ['stream','alt','chord','burst','zig','single','rest'];
@@ -168,203 +111,129 @@ var dpr = Math.min(window.devicePixelRatio||1, 2);
 function resize(){
   W = window.innerWidth;
   H = window.innerHeight;
-  C.width = W * dpr;
-  C.height = H * dpr;
-  C.style.width = W + 'px';
-  C.style.height = H + 'px';
+  C.width = W*dpr;
+  C.height = H*dpr;
+  C.style.width = W+'px';
+  C.style.height = H+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  hitLineY = H * 0.82;
-  fieldW = Math.min(W * 0.92, 480);
-  fieldL = (W - fieldW) / 2;
-  fieldR = fieldL + fieldW;
-  laneW = fieldW / LANES;
+  hitLineY = H*0.82;
+  fieldW = Math.min(W*0.92, 480);
+  fieldL = (W-fieldW)/2;
+  fieldR = fieldL+fieldW;
+  laneW = fieldW/LANES;
+  bakeGrid();
 }
 resize();
 window.addEventListener('resize', resize);
 
-/* ── AUDIO ENGINE ── */
+/* ── AUDIO ── */
 var audioCtx = null;
 var masterGain, reverbNode;
 
 function ensureAudio(){
   if(audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.6;
+  masterGain.gain.value = 0.55;
 
-  // Convolution reverb (synthetic impulse)
-  var len = audioCtx.sampleRate * 2.5;
+  var len = audioCtx.sampleRate*2.8;
   var impulse = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
   for(var ch=0;ch<2;ch++){
     var d = impulse.getChannelData(ch);
-    for(var i=0;i<len;i++){
-      d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2) * 0.35;
-    }
+    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4)*0.3;
   }
   reverbNode = audioCtx.createConvolver();
   reverbNode.buffer = impulse;
 
-  var dryGain = audioCtx.createGain();
-  dryGain.gain.value = 0.7;
-  var wetGain = audioCtx.createGain();
-  wetGain.gain.value = 0.4;
-
-  masterGain.connect(dryGain);
-  dryGain.connect(audioCtx.destination);
-  masterGain.connect(reverbNode);
-  reverbNode.connect(wetGain);
-  wetGain.connect(audioCtx.destination);
+  var dry = audioCtx.createGain(); dry.gain.value = 0.65;
+  var wet = audioCtx.createGain(); wet.gain.value = 0.45;
+  masterGain.connect(dry); dry.connect(audioCtx.destination);
+  masterGain.connect(reverbNode); reverbNode.connect(wet); wet.connect(audioCtx.destination);
 }
 
-function playNote(freq, dur, vol, type, delay){
+function playTone(freq, dur, vol, type, delay){
   if(!audioCtx) return;
-  var t = audioCtx.currentTime + (delay||0);
+  var t = audioCtx.currentTime+(delay||0);
   var osc = audioCtx.createOscillator();
   var g = audioCtx.createGain();
   var flt = audioCtx.createBiquadFilter();
-  osc.type = type || 'sine';
-  osc.frequency.setValueAtTime(freq, t);
+  osc.type = type||'sine';
+  osc.frequency.setValueAtTime(freq,t);
   flt.type = 'lowpass';
-  flt.frequency.setValueAtTime(1200, t);
-  flt.Q.value = 1;
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(vol||0.08, t+0.02);
-  g.gain.exponentialRampToValueAtTime(0.001, t+(dur||0.4));
-  osc.connect(flt);
-  flt.connect(g);
-  g.connect(masterGain);
-  osc.start(t);
-  osc.stop(t+(dur||0.4)+0.05);
+  flt.frequency.setValueAtTime(1200,t);
+  flt.Q.value = 0.8;
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol||0.07,t+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.4));
+  osc.connect(flt); flt.connect(g); g.connect(masterGain);
+  osc.start(t); osc.stop(t+(dur||0.4)+0.05);
 }
 
-function playPad(freqs, dur, vol){
-  if(!audioCtx) return;
-  var t = audioCtx.currentTime;
-  for(var i=0;i<freqs.length;i++){
-    var osc = audioCtx.createOscillator();
-    var g = audioCtx.createGain();
-    var flt = audioCtx.createBiquadFilter();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freqs[i], t);
-    flt.type = 'lowpass';
-    flt.frequency.setValueAtTime(800, t);
-    flt.Q.value = 0.5;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime((vol||0.04)/freqs.length, t+0.8);
-    g.gain.setValueAtTime((vol||0.04)/freqs.length, t+(dur||4)-1);
-    g.gain.exponentialRampToValueAtTime(0.0001, t+(dur||4));
-    osc.connect(flt);
-    flt.connect(g);
-    g.connect(masterGain);
-    osc.start(t);
-    osc.stop(t+(dur||4)+0.1);
-  }
-}
-
-// Ambient hit sounds
 function playHitSound(quality){
   if(!audioCtx) return;
   var t = audioCtx.currentTime;
-  if(quality === 'perfect'){
-    // Bright shimmery chime
-    [523.25, 659.25, 783.99].forEach(function(f,i){
-      playNote(f, 0.6, 0.1, 'sine', i*0.015);
-    });
-    // Soft noise shimmer
-    var buf = audioCtx.createBuffer(1, audioCtx.sampleRate*0.15, audioCtx.sampleRate);
+  if(quality==='perfect'){
+    [523.25,659.25,783.99].forEach(function(f,i){ playTone(f,0.7,0.09,'sine',i*0.012); });
+    var buf = audioCtx.createBuffer(1,audioCtx.sampleRate*0.12,audioCtx.sampleRate);
     var d = buf.getChannelData(0);
-    for(var i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*0.3;
-    var ns = audioCtx.createBufferSource();
-    ns.buffer = buf;
-    var nf = audioCtx.createBiquadFilter();
-    nf.type='bandpass'; nf.frequency.value=3000; nf.Q.value=2;
-    var ng = audioCtx.createGain();
-    ng.gain.setValueAtTime(0.04,t);
-    ng.gain.exponentialRampToValueAtTime(0.001,t+0.2);
-    ns.connect(nf); nf.connect(ng); ng.connect(masterGain);
-    ns.start(t); ns.stop(t+0.2);
-  } else if(quality === 'great'){
-    playNote(440, 0.4, 0.08, 'sine');
-    playNote(554.37, 0.35, 0.06, 'sine', 0.01);
-  } else if(quality === 'good'){
-    playNote(330, 0.3, 0.06, 'triangle');
+    for(var i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*0.25;
+    var ns = audioCtx.createBufferSource(); ns.buffer = buf;
+    var nf = audioCtx.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=3200; nf.Q.value=2;
+    var ng = audioCtx.createGain(); ng.gain.setValueAtTime(0.035,t); ng.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+    ns.connect(nf); nf.connect(ng); ng.connect(masterGain); ns.start(t); ns.stop(t+0.2);
+  } else if(quality==='great'){
+    playTone(440,0.45,0.07,'sine');
+    playTone(554.37,0.38,0.05,'sine',0.008);
+  } else if(quality==='good'){
+    playTone(330,0.3,0.05,'triangle');
   } else {
-    // miss — soft low thud
-    playNote(80, 0.25, 0.06, 'sine');
+    playTone(75,0.22,0.05,'sine');
   }
 }
 
-// Background ambient music
-var bgMusicNodes = [];
+var bgNodes = [];
 function startBGMusic(bpm){
   stopBGMusic();
   if(!audioCtx) return;
   var t = audioCtx.currentTime;
-
-  // Drone pad
-  var droneFreqs = [65.41, 98.00, 130.81, 196.00, 261.63];
+  var droneFreqs = [65.41,98.00,130.81,196.00,261.63];
   droneFreqs.forEach(function(f){
     var osc = audioCtx.createOscillator();
     var g = audioCtx.createGain();
     var flt = audioCtx.createBiquadFilter();
-    osc.type = 'sine';
-    osc.frequency.value = f;
-    flt.type = 'lowpass';
-    flt.frequency.value = 600;
-    flt.Q.value = 0.3;
-    g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(0.025, t+2);
-    osc.connect(flt);
-    flt.connect(g);
-    g.connect(masterGain);
-    osc.start(t);
-    bgMusicNodes.push(osc, g);
+    osc.type = 'sine'; osc.frequency.value = f;
+    flt.type = 'lowpass'; flt.frequency.value = 550; flt.Q.value = 0.3;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.02,t+2.5);
+    osc.connect(flt); flt.connect(g); g.connect(masterGain); osc.start(t);
+    bgNodes.push(osc,g);
   });
 
-  // Slow ambient arpeggio
-  var arpNotes = [196.00, 261.63, 329.63, 392.00, 329.63, 261.63];
+  var arpNotes = [196.00,261.63,329.63,392.00,329.63,261.63];
   var arpIdx = 0;
   var beatSec = 60/bpm;
-  var arpInterval = setInterval(function(){
-    if(!audioCtx || gameState !== 'playing') return;
-    var f = arpNotes[arpIdx % arpNotes.length];
-    playNote(f * (Math.random()>0.5?1:2), beatSec*1.8, 0.03, 'sine');
+  var arpIv = setInterval(function(){
+    if(!audioCtx||gameState!=='playing') return;
+    playTone(arpNotes[arpIdx%arpNotes.length]*(Math.random()>0.5?1:2), beatSec*2, 0.025, 'sine');
     arpIdx++;
-  }, beatSec * 1000 * 2);
-  bgMusicNodes.push({stop:function(){ clearInterval(arpInterval); }});
+  }, beatSec*2000);
+  bgNodes.push({stop:function(){ clearInterval(arpIv); }});
 
-  // Soft noise bed
-  var nLen = audioCtx.sampleRate * 4;
-  var nBuf = audioCtx.createBuffer(2, nLen, audioCtx.sampleRate);
-  for(var ch=0;ch<2;ch++){
-    var nd = nBuf.getChannelData(ch);
-    for(var i=0;i<nLen;i++) nd[i]=(Math.random()*2-1);
-  }
-  var nSrc = audioCtx.createBufferSource();
-  nSrc.buffer = nBuf;
-  nSrc.loop = true;
-  var nFlt = audioCtx.createBiquadFilter();
-  nFlt.type = 'lowpass';
-  nFlt.frequency.value = 300;
-  nFlt.Q.value = 0.1;
-  var nGain = audioCtx.createGain();
-  nGain.gain.value = 0.015;
-  nSrc.connect(nFlt);
-  nFlt.connect(nGain);
-  nGain.connect(masterGain);
-  nSrc.start(t);
-  bgMusicNodes.push(nSrc);
+  var nLen = audioCtx.sampleRate*4;
+  var nBuf = audioCtx.createBuffer(2,nLen,audioCtx.sampleRate);
+  for(var ch=0;ch<2;ch++){ var nd=nBuf.getChannelData(ch); for(var i=0;i<nLen;i++) nd[i]=(Math.random()*2-1); }
+  var nSrc = audioCtx.createBufferSource(); nSrc.buffer = nBuf; nSrc.loop = true;
+  var nFlt = audioCtx.createBiquadFilter(); nFlt.type='lowpass'; nFlt.frequency.value=280; nFlt.Q.value=0.1;
+  var nGain = audioCtx.createGain(); nGain.gain.value = 0.012;
+  nSrc.connect(nFlt); nFlt.connect(nGain); nGain.connect(masterGain); nSrc.start(t);
+  bgNodes.push(nSrc);
 }
 
 function stopBGMusic(){
-  bgMusicNodes.forEach(function(n){
-    try{ n.stop(); }catch(e){}
-    try{ n.disconnect(); }catch(e){}
-  });
-  bgMusicNodes = [];
+  bgNodes.forEach(function(n){ try{n.stop();}catch(e){} try{n.disconnect();}catch(e){} });
+  bgNodes = [];
 }
 
-/* ── STAR GRID BACKDROP ── */
+/* ── STAR GRID ── */
 var stars = [];
 var gridCanvas = null;
 
@@ -372,101 +241,73 @@ function initStars(){
   stars = [];
   for(var i=0;i<120;i++){
     stars.push({
-      x: Math.random()*W,
-      y: Math.random()*H,
-      r: Math.random()*1.2+0.3,
-      a: Math.random()*0.5+0.15,
-      speed: Math.random()*0.008+0.003,
-      phase: Math.random()*Math.PI*2
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.2+0.3, a:Math.random()*0.5+0.15,
+      speed:Math.random()*0.008+0.003, phase:Math.random()*Math.PI*2
     });
   }
 }
 
 function bakeGrid(){
   gridCanvas = document.createElement('canvas');
-  gridCanvas.width = W*dpr;
-  gridCanvas.height = H*dpr;
+  gridCanvas.width = W*dpr; gridCanvas.height = H*dpr;
   var gc = gridCanvas.getContext('2d');
   gc.setTransform(dpr,0,0,dpr,0,0);
   gc.strokeStyle = 'rgba(167,139,250,0.035)';
   gc.lineWidth = 0.5;
   var sp = 60;
-  for(var x=0;x<W;x+=sp){
-    gc.beginPath(); gc.moveTo(x,0); gc.lineTo(x,H); gc.stroke();
-  }
-  for(var y=0;y<H;y+=sp){
-    gc.beginPath(); gc.moveTo(0,y); gc.lineTo(W,y); gc.stroke();
-  }
+  for(var x=0;x<W;x+=sp){ gc.beginPath(); gc.moveTo(x,0); gc.lineTo(x,H); gc.stroke(); }
+  for(var y=0;y<H;y+=sp){ gc.beginPath(); gc.moveTo(0,y); gc.lineTo(W,y); gc.stroke(); }
 }
 
 function drawBackdrop(time){
-  // Gradient background — Sekai-inspired deep purple/blue
   var grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, '#0a0814');
-  grad.addColorStop(0.4, '#110e24');
-  grad.addColorStop(0.7, '#0d1128');
-  grad.addColorStop(1, '#08060f');
+  grad.addColorStop(0,'#0a0814');
+  grad.addColorStop(0.4,'#110e24');
+  grad.addColorStop(0.7,'#0d1128');
+  grad.addColorStop(1,'#08060f');
   ctx.fillStyle = grad;
   ctx.fillRect(0,0,W,H);
-
-  // Grid
   if(gridCanvas) ctx.drawImage(gridCanvas,0,0,W,H);
-
-  // Stars
-  var t = time * 0.001;
+  var t = time*0.001;
   for(var i=0;i<stars.length;i++){
     var s = stars[i];
-    var a = s.a * (0.5 + 0.5*Math.sin(t*s.speed*200 + s.phase));
+    var a = s.a*(0.5+0.5*Math.sin(t*s.speed*200+s.phase));
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fillStyle = 'rgba(200,190,255,'+a+')';
     ctx.fill();
   }
 }
 
-/* ── PARTICLES / EFFECTS ── */
+/* ── PARTICLES ── */
 var particles = [];
 
-function spawnHitParticles(x, y, color, count){
+function spawnHitParticles(x,y,color,count){
   for(var i=0;i<count;i++){
     var angle = Math.random()*Math.PI*2;
     var speed = Math.random()*3+1.5;
     particles.push({
-      x:x, y:y,
-      vx: Math.cos(angle)*speed,
-      vy: Math.sin(angle)*speed - Math.random()*2,
-      life:1,
-      decay: Math.random()*0.015+0.015,
-      r: Math.random()*3+1,
-      color: color
+      x:x, y:y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed-Math.random()*2,
+      life:1, decay:Math.random()*0.015+0.015, r:Math.random()*3+1, color:color
     });
   }
 }
 
-function spawnStreaks(x, y, color){
+function spawnStreaks(x,y,color){
   for(var i=0;i<3;i++){
     particles.push({
-      x:x, y:y,
-      vx: (Math.random()-0.5)*1.5,
-      vy: -(Math.random()*5+3),
-      life:1,
-      decay: 0.018,
-      r: 1.5,
-      color: color,
-      streak: true,
-      len: Math.random()*25+15
+      x:x, y:y, vx:(Math.random()-0.5)*1.5, vy:-(Math.random()*5+3),
+      life:1, decay:0.018, r:1.5, color:color, streak:true, len:Math.random()*25+15
     });
   }
 }
 
-function updateParticles(dt){
+function updateParticles(){
   for(var i=particles.length-1;i>=0;i--){
     var p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.04;
-    p.life -= p.decay;
-    if(p.life <= 0) particles.splice(i,1);
+    p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= p.decay;
+    if(p.life<=0) particles.splice(i,1);
   }
 }
 
@@ -475,17 +316,12 @@ function drawParticles(){
     var p = particles[i];
     ctx.globalAlpha = p.life;
     if(p.streak){
-      ctx.strokeStyle = p.color;
-      ctx.lineWidth = p.r;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - p.vx*p.len*0.3, p.y - p.vy*p.len*0.3);
-      ctx.stroke();
+      ctx.strokeStyle = p.color; ctx.lineWidth = p.r;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y);
+      ctx.lineTo(p.x-p.vx*p.len*0.3, p.y-p.vy*p.len*0.3); ctx.stroke();
     } else {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
+      ctx.fillStyle = p.color; ctx.fill();
     }
   }
   ctx.globalAlpha = 1;
@@ -494,37 +330,28 @@ function drawParticles(){
 /* ── JUDGEMENT FLOATERS ── */
 var floaters = [];
 
-function showJudgement(lane, text, color){
-  var x = fieldL + (lane+0.5)*laneW;
-  floaters.push({
-    x:x, y:hitLineY-30,
-    text:text, color:color,
-    life:1, decay:0.022
-  });
+function showJudgement(lane,text,color){
+  floaters.push({ x:fieldL+(lane+0.5)*laneW, y:hitLineY-30, text:text, color:color, life:1, decay:0.022 });
 }
 
 function drawFloaters(){
   for(var i=floaters.length-1;i>=0;i--){
     var f = floaters[i];
-    f.y -= 1.2;
-    f.life -= f.decay;
+    f.y -= 1.2; f.life -= f.decay;
     if(f.life<=0){ floaters.splice(i,1); continue; }
     ctx.globalAlpha = f.life;
     ctx.font = '700 18px Orbitron';
     ctx.textAlign = 'center';
     ctx.fillStyle = f.color;
-    ctx.shadowColor = f.color;
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = f.color; ctx.shadowBlur = 12;
     ctx.fillText(f.text, f.x, f.y);
     ctx.shadowBlur = 0;
   }
   ctx.globalAlpha = 1;
 }
 
-/* ── NOTES / GAME STATE ── */
-var gameState = 'title'; // title, nameEntry, trackSelect, diffSelect, countdown, playing, paused, results
-var playerName = '';
-var optInLeaderboard = true;
+/* ── GAME STATE ── */
+var gameState = 'title';
 var selectedTrack = 0;
 var selectedDiff = 0;
 var notes = [];
@@ -539,109 +366,74 @@ var songDuration = 0;
 var actualBPM = 0;
 var pauseOffset = 0;
 var pauseStart = 0;
+var laneFlashes = [0,0,0,0];
 
-function laneX(lane){ return fieldL + (lane+0.5)*laneW; }
+function laneX(lane){ return fieldL+(lane+0.5)*laneW; }
 
+/* ── NOTE GENERATION ── */
 function generateNotes(){
   notes = [];
   var diff = DIFFS[selectedDiff];
   var track = TRACKS[selectedTrack];
-  var bpm = track.random ? (108 + Math.random()*42) : track.bpm;
+  var bpm = track.random ? (108+Math.random()*42) : track.bpm;
   actualBPM = Math.round(bpm);
   songDuration = diff.dur;
 
   var beatMs = 60000/bpm;
-  var baseGap = beatMs / diff.density;
-  var t = 2000; // start offset
-  var patterns = [];
+  var baseGap = beatMs/diff.density;
+  var t = 2000;
 
-  // Build pattern sequence
-  while(t < songDuration - 3000){
-    var progress = t / songDuration;
-    var intensity = Math.min(1, progress * 1.3);
+  while(t < songDuration-3000){
+    var progress = t/songDuration;
+    var intensity = Math.min(1, progress*1.3);
 
-    // Weighted pattern selection
     var weights;
-    if(intensity < 0.3){
-      weights = [35,15,8,5,10,20,7];
-    } else if(intensity < 0.6){
-      weights = [25,20,15,12,12,10,6];
-    } else if(intensity < 0.85){
-      weights = [18,18,20,18,15,7,4];
-    } else {
-      weights = [12,15,25,22,18,5,3];
-    }
+    if(intensity<0.3) weights=[35,15,8,5,10,20,7];
+    else if(intensity<0.6) weights=[25,20,15,12,12,10,6];
+    else if(intensity<0.85) weights=[18,18,20,18,15,7,4];
+    else weights=[12,15,25,22,18,5,3];
 
-    var total = 0;
+    var total=0;
     for(var w=0;w<weights.length;w++) total+=weights[w];
-    var r = Math.random()*total;
-    var acc=0, pType=0;
-    for(var w=0;w<weights.length;w++){
-      acc+=weights[w];
-      if(r<acc){pType=w;break;}
-    }
+    var r=Math.random()*total, acc=0, pType=0;
+    for(var w=0;w<weights.length;w++){ acc+=weights[w]; if(r<acc){pType=w;break;} }
 
     var type = PATTERN_TYPES[pType];
     switch(type){
       case 'stream':
-        var count = 4 + Math.floor(Math.random()*5);
-        var lane = Math.floor(Math.random()*LANES);
+        var count=4+Math.floor(Math.random()*5);
+        var lane=Math.floor(Math.random()*LANES);
         for(var n=0;n<count;n++){
-          notes.push({lane:lane, time:t});
-          t += baseGap;
-          if(Math.random()<0.3) lane = (lane + (Math.random()>0.5?1:-1) + LANES)%LANES;
-        }
-        break;
+          notes.push({lane:lane,time:t}); t+=baseGap;
+          if(Math.random()<0.3) lane=(lane+(Math.random()>0.5?1:-1)+LANES)%LANES;
+        } break;
       case 'alt':
-        var l1 = Math.floor(Math.random()*LANES);
-        var l2 = (l1 + 1 + Math.floor(Math.random()*(LANES-1)))%LANES;
-        for(var n=0;n<6;n++){
-          notes.push({lane: n%2===0?l1:l2, time:t});
-          t += baseGap;
-        }
+        var l1=Math.floor(Math.random()*LANES);
+        var l2=(l1+1+Math.floor(Math.random()*(LANES-1)))%LANES;
+        for(var n=0;n<6;n++){ notes.push({lane:n%2===0?l1:l2,time:t}); t+=baseGap; }
         break;
       case 'chord':
-        var numLanes = 2 + (intensity>0.5 && Math.random()>0.5 ? 1 : 0);
-        var lanes = [];
-        while(lanes.length < numLanes){
-          var l = Math.floor(Math.random()*LANES);
-          if(lanes.indexOf(l)===-1) lanes.push(l);
-        }
-        for(var n=0;n<lanes.length;n++){
-          notes.push({lane:lanes[n], time:t});
-        }
-        t += baseGap * 1.8;
-        break;
+        var numL=2+(intensity>0.5&&Math.random()>0.5?1:0);
+        var lanes=[];
+        while(lanes.length<numL){ var l=Math.floor(Math.random()*LANES); if(lanes.indexOf(l)===-1) lanes.push(l); }
+        for(var n=0;n<lanes.length;n++) notes.push({lane:lanes[n],time:t});
+        t+=baseGap*1.8; break;
       case 'burst':
-        for(var n=0;n<3+Math.floor(Math.random()*3);n++){
-          notes.push({lane:Math.floor(Math.random()*LANES), time:t});
-          t += baseGap * 0.5;
-        }
-        t += baseGap;
-        break;
+        for(var n=0;n<3+Math.floor(Math.random()*3);n++){ notes.push({lane:Math.floor(Math.random()*LANES),time:t}); t+=baseGap*0.5; }
+        t+=baseGap; break;
       case 'zig':
-        var dir = Math.random()>0.5?1:-1;
-        var lane = dir>0?0:LANES-1;
-        for(var n=0;n<LANES;n++){
-          notes.push({lane:lane, time:t});
-          t += baseGap*0.8;
-          lane += dir;
-        }
-        t += baseGap;
-        break;
+        var dir=Math.random()>0.5?1:-1;
+        var lane=dir>0?0:LANES-1;
+        for(var n=0;n<LANES;n++){ notes.push({lane:lane,time:t}); t+=baseGap*0.8; lane+=dir; }
+        t+=baseGap; break;
       case 'single':
-        notes.push({lane:Math.floor(Math.random()*LANES), time:t});
-        t += baseGap * 1.5;
-        break;
+        notes.push({lane:Math.floor(Math.random()*LANES),time:t}); t+=baseGap*1.5; break;
       case 'rest':
-        t += baseGap * (3 + Math.random()*2);
-        break;
+        t+=baseGap*(3+Math.random()*2); break;
     }
   }
 
   totalNotes = notes.length;
-
-  // Assign visual style to each note
   var noteColors = ['#6ee7ff','#a78bfa','#f472b6','#6ee7a8','#fbbf24','#f87171'];
   for(var i=0;i<notes.length;i++){
     notes[i].hit = false;
@@ -656,90 +448,68 @@ function drawPlayfield(time){
   var diff = DIFFS[selectedDiff];
   var approachMs = diff.approach;
 
-  // Lane dividers — Sekai neon style
   ctx.strokeStyle = 'rgba(167,139,250,0.12)';
   ctx.lineWidth = 1;
   for(var i=0;i<=LANES;i++){
-    var x = fieldL + i*laneW;
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, H);
-    ctx.stroke();
+    var x = fieldL+i*laneW;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
   }
 
-  // Lane shading
   for(var i=0;i<LANES;i++){
-    var lx = fieldL + i*laneW;
-    var laneGrad = ctx.createLinearGradient(0, hitLineY-100, 0, hitLineY);
-    laneGrad.addColorStop(0, 'rgba(167,139,250,0)');
-    laneGrad.addColorStop(1, 'rgba(167,139,250,0.04)');
-    ctx.fillStyle = laneGrad;
-    ctx.fillRect(lx, 0, laneW, hitLineY);
+    var lx = fieldL+i*laneW;
+    var lg = ctx.createLinearGradient(0,hitLineY-100,0,hitLineY);
+    lg.addColorStop(0,'rgba(167,139,250,0)');
+    lg.addColorStop(1,'rgba(167,139,250,0.04)');
+    ctx.fillStyle = lg;
+    ctx.fillRect(lx,0,laneW,hitLineY);
   }
 
-  // Hit line — glowing
-  var hlGlow = 0.4 + 0.15*Math.sin(time*0.003);
-  ctx.shadowColor = '#a78bfa';
-  ctx.shadowBlur = 20;
+  var hlGlow = 0.4+0.15*Math.sin(time*0.003);
+  ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = 20;
   ctx.strokeStyle = 'rgba(167,139,250,'+hlGlow+')';
   ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(fieldL, hitLineY);
-  ctx.lineTo(fieldR, hitLineY);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(fieldL,hitLineY); ctx.lineTo(fieldR,hitLineY); ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Hit zone indicators
   for(var i=0;i<LANES;i++){
     var cx = laneX(i);
-    ctx.beginPath();
-    ctx.arc(cx, hitLineY, 16, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(167,139,250,0.08)';
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,hitLineY,16,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(167,139,250,0.08)'; ctx.fill();
     ctx.strokeStyle = 'rgba(167,139,250,'+hlGlow*0.6+')';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+    ctx.lineWidth = 1.5; ctx.stroke();
   }
 
-  // Draw notes
   for(var i=0;i<notes.length;i++){
     var n = notes[i];
-    if(n.hit || n.missed) continue;
-    var dt = n.time - songTime;
-    if(dt > approachMs + 200 || dt < -500) continue;
-
-    var progress = 1 - (dt / approachMs);
-    var ny = progress * hitLineY;
-    if(ny < -30) continue;
-
+    if(n.hit||n.missed) continue;
+    var dt = n.time-songTime;
+    if(dt>approachMs+200||dt<-500) continue;
+    var progress = 1-(dt/approachMs);
+    var ny = progress*hitLineY;
+    if(ny<-30) continue;
     var nx = laneX(n.lane);
-    var glow = 0.6 + 0.3*Math.sin(time*0.005 + n.glowPhase);
-
-    // Note body — rounded rectangle pill, Sekai-style
-    var nw = laneW * 0.55;
+    var glow = 0.6+0.3*Math.sin(time*0.005+n.glowPhase);
+    var nw = laneW*0.55;
     var nh = 12;
     var nr = 6;
 
-    ctx.shadowColor = n.color;
-    ctx.shadowBlur = 12 * glow;
+    ctx.shadowColor = n.color; ctx.shadowBlur = 12*glow;
 
-    // Glow trail
-    var trailGrad = ctx.createLinearGradient(nx, ny-40, nx, ny);
-    trailGrad.addColorStop(0, 'rgba(0,0,0,0)');
-    trailGrad.addColorStop(1, n.color.replace(')', ',0.15)').replace('rgb(','rgba('));
-    ctx.fillStyle = trailGrad;
-    ctx.fillRect(nx - nw*0.3, ny-40, nw*0.6, 40);
+    var tg = ctx.createLinearGradient(nx,ny-40,nx,ny);
+    var baseCol = n.color;
+    tg.addColorStop(0,'rgba(0,0,0,0)');
+    tg.addColorStop(1, hexToRgba(baseCol,0.15));
+    ctx.fillStyle = tg;
+    ctx.fillRect(nx-nw*0.3,ny-40,nw*0.6,40);
 
-    // Main note
     ctx.beginPath();
-    ctx.roundRect(nx - nw/2, ny - nh/2, nw, nh, nr);
+    roundRect(ctx, nx-nw/2,ny-nh/2,nw,nh,nr);
     ctx.fillStyle = n.color;
-    ctx.globalAlpha = Math.min(1, progress+0.3);
+    ctx.globalAlpha = Math.min(1,progress+0.3);
     ctx.fill();
 
-    // Inner highlight
     ctx.beginPath();
-    ctx.roundRect(nx - nw*0.35, ny - nh*0.25, nw*0.7, nh*0.35, nr*0.6);
+    roundRect(ctx, nx-nw*0.35,ny-nh*0.25,nw*0.7,nh*0.35,nr*0.6);
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
     ctx.fill();
 
@@ -747,279 +517,181 @@ function drawPlayfield(time){
     ctx.shadowBlur = 0;
   }
 
-  // Progress bar at very bottom
-  if(songDuration > 0){
-    var prog = Math.min(1, songTime / songDuration);
+  if(songDuration>0){
+    var prog = Math.min(1,songTime/songDuration);
     ctx.fillStyle = 'rgba(167,139,250,0.08)';
-    ctx.fillRect(0, H-3, W, 3);
-    var progGrad = ctx.createLinearGradient(0,0,W*prog,0);
-    progGrad.addColorStop(0, '#a78bfa');
-    progGrad.addColorStop(1, '#f472b6');
-    ctx.fillStyle = progGrad;
-    ctx.fillRect(0, H-3, W*prog, 3);
+    ctx.fillRect(0,H-3,W,3);
+    var pg = ctx.createLinearGradient(0,0,W*prog,0);
+    pg.addColorStop(0,'#a78bfa'); pg.addColorStop(1,'#f472b6');
+    ctx.fillStyle = pg;
+    ctx.fillRect(0,H-3,W*prog,3);
   }
 }
 
-/* ── INPUT HANDLING ── */
+function hexToRgba(hex,a){
+  var r=parseInt(hex.slice(1,3),16)||0;
+  var g=parseInt(hex.slice(3,5),16)||0;
+  var b=parseInt(hex.slice(5,7),16)||0;
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+/* ── INPUT ── */
 function hitLane(lane){
-  if(gameState !== 'playing') return;
-  var diff = DIFFS[selectedDiff];
-  var best = null, bestDt = Infinity;
-
+  if(gameState!=='playing') return;
+  var best=null, bestDt=Infinity;
   for(var i=0;i<notes.length;i++){
-    var n = notes[i];
-    if(n.hit || n.missed || n.lane !== lane) continue;
-    var dt = Math.abs(n.time - songTime);
-    if(dt < bestDt && dt < WIN.good + 50){
-      bestDt = dt;
-      best = n;
-    }
+    var n=notes[i];
+    if(n.hit||n.missed||n.lane!==lane) continue;
+    var dt=Math.abs(n.time-songTime);
+    if(dt<bestDt&&dt<WIN.good+50){ bestDt=dt; best=n; }
   }
-
   if(!best) return;
 
-  var dt = bestDt;
-  var x = laneX(lane);
-  if(dt <= WIN.perfect){
-    best.hit = true;
-    counts.perfect++;
-    combo++;
-    score += Math.round(320 * (1 + Math.min(combo,100)*0.012));
-    showJudgement(lane, 'PERFECT', '#fbbf24');
-    spawnHitParticles(x, hitLineY, '#fbbf24', 18);
-    spawnStreaks(x, hitLineY, '#fbbf24');
+  var x=laneX(lane);
+  if(bestDt<=WIN.perfect){
+    best.hit=true; counts.perfect++; combo++;
+    score+=Math.round(320*(1+Math.min(combo,100)*0.012));
+    showJudgement(lane,'PERFECT','#fbbf24');
+    spawnHitParticles(x,hitLineY,'#fbbf24',18);
+    spawnStreaks(x,hitLineY,'#fbbf24');
     playHitSound('perfect');
-  } else if(dt <= WIN.great){
-    best.hit = true;
-    counts.great++;
-    combo++;
-    score += Math.round(170 * (1 + Math.min(combo,100)*0.012));
-    showJudgement(lane, 'GREAT', '#a78bfa');
-    spawnHitParticles(x, hitLineY, '#a78bfa', 12);
+  } else if(bestDt<=WIN.great){
+    best.hit=true; counts.great++; combo++;
+    score+=Math.round(170*(1+Math.min(combo,100)*0.012));
+    showJudgement(lane,'GREAT','#a78bfa');
+    spawnHitParticles(x,hitLineY,'#a78bfa',12);
     playHitSound('great');
-  } else if(dt <= WIN.good){
-    best.hit = true;
-    counts.good++;
-    combo++;
-    score += Math.round(70 * (1 + Math.min(combo,100)*0.012));
-    showJudgement(lane, 'GOOD', '#6ee7a8');
-    spawnHitParticles(x, hitLineY, '#6ee7a8', 8);
+  } else if(bestDt<=WIN.good){
+    best.hit=true; counts.good++; combo++;
+    score+=Math.round(70*(1+Math.min(combo,100)*0.012));
+    showJudgement(lane,'GOOD','#6ee7a8');
+    spawnHitParticles(x,hitLineY,'#6ee7a8',8);
     playHitSound('good');
   }
-
-  if(combo > maxCombo) maxCombo = combo;
+  if(combo>maxCombo) maxCombo=combo;
 }
 
-// Keyboard
-var keyMap = {'d':0,'f':1,'j':2,'k':3, '1':0,'2':1,'3':2,'4':3, 'arrowleft':0,'arrowdown':1,'arrowup':2,'arrowright':3};
+var keyMap = {'d':0,'f':1,'j':2,'k':3,'1':0,'2':1,'3':2,'4':3,'arrowleft':0,'arrowdown':1,'arrowup':2,'arrowright':3};
 document.addEventListener('keydown', function(e){
-  var k = e.key.toLowerCase();
-  if(k === 'escape'){
-    if(gameState === 'playing') togglePause();
-    else if(gameState === 'paused') togglePause();
+  var k=e.key.toLowerCase();
+  if(k==='escape'){
+    if(gameState==='playing'||gameState==='paused') togglePause();
     return;
   }
-  if(k in keyMap && gameState === 'playing'){
-    e.preventDefault();
-    hitLane(keyMap[k]);
-
-    // Flash lane
-    flashLane(keyMap[k]);
+  if(k in keyMap && gameState==='playing'){
+    e.preventDefault(); hitLane(keyMap[k]); laneFlashes[keyMap[k]]=1;
   }
 });
 
-var laneFlashes = [0,0,0,0];
-function flashLane(lane){ laneFlashes[lane] = 1; }
-
-// Touch / Click
 C.addEventListener('pointerdown', function(e){
   e.preventDefault();
-  if(gameState !== 'playing') return;
-  var x = e.clientX;
-  if(x < fieldL || x > fieldR) return;
-  var lane = Math.floor((x - fieldL) / laneW);
-  lane = Math.max(0, Math.min(LANES-1, lane));
-  hitLane(lane);
-  flashLane(lane);
+  if(gameState!=='playing') return;
+  var x=e.clientX;
+  if(x<fieldL||x>fieldR) return;
+  var lane=Math.floor((x-fieldL)/laneW);
+  lane=Math.max(0,Math.min(LANES-1,lane));
+  hitLane(lane); laneFlashes[lane]=1;
 });
 
 /* ── PAUSE ── */
 function togglePause(){
-  if(gameState === 'playing'){
-    gameState = 'paused';
-    pauseStart = performance.now();
-    document.getElementById('pauseOverlay').style.display = 'flex';
-    document.getElementById('hud').style.display = 'none';
+  if(gameState==='playing'){
+    gameState='paused'; pauseStart=performance.now();
+    document.getElementById('pauseOverlay').style.display='flex';
+    document.getElementById('hud').style.display='none';
     stopBGMusic();
-  } else if(gameState === 'paused'){
-    pauseOffset += performance.now() - pauseStart;
-    gameState = 'playing';
-    document.getElementById('pauseOverlay').style.display = 'none';
-    document.getElementById('hud').style.display = 'flex';
+  } else if(gameState==='paused'){
+    pauseOffset+=performance.now()-pauseStart;
+    gameState='playing';
+    document.getElementById('pauseOverlay').style.display='none';
+    document.getElementById('hud').style.display='flex';
     startBGMusic(actualBPM);
   }
 }
 
 document.getElementById('btnResume').addEventListener('click', function(){
-  if(gameState === 'paused') togglePause();
+  if(gameState==='paused') togglePause();
 });
 document.getElementById('btnQuitPause').addEventListener('click', function(){
-  gameState = 'results';
-  document.getElementById('pauseOverlay').style.display = 'none';
-  document.getElementById('hud').style.display = 'none';
-  stopBGMusic();
-  showResults();
+  gameState='results';
+  document.getElementById('pauseOverlay').style.display='none';
+  document.getElementById('hud').style.display='none';
+  stopBGMusic(); showResults();
 });
-
-// Click on pause overlay to resume
 document.getElementById('pauseOverlay').addEventListener('click', function(e){
-  if(e.target === this && gameState === 'paused') togglePause();
-});
-
-/* ── LEADERBOARD ── */
-function loadBoard(){
-  try{
-    var d = JSON.parse(localStorage.getItem(LS_KEY));
-    if(d && typeof d === 'object') return d;
-  }catch(e){}
-  var b = {};
-  DIFFS.forEach(function(d){ b[d.key] = []; });
-  return b;
-}
-
-function saveBoard(board){
-  localStorage.setItem(LS_KEY, JSON.stringify(board));
-}
-
-function addToBoard(diffKey, entry){
-  var board = loadBoard();
-  if(!board[diffKey]) board[diffKey] = [];
-  board[diffKey].push(entry);
-  board[diffKey].sort(function(a,b){
-    if(b.perfect !== a.perfect) return b.perfect - a.perfect;
-    return b.score - a.score;
-  });
-  if(board[diffKey].length > 25) board[diffKey] = board[diffKey].slice(0,25);
-  saveBoard(board);
-}
-
-function removeFromBoard(diffKey, index){
-  var board = loadBoard();
-  if(board[diffKey] && board[diffKey][index]){
-    board[diffKey].splice(index,1);
-    saveBoard(board);
-  }
-}
-
-/* ── CONFIRM DIALOG ── */
-var confirmCallback = null;
-function showConfirm(text, cb){
-  document.getElementById('confirmText').textContent = text;
-  document.getElementById('confirmDialog').style.display = 'flex';
-  confirmCallback = cb;
-}
-document.getElementById('confirmYes').addEventListener('click', function(){
-  document.getElementById('confirmDialog').style.display = 'none';
-  if(confirmCallback) confirmCallback(true);
-  confirmCallback = null;
-});
-document.getElementById('confirmNo').addEventListener('click', function(){
-  document.getElementById('confirmDialog').style.display = 'none';
-  if(confirmCallback) confirmCallback(false);
-  confirmCallback = null;
+  if(e.target===this&&gameState==='paused') togglePause();
 });
 
 /* ── UI SCREENS ── */
 var uiContent = document.getElementById('uiContent');
 
 function showTitle(){
-  gameState = 'title';
-  document.getElementById('hud').style.display = 'none';
+  gameState='title';
+  document.getElementById('hud').style.display='none';
   uiContent.innerHTML =
-    '<div class="panel">' +
-      '<h1>PRECISION PULSE</h1>' +
-      '<p style="color:rgba(255,255,255,.35);font-size:13px;margin-bottom:24px">tap to the rhythm — feel the pulse</p>' +
-      '<button class="btn" id="btnPlay">PLAY</button>' +
-      '<br><button class="btn small" id="btnLBTitle" style="margin-top:10px">LEADERBOARD</button>' +
+    '<div class="panel">'+
+      '<h1>PRECISION PULSE</h1>'+
+      '<p style="color:rgba(255,255,255,.35);font-size:13px;margin-bottom:24px">tap to the rhythm — feel the pulse</p>'+
+      '<button class="btn" id="btnPlay">PLAY</button>'+
     '</div>';
   document.getElementById('btnPlay').addEventListener('click', function(){
-    ensureAudio();
-    showNameEntry();
-  });
-  document.getElementById('btnLBTitle').addEventListener('click', function(){
-    ensureAudio();
-    showLeaderboard(true);
-  });
-}
-
-function showNameEntry(){
-  gameState = 'nameEntry';
-  var savedName = '';
-  try{ savedName = localStorage.getItem(LS_NAME)||''; }catch(e){}
-  uiContent.innerHTML =
-    '<div class="panel">' +
-      '<h2>ENTER YOUR NAME</h2>' +
-      '<input type="text" id="nameInput" maxlength="20" placeholder="Your name" value="'+savedName+'">' +
-      '<label style="margin-top:14px"><input type="checkbox" id="optIn" '+(optInLeaderboard?'checked':'')+'>Show on leaderboard</label>' +
-      '<br><button class="btn" id="btnNameNext" style="margin-top:14px">NEXT</button>' +
-    '</div>';
-  var inp = document.getElementById('nameInput');
-  setTimeout(function(){ inp.focus(); }, 100);
-  document.getElementById('btnNameNext').addEventListener('click', function(){
-    var name = inp.value.trim();
-    if(!name){ inp.style.borderColor='rgba(255,80,80,.5)'; return; }
-    playerName = name;
-    optInLeaderboard = document.getElementById('optIn').checked;
-    try{ localStorage.setItem(LS_NAME, playerName); }catch(e){}
-    showTrackSelect();
-  });
-  inp.addEventListener('keydown', function(e){
-    if(e.key==='Enter') document.getElementById('btnNameNext').click();
+    ensureAudio(); showTrackSelect();
   });
 }
 
 function showTrackSelect(){
-  gameState = 'trackSelect';
-  var html = '<div class="panel"><h2>SELECT TRACK</h2><div class="select-grid">';
-  TRACKS.forEach(function(tr, i){
-    html += '<div class="sel-item'+(i===selectedTrack?' active':'')+'" data-idx="'+i+'">'+
+  gameState='trackSelect';
+  var html='<div class="panel"><h2>SELECT TRACK</h2><div class="select-grid">';
+  TRACKS.forEach(function(tr,i){
+    html+='<div class="sel-item'+(i===selectedTrack?' active':'')+'" data-idx="'+i+'">'+
       '<div><div class="name">'+tr.name+'</div><div class="sub">'+(tr.random?'Randomized':tr.bpm+' BPM')+' — '+tr.desc+'</div></div>'+
     '</div>';
   });
-  html += '</div><button class="btn" id="btnTrackNext" style="margin-top:10px">NEXT</button>'+
+  html+='</div><button class="btn" id="btnTrackNext" style="margin-top:10px">NEXT</button>'+
     '<br><button class="btn small" id="btnTrackBack" style="margin-top:6px">BACK</button></div>';
-  uiContent.innerHTML = html;
+  uiContent.innerHTML=html;
 
-  var items = uiContent.querySelectorAll('.sel-item');
-  items.forEach(function(el){
+  uiContent.querySelectorAll('.sel-item').forEach(function(el){
     el.addEventListener('click', function(){
-      selectedTrack = parseInt(el.getAttribute('data-idx'));
-      items.forEach(function(e){ e.classList.remove('active'); });
+      selectedTrack=parseInt(el.getAttribute('data-idx'));
+      uiContent.querySelectorAll('.sel-item').forEach(function(e){e.classList.remove('active');});
       el.classList.add('active');
     });
   });
   document.getElementById('btnTrackNext').addEventListener('click', showDiffSelect);
-  document.getElementById('btnTrackBack').addEventListener('click', showNameEntry);
+  document.getElementById('btnTrackBack').addEventListener('click', showTitle);
 }
 
 function showDiffSelect(){
-  gameState = 'diffSelect';
-  var html = '<div class="panel"><h2>SELECT DIFFICULTY</h2><div class="select-grid">';
-  DIFFS.forEach(function(d, i){
-    html += '<div class="sel-item'+(i===selectedDiff?' active':'')+'" data-idx="'+i+'">'+
+  gameState='diffSelect';
+  var html='<div class="panel"><h2>SELECT DIFFICULTY</h2><div class="select-grid">';
+  DIFFS.forEach(function(d,i){
+    html+='<div class="sel-item'+(i===selectedDiff?' active':'')+'" data-idx="'+i+'">'+
       '<div class="name">'+d.label+'</div>'+
       '<div class="diff-dot" style="background:'+d.col+'"></div>'+
     '</div>';
   });
-  html += '</div><button class="btn accent" id="btnStart" style="margin-top:10px">START</button>'+
+  html+='</div><button class="btn accent" id="btnStart" style="margin-top:10px">START</button>'+
     '<br><button class="btn small" id="btnDiffBack" style="margin-top:6px">BACK</button></div>';
-  uiContent.innerHTML = html;
+  uiContent.innerHTML=html;
 
-  var items = uiContent.querySelectorAll('.sel-item');
-  items.forEach(function(el){
+  uiContent.querySelectorAll('.sel-item').forEach(function(el){
     el.addEventListener('click', function(){
-      selectedDiff = parseInt(el.getAttribute('data-idx'));
-      items.forEach(function(e){ e.classList.remove('active'); });
+      selectedDiff=parseInt(el.getAttribute('data-idx'));
+      uiContent.querySelectorAll('.sel-item').forEach(function(e){e.classList.remove('active');});
       el.classList.add('active');
     });
   });
@@ -1028,64 +700,44 @@ function showDiffSelect(){
 }
 
 function startCountdown(){
-  uiContent.innerHTML = '';
-  var cdEl = document.getElementById('countdown');
-  cdEl.style.display = 'flex';
-  gameState = 'countdown';
+  uiContent.innerHTML='';
+  var cdEl=document.getElementById('countdown');
+  cdEl.style.display='flex';
+  gameState='countdown';
 
   generateNotes();
-  score = 0;
-  combo = 0;
-  maxCombo = 0;
-  counts = {perfect:0, great:0, good:0, miss:0};
-  particles = [];
-  floaters = [];
-  laneFlashes = [0,0,0,0];
+  score=0; combo=0; maxCombo=0;
+  counts={perfect:0,great:0,good:0,miss:0};
+  particles=[]; floaters=[]; laneFlashes=[0,0,0,0];
 
-  var nums = ['3','2','1','GO'];
-  var ci = 0;
+  var nums=['3','2','1','GO'];
+  var ci=0;
   function tick(){
-    cdEl.textContent = nums[ci];
-    // Pulse animation
-    cdEl.style.transform = 'scale(1.3)';
-    cdEl.style.opacity = '1';
-    setTimeout(function(){
-      cdEl.style.transform = 'scale(0.9)';
-      cdEl.style.opacity = '0.4';
-    }, 300);
-
-    playNote(ci<3?330:523.25, 0.2, 0.08, 'sine');
-
+    cdEl.textContent=nums[ci];
+    cdEl.style.transform='scale(1.3)'; cdEl.style.opacity='1';
+    setTimeout(function(){ cdEl.style.transform='scale(0.9)'; cdEl.style.opacity='0.4'; },300);
+    playTone(ci<3?330:523.25,0.2,0.07,'sine');
     ci++;
-    if(ci < nums.length){
-      setTimeout(tick, 700);
-    } else {
-      setTimeout(function(){
-        cdEl.style.display = 'none';
-        startGame();
-      }, 400);
-    }
+    if(ci<nums.length){ setTimeout(tick,700); }
+    else { setTimeout(function(){ cdEl.style.display='none'; startGame(); },400); }
   }
   tick();
 }
 
 function startGame(){
-  gameState = 'playing';
-  songStartTime = performance.now();
-  pauseOffset = 0;
-  songTime = 0;
-  document.getElementById('hud').style.display = 'flex';
-  document.getElementById('hudDiffLabel').textContent = DIFFS[selectedDiff].label.toUpperCase();
+  gameState='playing';
+  songStartTime=performance.now();
+  pauseOffset=0; songTime=0;
+  document.getElementById('hud').style.display='flex';
+  document.getElementById('hudDiffLabel').textContent=DIFFS[selectedDiff].label.toUpperCase();
   startBGMusic(actualBPM);
 }
 
 function showResults(){
-  gameState = 'results';
-  document.getElementById('hud').style.display = 'none';
-  uiContent.innerHTML = '';
+  gameState='results';
+  document.getElementById('hud').style.display='none';
 
-  var totalHit = counts.perfect + counts.great + counts.good;
-  var accRaw = totalNotes > 0 ? (counts.perfect*1 + counts.great*0.65 + counts.good*0.3) / totalNotes * 100 : 0;
+  var accRaw=totalNotes>0?(counts.perfect*1+counts.great*0.65+counts.good*0.3)/totalNotes*100:0;
   var grade;
   if(accRaw>=98) grade='S+';
   else if(accRaw>=94) grade='S';
@@ -1095,219 +747,83 @@ function showResults(){
   else if(accRaw>=50) grade='D';
   else grade='E';
 
-  var gradeColors = {'S+':'#ffd700','S':'#fbbf24','A':'#6ee7a8','B':'#6fd4ff','C':'#a78bfa','D':'#f472b6','E':'#f87171'};
+  var gradeColors={'S+':'#ffd700','S':'#fbbf24','A':'#6ee7a8','B':'#6fd4ff','C':'#a78bfa','D':'#f472b6','E':'#f87171'};
 
-  if(optInLeaderboard && playerName){
-    addToBoard(DIFFS[selectedDiff].key, {
-      name: playerName,
-      perfect: counts.perfect,
-      score: score,
-      grade: grade,
-      combo: maxCombo,
-      date: Date.now()
-    });
-  }
+  uiContent.innerHTML=
+    '<div class="panel">'+
+      '<h2>RESULTS</h2>'+
+      '<div class="grade-display" style="color:'+gradeColors[grade]+'">'+grade+'</div>'+
+      '<div class="result-stats">'+
+        '<div class="rs-l">Score</div><div class="rs-v">'+score.toLocaleString()+'</div>'+
+        '<div class="rs-l">Perfect</div><div class="rs-v" style="color:#fbbf24">'+counts.perfect+'</div>'+
+        '<div class="rs-l">Great</div><div class="rs-v" style="color:#a78bfa">'+counts.great+'</div>'+
+        '<div class="rs-l">Good</div><div class="rs-v" style="color:#6ee7a8">'+counts.good+'</div>'+
+        '<div class="rs-l">Miss</div><div class="rs-v" style="color:#f87171">'+counts.miss+'</div>'+
+        '<div class="rs-l">Max Combo</div><div class="rs-v">'+maxCombo+'</div>'+
+        '<div class="rs-l">Accuracy</div><div class="rs-v">'+accRaw.toFixed(1)+'%</div>'+
+      '</div>'+
+      '<button class="btn" id="btnRetry" style="margin-top:12px">RETRY</button>'+
+      '<button class="btn small" id="btnMenu" style="margin-top:6px">MENU</button>'+
+    '</div>';
 
-  var html = '<div class="panel">' +
-    '<h2>RESULTS</h2>' +
-    '<div class="grade-display" style="color:'+gradeColors[grade]+'">'+grade+'</div>' +
-    '<div class="result-stats">' +
-      '<div class="rs-l">Score</div><div class="rs-v">'+score.toLocaleString()+'</div>' +
-      '<div class="rs-l">Perfect</div><div class="rs-v" style="color:#fbbf24">'+counts.perfect+'</div>' +
-      '<div class="rs-l">Great</div><div class="rs-v" style="color:#a78bfa">'+counts.great+'</div>' +
-      '<div class="rs-l">Good</div><div class="rs-v" style="color:#6ee7a8">'+counts.good+'</div>' +
-      '<div class="rs-l">Miss</div><div class="rs-v" style="color:#f87171">'+counts.miss+'</div>' +
-      '<div class="rs-l">Max Combo</div><div class="rs-v">'+maxCombo+'</div>' +
-      '<div class="rs-l">Accuracy</div><div class="rs-v">'+accRaw.toFixed(1)+'%</div>' +
-    '</div>' +
-    '<button class="btn" id="btnRetry" style="margin-top:12px">RETRY</button>' +
-    '<button class="btn small" id="btnMenu" style="margin-top:6px">MENU</button>' +
-    '<br><button class="btn small" id="btnLBResult" style="margin-top:6px">LEADERBOARD</button>' +
-  '</div>';
-  uiContent.innerHTML = html;
-
-  document.getElementById('btnRetry').addEventListener('click', function(){
-    ensureAudio();
-    startCountdown();
-  });
+  document.getElementById('btnRetry').addEventListener('click', function(){ ensureAudio(); startCountdown(); });
   document.getElementById('btnMenu').addEventListener('click', showTitle);
-  document.getElementById('btnLBResult').addEventListener('click', function(){
-    showLeaderboard(false);
-  });
-}
-
-function showLeaderboard(fromTitle){
-  var currentTab = DIFFS[selectedDiff].key;
-
-  function render(){
-    var board = loadBoard();
-    var html = '<div class="panel" style="max-width:460px">' +
-      '<h2>LEADERBOARD</h2>' +
-      '<p style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px">Ranked by Perfect hits. Hover/tap an entry and click ✕ to remove.</p>' +
-      '<div class="lb-tabs">';
-    DIFFS.forEach(function(d){
-      html += '<div class="lb-tab'+(d.key===currentTab?' active':'')+'" data-diff="'+d.key+'" style="color:'+d.col+'">'+d.label+'</div>';
-    });
-    html += '</div><div class="lb-list">';
-
-    var entries = board[currentTab] || [];
-    if(entries.length === 0){
-      html += '<div class="lb-empty">No entries yet</div>';
-    } else {
-      entries.slice(0,15).forEach(function(e,i){
-        html += '<div class="lb-row" data-idx="'+i+'">' +
-          '<div class="lb-rank">#'+(i+1)+'</div>' +
-          '<div class="lb-name">'+escHtml(e.name)+'</div>' +
-          '<div class="lb-perf">'+e.perfect+' P</div>' +
-          '<div class="lb-score">'+e.score.toLocaleString()+'</div>' +
-          '<div class="lb-del" data-delidx="'+i+'">✕</div>' +
-        '</div>';
-      });
-    }
-
-    html += '</div>';
-    html += '<button class="btn small" id="btnLBBack" style="margin-top:14px">BACK</button>';
-    html += '<br><button class="btn small danger" id="btnLBClear" style="margin-top:6px">CLEAR ALL</button>';
-    html += '</div>';
-    uiContent.innerHTML = html;
-
-    // Tab switching
-    uiContent.querySelectorAll('.lb-tab').forEach(function(tab){
-      tab.addEventListener('click', function(){
-        currentTab = tab.getAttribute('data-diff');
-        render();
-      });
-    });
-
-    // Delete individual
-    uiContent.querySelectorAll('.lb-del').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        var idx = parseInt(btn.getAttribute('data-delidx'));
-        var entry = entries[idx];
-        showConfirm('Remove "'+entry.name+'" (#'+(idx+1)+') from '+currentTab.toUpperCase()+'?', function(yes){
-          if(yes){
-            removeFromBoard(currentTab, idx);
-            render();
-          }
-        });
-      });
-    });
-
-    // Clear all
-    document.getElementById('btnLBClear').addEventListener('click', function(){
-      showConfirm('Clear ALL entries from '+currentTab.toUpperCase()+'?', function(yes){
-        if(yes){
-          var board = loadBoard();
-          board[currentTab] = [];
-          saveBoard(board);
-          render();
-        }
-      });
-    });
-
-    // Back
-    document.getElementById('btnLBBack').addEventListener('click', function(){
-      if(fromTitle) showTitle();
-      else showResults();
-    });
-  }
-
-  render();
-}
-
-function escHtml(s){
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
 }
 
 /* ── MAIN LOOP ── */
-var lastTime = 0;
+var lastTime=0;
 initStars();
 bakeGrid();
 
 function loop(time){
   requestAnimationFrame(loop);
+  var dt=time-lastTime; lastTime=time;
+  if(dt>100) dt=16;
 
-  var dt = time - lastTime;
-  lastTime = time;
-  if(dt > 100) dt = 16;
+  if(gameState==='playing'){
+    songTime=performance.now()-songStartTime-pauseOffset;
 
-  // Update game time
-  if(gameState === 'playing'){
-    songTime = performance.now() - songStartTime - pauseOffset;
-
-    // Check misses
-    var diff = DIFFS[selectedDiff];
     for(var i=0;i<notes.length;i++){
-      var n = notes[i];
-      if(!n.hit && !n.missed && songTime - n.time > WIN.good + 50){
-        n.missed = true;
-        counts.miss++;
-        combo = 0;
-        showJudgement(n.lane, 'MISS', 'rgba(248,113,113,0.7)');
+      var n=notes[i];
+      if(!n.hit&&!n.missed&&songTime-n.time>WIN.good+50){
+        n.missed=true; counts.miss++; combo=0;
+        showJudgement(n.lane,'MISS','rgba(248,113,113,0.7)');
         playHitSound('miss');
       }
     }
 
-    // Update HUD
-    document.getElementById('hudScore').textContent = score.toLocaleString();
-    document.getElementById('hudCombo').textContent = combo;
-    var accRaw = totalNotes > 0 ? (counts.perfect*1 + counts.great*0.65 + counts.good*0.3) / Math.max(1,counts.perfect+counts.great+counts.good+counts.miss) * 100 : 100;
-    document.getElementById('hudAcc').textContent = accRaw.toFixed(1)+'%';
+    document.getElementById('hudScore').textContent=score.toLocaleString();
+    document.getElementById('hudCombo').textContent=combo;
+    var accNow=totalNotes>0?(counts.perfect+counts.great*0.65+counts.good*0.3)/Math.max(1,counts.perfect+counts.great+counts.good+counts.miss)*100:100;
+    document.getElementById('hudAcc').textContent=accNow.toFixed(1)+'%';
 
-    // Check song end
-    if(songTime >= songDuration + 1500){
-      gameState = 'results';
-      document.getElementById('hud').style.display = 'none';
-      stopBGMusic();
-      showResults();
+    if(songTime>=songDuration+1500){
+      gameState='results';
+      document.getElementById('hud').style.display='none';
+      stopBGMusic(); showResults();
     }
   }
 
-  // Draw
   drawBackdrop(time);
 
-  if(gameState === 'playing' || gameState === 'paused' || gameState === 'countdown'){
-    drawPlayfield(time);
-  }
+  if(gameState==='playing'||gameState==='paused'||gameState==='countdown') drawPlayfield(time);
 
-  // Lane flash overlays
   for(var i=0;i<LANES;i++){
-    if(laneFlashes[i] > 0){
-      var lx = fieldL + i*laneW;
-      ctx.fillStyle = 'rgba(167,139,250,'+laneFlashes[i]*0.15+')';
-      ctx.fillRect(lx, 0, laneW, hitLineY);
-      laneFlashes[i] -= 0.04;
+    if(laneFlashes[i]>0){
+      ctx.fillStyle='rgba(167,139,250,'+laneFlashes[i]*0.15+')';
+      ctx.fillRect(fieldL+i*laneW,0,laneW,hitLineY);
+      laneFlashes[i]-=0.04;
       if(laneFlashes[i]<0) laneFlashes[i]=0;
     }
   }
 
-  updateParticles(dt);
+  updateParticles();
   drawParticles();
   drawFloaters();
 }
 
 requestAnimationFrame(loop);
 showTitle();
-
-/* ── roundRect polyfill ── */
-if(!CanvasRenderingContext2D.prototype.roundRect){
-  CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
-    if(typeof r === 'number') r = [r,r,r,r];
-    this.moveTo(x+r[0],y);
-    this.lineTo(x+w-r[1],y);
-    this.quadraticCurveTo(x+w,y,x+w,y+r[1]);
-    this.lineTo(x+w,y+h-r[2]);
-    this.quadraticCurveTo(x+w,y+h,x+w-r[2],y+h);
-    this.lineTo(x+r[3],y+h);
-    this.quadraticCurveTo(x,y+h,x,y+h-r[3]);
-    this.lineTo(x,y+r[0]);
-    this.quadraticCurveTo(x,y,x+r[0],y);
-    this.closePath();
-  };
-}
 
 })();
 </script>
