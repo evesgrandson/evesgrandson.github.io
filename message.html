@@ -1,444 +1,1027 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Aether · Send a Message</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#140a05;font-family:'Cormorant Garamond',serif}
-canvas#deskCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether — Send a Message</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;700&family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #08060a;
+      --wood-dark: #120b08;
+      --wood-mid: #21130e;
+      --parchment-bg: #f4e8d1;
+      --parchment-border: #d2bc96;
+      --ink-blue: #0f1c3f;
+      --gold-accent: #cfa860;
+      --gold-bright: #ffd700;
+      --fire-azure: #22d3ee;
+      --fire-emerald: #10b981;
+      --fire-amethyst: #c084fc;
+      --fire-crimson: #f43f5e;
+      --fire-ghost: #e2e8f0;
+      --text-glow: rgba(207, 168, 96, 0.4);
+    }
 
-/* Top Right Menu */
-.menu-btn{position:fixed;top:20px;right:25px;z-index:1000;color:#d4a57b;text-decoration:none;font-size:1.5rem;letter-spacing:2px;opacity:.7;transition:opacity .3s;cursor:pointer;font-family:sans-serif;line-height:1}
-.menu-btn:hover{opacity:1}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-/* Envelope Initial */
-#envelope-container{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;cursor:pointer;transition:opacity .6s}
-#envelope-wrap{position:relative;width:min(420px,85vw);height:min(280px,56vw)}
-.env-body{position:absolute;bottom:0;width:100%;height:70%;background:linear-gradient(135deg,#cba67c,#b88f61);border-radius:2px;box-shadow:0 15px 40px rgba(0,0,0,.6)}
-.env-flap{position:absolute;top:0;left:0;width:100%;height:55%;background:linear-gradient(180deg,#d4b58e,#cba67c);clip-path:polygon(0 40%,50% 100%,100% 40%,100% 0,0 0);border-radius:2px 2px 0 0;transform-origin:top center;transition:transform .8s cubic-bezier(.4,0,.2,1);z-index:2}
-.env-seal{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);width:45px;height:45px;background:radial-gradient(circle,#a12a2a,#731515);border-radius:50%;z-index:3;box-shadow:0 3px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;color:#e8d4a8;font-size:1.2rem;text-shadow:0 1px 2px rgba(0,0,0,.6)}
-.env-text{position:absolute;bottom:20%;left:50%;transform:translateX(-50%);font-family:'Cinzel Decorative',serif;color:#4a3219;font-size:clamp(.7rem,2.5vw,.9rem);letter-spacing:2px;white-space:nowrap;opacity:.8}
-.env-hint{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);font-family:'Rajdhani',sans-serif;color:#e3c6a5;font-size:.85rem;letter-spacing:2px;opacity:0;animation:hintPulse 2s ease-in-out infinite;white-space:nowrap}
-@keyframes hintPulse{0%,100%{opacity:0}50%{opacity:.8}}
-.env-open .env-flap{transform:rotateX(180deg)}
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: 'Cormorant Garamond', serif;
+      color: #e2e8f0;
+    }
 
-/* Letter overlay */
-#letter-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(10,5,3,.6);backdrop-filter:blur(3px);opacity:0;transition:opacity .5s}
-#letter-overlay.show{display:flex;opacity:1}
-#letter-scroll{position:relative;width:min(540px,92vw);max-height:90vh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
-#letter-scroll::-webkit-scrollbar{display:none}
+    /* Background Canvas for Volumetric Sunbeam & Desk Scene */
+    #deskCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
 
-/* Realistic Paper */
-#letter{position:relative;background:#f2eedc;padding:clamp(30px,6vw,50px);border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 0 60px rgba(160,140,110,.2);color:#111b2e}
-#letter::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none}
-#letter::after{content:'';position:absolute;top:50%;left:0;right:0;height:4px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.08) 40%,rgba(255,255,255,.4) 60%,transparent);pointer-events:none}
+    /* Main Container */
+    .scene-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-.letter-date{font-family:'Dancing Script',cursive;font-size:1.4rem;text-align:right;margin-bottom:20px;color:#0e1726}
-.letter-header{margin-bottom:25px}
-.letter-header h2{font-family:'Dancing Script',cursive;font-size:2rem;font-weight:700;margin-bottom:10px;color:#0e1726}
+    /* Header Nav Bar */
+    .header-bar {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
 
-.field-group{margin-bottom:20px}
-.field-group input,.field-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(17,27,46,.15);padding:8px 0;font-family:'Dancing Script',cursive;font-size:1.7rem;color:#0e1726;resize:none;outline:none;line-height:1.4}
-.field-group input::placeholder,.field-group textarea::placeholder{color:rgba(17,27,46,.25)}
-.field-group textarea{min-height:100px;border-bottom:none;background:repeating-linear-gradient(transparent,transparent 31px,rgba(17,27,46,.08) 31px,rgba(17,27,46,.08) 32px);line-height:32px;padding-top:0}
+    .brand-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      color: var(--gold-accent);
+      text-shadow: 0 0 10px rgba(207, 168, 96, 0.3);
+      text-decoration: none;
+    }
 
-/* Signature */
-.sig-section{margin-top:30px;position:relative}
-.sig-wrap{position:relative;height:120px;cursor:crosshair;touch-action:none}
-#sigCanvas{display:block;width:100%;height:100%}
-.sig-line{position:absolute;bottom:20px;left:0;right:0;height:1px;background:rgba(17,27,46,.2);pointer-events:none}
-.sig-clear{position:absolute;top:0;right:0;background:none;border:none;font-family:'Rajdhani',sans-serif;color:rgba(17,27,46,.4);font-size:.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase}
-.sig-clear:hover{color:#0e1726}
+    .brand-subtitle {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      margin-left: 8px;
+    }
 
-.letter-actions{display:flex;gap:15px;justify-content:center;margin-top:40px;position:relative;z-index:2}
-.btn-send,.btn-close{font-family:'Cinzel Decorative',serif;font-size:.8rem;letter-spacing:2px;padding:12px 30px;border:none;border-radius:2px;cursor:pointer;transition:all .3s}
-.btn-send{background:#0e1726;color:#f2eedc;box-shadow:0 4px 15px rgba(14,23,38,.3)}
-.btn-send:hover{background:#1a2a44;transform:translateY(-1px)}
-.btn-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-close{background:transparent;color:#0e1726;border:1px solid rgba(14,23,38,.3)}
-.btn-close:hover{background:rgba(14,23,38,.05)}
+    /* 3-Dot Navigation Menu */
+    .menu-btn {
+      background: rgba(18, 11, 8, 0.7);
+      border: 1px solid var(--gold-accent);
+      color: var(--gold-accent);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    }
 
-.send-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(242,238,220,.3);border-top-color:#f2eedc;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px}
-@keyframes spin{to{transform:rotate(360deg)}}
+    .menu-btn:hover {
+      background: var(--gold-accent);
+      color: #000;
+      box-shadow: 0 0 15px var(--gold-accent);
+    }
 
-#fire-overlay{position:fixed;inset:0;z-index:200;display:none;background:transparent}
-#fire-overlay.active{display:block}
-#fireCanvas{display:block;width:100%;height:100%}
+    .nav-modal {
+      position: fixed;
+      top: 75px;
+      right: 30px;
+      background: rgba(12, 9, 14, 0.95);
+      border: 1px solid var(--gold-accent);
+      border-radius: 12px;
+      padding: 15px 0;
+      width: 220px;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
 
-#success-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;display:none;text-align:center;opacity:0;transition:opacity 1.5s}
-#success-msg.show{display:block;opacity:1}
-#success-msg h3{font-family:'Cinzel Decorative',serif;color:#d4a57b;font-size:clamp(1.2rem,4vw,1.8rem);margin-bottom:12px;letter-spacing:3px}
-#success-msg p{font-family:'Cormorant Garamond',serif;color:#a38563;font-size:1.1rem;font-style:italic}
+    .nav-modal.active {
+      display: flex;
+    }
 
-#error-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:400;background:#2a1510;color:#e8c4a0;padding:14px 24px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:.9rem;letter-spacing:1px;box-shadow:0 8px 30px rgba(0,0,0,.5);border:1px solid rgba(200,100,60,.3);display:none;max-width:90vw;text-align:center}
-#error-toast.show{display:block}
-</style>
+    .nav-link {
+      padding: 10px 20px;
+      color: #ccc;
+      text-decoration: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-link:hover {
+      background: rgba(207, 168, 96, 0.15);
+      color: var(--gold-accent);
+      padding-left: 25px;
+    }
+
+    /* Fireplace Arc Corner (Top Right Visual Anchor) */
+    .fireplace-alcove {
+      position: absolute;
+      top: 35px;
+      right: 90px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 2px solid rgba(207, 168, 96, 0.2);
+      background: radial-gradient(circle, rgba(40,15,5,0.8) 0%, rgba(10,5,3,0.95) 100%);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 15px rgba(255, 100, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .fireplace-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--gold-accent);
+      opacity: 0.6;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .fireplace-canvas {
+      width: 100%;
+      height: 100px;
+    }
+
+    /* Desk Decorative Items Overlay */
+    .desk-prop {
+      position: absolute;
+      pointer-events: none;
+      z-index: 3;
+      filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.7));
+    }
+
+    /* Inkwell */
+    .prop-inkwell {
+      bottom: 60px;
+      left: 60px;
+      width: 85px;
+      height: 85px;
+    }
+
+    /* Quill Pen */
+    .prop-quill {
+      bottom: 80px;
+      left: 130px;
+      width: 180px;
+      height: 100px;
+      transform: rotate(-25deg);
+    }
+
+    /* Glasses */
+    .prop-glasses {
+      top: 80px;
+      left: 80px;
+      width: 120px;
+      opacity: 0.85;
+    }
+
+    /* Wax Seal Envelope */
+    .prop-envelope {
+      bottom: 50px;
+      right: 70px;
+      width: 140px;
+      transform: rotate(8deg);
+    }
+
+    /* Parchment Desk Letter Area */
+    .parchment-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      height: 82vh;
+      max-height: 750px;
+      background: var(--parchment-bg);
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, rgba(210,188,150,0.2) 100%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+      border-radius: 4px;
+      box-shadow: 
+        0 20px 50px rgba(0,0,0,0.8),
+        inset 0 0 60px rgba(120, 80, 40, 0.35),
+        inset 0 0 15px rgba(80, 40, 10, 0.5);
+      border: 1px solid var(--parchment-border);
+      padding: 40px 45px;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease, filter 0.8s ease;
+      transform-origin: center center;
+    }
+
+    .parchment-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border: 2px solid rgba(139, 90, 43, 0.15);
+      margin: 12px;
+      pointer-events: none;
+    }
+
+    .letter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(120, 80, 40, 0.2);
+      padding-bottom: 12px;
+    }
+
+    .letter-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #3d2612;
+      letter-spacing: 2px;
+    }
+
+    .letter-date {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: #6b4c2b;
+    }
+
+    /* Form and Parchment Inputs */
+    .letter-form {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 15px;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 20px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .field-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #5a3c1e;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .parchment-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed rgba(120, 80, 40, 0.4);
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: var(--ink-blue);
+      padding: 4px 8px;
+      outline: none;
+      transition: border-color 0.3s ease;
+      user-select: text;
+    }
+
+    .parchment-input:focus {
+      border-bottom-color: var(--ink-blue);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .parchment-textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(120, 80, 40, 0.15) 31px, rgba(120, 80, 40, 0.15) 32px);
+      line-height: 32px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.45rem;
+      color: var(--ink-blue);
+      padding: 0 8px;
+      resize: none;
+      outline: none;
+      user-select: text;
+      min-height: 180px;
+    }
+
+    .signature-area {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+    }
+
+    .signature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .clear-sig-btn {
+      background: transparent;
+      border: none;
+      color: #8c5a2b;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .clear-sig-btn:hover {
+      color: #3d2612;
+    }
+
+    .signature-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 90px;
+      border: 1px dashed rgba(120, 80, 40, 0.4);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      cursor: crosshair;
+    }
+
+    #sigCanvas {
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .sig-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: rgba(120, 80, 40, 0.4);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+
+    /* Actions Bottom Bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(120, 80, 40, 0.2);
+    }
+
+    .status-msg {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: #8c5a2b;
+    }
+
+    .burn-submit-btn {
+      background: linear-gradient(135deg, #2b1810 0%, #4a2818 100%);
+      border: 1px solid var(--gold-accent);
+      color: var(--gold-accent);
+      padding: 12px 28px;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .burn-submit-btn:hover {
+      background: linear-gradient(135deg, #4a2818 0%, #6b3a22 100%);
+      box-shadow: 0 0 20px rgba(207, 168, 96, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .burn-icon {
+      font-size: 1.1rem;
+    }
+
+    /* Animation Classes for Folding & Flying to Fireplace */
+    .parchment-wrapper.folding {
+      transform: scale(0.2) rotate(15deg);
+      opacity: 0.8;
+      filter: brightness(0.7) contrast(1.2);
+      pointer-events: none;
+    }
+
+    .parchment-wrapper.flying {
+      transform: translate(320px, -280px) scale(0.05) rotate(45deg);
+      opacity: 0;
+      filter: brightness(2) drop-shadow(0 0 30px var(--gold-bright));
+      transition: all 0.9s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+
+    /* Dynamic Fire Flare Overlay Notification */
+    .flare-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(10, 8, 12, 0.92);
+      border: 2px solid var(--gold-accent);
+      padding: 35px 45px;
+      border-radius: 12px;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+      text-align: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s ease;
+      backdrop-filter: blur(15px);
+      max-width: 450px;
+      width: 90%;
+    }
+
+    .flare-notification.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .flare-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.3rem;
+      color: var(--gold-accent);
+      margin-bottom: 12px;
+    }
+
+    .flare-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      color: #ccc;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .flare-close-btn {
+      background: transparent;
+      border: 1px solid var(--gold-accent);
+      color: var(--gold-accent);
+      padding: 8px 24px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .flare-close-btn:hover {
+      background: var(--gold-accent);
+      color: #000;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .parchment-wrapper {
+        padding: 25px 20px;
+        height: 88vh;
+      }
+
+      .field-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fireplace-alcove {
+        top: 15px;
+        right: 70px;
+        width: 100px;
+        height: 100px;
+      }
+
+      .desk-prop {
+        display: none;
+      }
+
+      .parchment-textarea {
+        min-height: 120px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<a class="menu-btn" href="index.html" title="Return Home">&#8230;</a>
-<canvas id="deskCanvas"></canvas>
+  <!-- Ambient Desk Scene Canvas -->
+  <canvas id="deskCanvas"></canvas>
 
-<div id="envelope-container">
- <div id="envelope-wrap">
-  <div class="env-flap"></div>
-  <div class="env-body"></div>
-  <div class="env-seal">A</div>
-  <div class="env-text">A MESSAGE FOR AETHER</div>
- </div>
- <div class="env-hint">click to open</div>
-</div>
+  <div class="scene-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="header-bar">
+      <div>
+        <a href="index.html" class="brand-title">AETHER</a>
+        <span class="brand-subtitle">evesgrandson</span>
+      </div>
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation menu">&#8230;</button>
+    </header>
 
-<div id="letter-overlay">
- <div id="letter-scroll">
-  <div id="letter">
-   <div class="letter-date" id="letterDate"></div>
-   <form id="msgForm">
-    <div class="letter-header">
-     <h2>Dearest Aether,</h2>
+    <!-- Navigation Dropdown Modal -->
+    <nav class="nav-modal" id="navModal">
+      <a href="index.html" class="nav-link">Home <span>&rsaquo;</span></a>
+      <a href="know.html" class="nav-link">Know Aether <span>&rsaquo;</span></a>
+      <a href="games.html" class="nav-link">Rhythm Game <span>&rsaquo;</span></a>
+      <a href="music.html" class="nav-link">Playlists <span>&rsaquo;</span></a>
+      <a href="philosophy.html" class="nav-link">Wisdom <span>&rsaquo;</span></a>
+      <a href="poems.html" class="nav-link">Poetry <span>&rsaquo;</span></a>
+      <a href="message.html" class="nav-link" style="color:var(--gold-accent);">Send Message <span>&rsaquo;</span></a>
+    </nav>
+
+    <!-- Fireplace Alcove (Top Right Visual Dest) -->
+    <div class="fireplace-alcove">
+      <span class="fireplace-label">Hearth</span>
+      <canvas id="fireCanvas" class="fireplace-canvas"></canvas>
     </div>
-    <div class="field-group">
-     <input type="text" name="name" id="fName" placeholder="I write to you as..." required>
+
+    <!-- SVG Desk Props -->
+    <!-- Glass Inkwell -->
+    <svg class="desk-prop prop-inkwell" viewBox="0 0 100 100">
+      <rect x="25" y="35" width="50" height="50" rx="6" fill="#15202b" stroke="#38444d" stroke-width="2" opacity="0.8"/>
+      <rect x="30" y="40" width="40" height="40" rx="4" fill="#0b1116" opacity="0.9"/>
+      <path d="M35 25 L65 25 L60 35 L40 35 Z" fill="#cfa860" stroke="#8c5a2b" stroke-width="1"/>
+      <ellipse cx="50" cy="25" rx="15" ry="4" fill="#e5c178"/>
+    </svg>
+
+    <!-- Quill Pen -->
+    <svg class="desk-prop prop-quill" viewBox="0 0 200 100">
+      <path d="M10 90 Q 60 40 180 10 C 130 30 70 70 10 90 Z" fill="#2c1d11" stroke="#cfa860" stroke-width="1"/>
+      <path d="M10 90 L 3 97 L 15 92 Z" fill="#ffd700"/>
+    </svg>
+
+    <!-- Reading Glasses -->
+    <svg class="desk-prop prop-glasses" viewBox="0 0 120 50">
+      <circle cx="35" cy="25" r="18" fill="none" stroke="#cfa860" stroke-width="2"/>
+      <circle cx="85" cy="25" r="18" fill="none" stroke="#cfa860" stroke-width="2"/>
+      <path d="M53 23 Q 60 18 67 23" fill="none" stroke="#cfa860" stroke-width="2"/>
+      <path d="M17 25 C 10 20 5 15 2 10" fill="none" stroke="#cfa860" stroke-width="2"/>
+      <path d="M103 25 C 110 20 115 15 118 10" fill="none" stroke="#cfa860" stroke-width="2"/>
+    </svg>
+
+    <!-- Kraft Wax Envelope -->
+    <svg class="desk-prop prop-envelope" viewBox="0 0 140 90">
+      <rect x="5" y="5" width="130" height="80" rx="3" fill="#8c6d46" stroke="#5c4327" stroke-width="2"/>
+      <path d="M5 5 L 70 50 L 135 5" fill="none" stroke="#5c4327" stroke-width="1.5"/>
+      <circle cx="70" cy="45" r="12" fill="#8b0000" stroke="#5c0000" stroke-width="1"/>
+      <text x="70" y="49" font-family="'Cinzel Decorative', serif" font-size="8" fill="#ffd700" text-anchor="middle">EG</text>
+    </svg>
+
+    <!-- Parchment Letter Envelope Form Container -->
+    <div class="parchment-wrapper" id="parchmentCard">
+      <div class="letter-header">
+        <div class="letter-title">MISSIVE TO AETHER</div>
+        <div class="letter-date" id="currentDate">DATE</div>
+      </div>
+
+      <!-- Native Formspree Action & Method POST -->
+      <form id="letterForm" action="https://formspree.io/f/xppplbvr" method="POST" class="letter-form">
+        
+        <!-- Hidden Inputs for Formspree Transmission -->
+        <input type="hidden" name="email" id="hiddenEmail">
+        <input type="hidden" name="name" id="hiddenName">
+        <input type="hidden" name="message" id="hiddenMessage">
+        <input type="hidden" name="date" id="hiddenDate">
+        <input type="hidden" name="signature" id="hiddenSignature">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="senderName">Your Name / Alias</label>
+            <input type="text" id="senderName" class="parchment-input" placeholder="Wanderer..." required autocomplete="off">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="senderEmail">Return Email</label>
+            <input type="email" id="senderEmail" class="parchment-input" placeholder="visitor@realm.com" required autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field-group" style="flex:1;">
+          <label class="field-label" for="letterBody">Your Letter</label>
+          <textarea id="letterBody" class="parchment-textarea" placeholder="Write your thoughts here..." required></textarea>
+        </div>
+
+        <div class="signature-area">
+          <div class="signature-header">
+            <label class="field-label">Signature Mark</label>
+            <button type="button" class="clear-sig-btn" id="clearSigBtn">Clear Mark</button>
+          </div>
+          <div class="signature-canvas-container" id="sigContainer">
+            <canvas id="sigCanvas"></canvas>
+            <span class="sig-placeholder" id="sigPlaceholder">Sign your mark here...</span>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <span class="status-msg" id="statusMsg">Ready to cast into hearth</span>
+          <button type="submit" class="burn-submit-btn" id="burnBtn">
+            <span class="burn-icon">&#128293;</span> CAST INTO FIRE
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="field-group">
-     <input type="email" name="email" id="fEmail" placeholder="My reply address (optional)...">
-    </div>
-    <div class="field-group">
-     <textarea name="message" id="fMsg" placeholder="The thoughts I wish to share..." required></textarea>
-    </div>
-    <div class="sig-section">
-     <div class="sig-wrap">
-      <canvas id="sigCanvas"></canvas>
-      <div class="sig-line"></div>
-      <button type="button" class="sig-clear" id="sigClear">clear</button>
-     </div>
-    </div>
-    <input type="hidden" name="signature" id="fSig">
-    <input type="hidden" name="_subject" value="A message cast into the fire">
-    <input type="hidden" name="_replyto" id="fReply">
-    <div class="letter-actions">
-     <button type="submit" class="btn-send" id="btnSend">CAST INTO THE FIRE</button>
-     <button type="button" class="btn-close" id="btnClose">CLOSE</button>
-    </div>
-   </form>
+
   </div>
- </div>
-</div>
 
-<div id="fire-overlay"><canvas id="fireCanvas"></canvas></div>
+  <!-- Magical Flare Notification Dialog -->
+  <div class="flare-notification" id="flareNotification">
+    <div class="flare-title" id="flareTitle">THE HEARTH CONSUMES YOUR LETTER</div>
+    <div class="flare-desc" id="flareDesc">Your missive was cast into the mystical embers. The flame flared in a rare shade, carrying your words across the void to Aether.</div>
+    <button class="flare-close-btn" id="flareCloseBtn">CLOSE MISSIVE</button>
+  </div>
 
-<div id="success-msg">
- <h3>The Flames Have Spoken</h3>
- <p>Your words drift as embers into the night.</p>
-</div>
-<div id="error-toast"></div>
+  <script>
+    /* --- 1. Date Display --- */
+    const dateElem = document.getElementById('currentDate');
+    const today = new Date();
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    dateElem.textContent = today.toLocaleDateString('en-US', options).toUpperCase();
+    document.getElementById('hiddenDate').value = today.toISOString();
 
-<script>
-/* ================= DESK SCENE ================= */
-(function(){
-var C=document.getElementById('deskCanvas'),X=C.getContext('2d'),W,H,t=0;
-function res(){W=C.width=window.innerWidth;H=C.height=window.innerHeight}
-window.addEventListener('resize',res);res();
+    /* --- 2. Top-Right Menu Toggle --- */
+    const menuBtn = document.getElementById('menuBtn');
+    const navModal = document.getElementById('navModal');
+    
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navModal.classList.toggle('active');
+    });
 
-function drawDesk(){
- var wg=X.createRadialGradient(W*.3,H*.3,0,W*.5,H*.5,W);
- wg.addColorStop(0,'#4a2912');wg.addColorStop(1,'#140a05');
- X.fillStyle=wg;X.fillRect(0,0,W,H);
- X.strokeStyle='rgba(20,10,5,.3)';X.lineWidth=2;
- for(var i=0;i<40;i++){X.beginPath();X.moveTo(-100,i*H/30);for(var x=0;x<W+100;x+=50)X.lineTo(x,i*H/30+Math.sin(x*.01+i)*15);X.stroke()}
- X.save();X.globalCompositeOperation='screen';
- var rayG=X.createLinearGradient(0,0,W*.7,H);
- rayG.addColorStop(0,'rgba(255,220,150,0.18)');rayG.addColorStop(.4,'rgba(255,190,100,0.08)');rayG.addColorStop(1,'rgba(0,0,0,0)');
- X.fillStyle=rayG;X.beginPath();X.moveTo(0,0);X.lineTo(W*.5,0);X.lineTo(W*.9,H);X.lineTo(0,H);X.fill();
- for(var d=0;d<30;d++){var dx=(W*.1+d*W*.02+Math.sin(t*.2+d)*50)%W,dy=(H*.1+d*H*.03+Math.cos(t*.15+d)*40)%H;if(dx>dy*(W/H)+W*.2)continue;X.fillStyle='rgba(255,220,150,'+(Math.sin(t+d)*.4+.1)+')';X.beginPath();X.arc(dx,dy,Math.random()*1.5+.5,0,Math.PI*2);X.fill()}
- X.restore();
- /* Envelope */
- X.save();X.translate(W*.75,H*.25);X.rotate(.2);
- X.shadowColor='rgba(0,0,0,.6)';X.shadowBlur=20;X.shadowOffsetX=5;X.shadowOffsetY=10;
- X.fillStyle='#cba67c';X.beginPath();X.moveTo(-100,-70);X.lineTo(100,-70);X.lineTo(100,70);X.lineTo(-100,70);X.fill();X.shadowColor='transparent';
- X.fillStyle='#b88f61';X.beginPath();X.moveTo(-100,-70);X.lineTo(0,10);X.lineTo(100,-70);X.fill();
- X.strokeStyle='rgba(0,0,0,.1)';X.lineWidth=1;X.stroke();
- X.fillStyle='#c29d74';X.beginPath();X.moveTo(-100,70);X.lineTo(0,10);X.lineTo(100,70);X.fill();X.stroke();
- X.fillStyle='#8b1a1a';X.beginPath();for(var a=0;a<Math.PI*2;a+=.4)X.lineTo(Math.cos(a)*(18+Math.sin(a*5)*2),Math.sin(a)*(18+Math.sin(a*5)*2));X.fill();
- X.fillStyle='#630d0d';X.beginPath();X.arc(0,0,12,0,Math.PI*2);X.fill();X.restore();
- /* Inkwell */
- X.save();X.translate(W*.18,H*.35);X.rotate(-.1);
- X.shadowColor='rgba(0,0,0,.8)';X.shadowBlur=25;X.shadowOffsetX=15;X.shadowOffsetY=15;
- X.fillStyle='rgba(200,210,220,0.15)';X.fillRect(-45,-45,90,90);X.shadowColor='transparent';
- X.fillStyle='#0a0f1a';X.fillRect(-35,-35,70,70);
- X.strokeStyle='rgba(255,255,255,0.3)';X.lineWidth=3;X.strokeRect(-40,-40,80,80);
- X.strokeStyle='rgba(255,255,255,0.1)';X.lineWidth=10;X.strokeRect(-45,-45,90,90);
- X.fillStyle='rgba(255,255,255,0.2)';X.beginPath();X.moveTo(-45,-45);X.lineTo(-20,-45);X.lineTo(-45,-20);X.fill();
- var capG=X.createLinearGradient(-25,-75,25,-75);capG.addColorStop(0,'#8a6b32');capG.addColorStop(.3,'#d4af37');capG.addColorStop(1,'#5c4516');
- X.fillStyle=capG;X.fillRect(-22,-75,44,30);X.fillStyle='#4a3510';X.beginPath();X.ellipse(0,-75,22,6,0,0,Math.PI*2);X.fill();X.beginPath();X.ellipse(0,-45,22,6,0,0,Math.PI*2);X.fill();X.restore();
- /* Pen */
- X.save();X.translate(W*.28,H*.75);X.rotate(.6);
- X.shadowColor='rgba(0,0,0,.6)';X.shadowBlur=15;X.shadowOffsetX=10;X.shadowOffsetY=10;
- var penG=X.createLinearGradient(-100,-8,100,16);penG.addColorStop(0,'#54210a');penG.addColorStop(.2,'#994411');penG.addColorStop(.4,'#381606');penG.addColorStop(.6,'#b05517');penG.addColorStop(1,'#75320e');
- X.fillStyle=penG;X.beginPath();X.roundRect(-100,-8,200,16,8);X.fill();X.shadowColor='transparent';
- X.fillStyle='#d4af37';X.fillRect(-60,-9,4,18);X.fillRect(40,-9,8,18);X.fillRect(80,-9,4,18);
- X.beginPath();X.moveTo(100,-6);X.lineTo(135,0);X.lineTo(100,6);X.fill();
- X.fillStyle='#1c0c04';X.beginPath();X.arc(115,0,2,0,Math.PI*2);X.fill();X.fillRect(115,-.5,20,1);X.restore();
- /* Spectacles */
- X.save();X.translate(W*.82,H*.55);X.rotate(-.4);
- X.shadowColor='rgba(0,0,0,.5)';X.shadowBlur=10;X.shadowOffsetX=5;X.shadowOffsetY=8;
- X.strokeStyle='#b89947';X.lineWidth=3;X.beginPath();X.arc(-35,0,25,0,Math.PI*2);X.stroke();X.beginPath();X.arc(35,0,25,0,Math.PI*2);X.stroke();
- X.beginPath();X.moveTo(-10,0);X.quadraticCurveTo(0,-10,10,0);X.stroke();
- X.beginPath();X.moveTo(-60,0);X.lineTo(-80,40);X.stroke();X.beginPath();X.moveTo(60,0);X.lineTo(40,50);X.stroke();X.restore();
-}
-(function frame(){t+=.016;X.clearRect(0,0,W,H);drawDesk();requestAnimationFrame(frame)})();
-})();
+    document.addEventListener('click', (e) => {
+      if (!navModal.contains(e.target) && e.target !== menuBtn) {
+        navModal.classList.remove('active');
+      }
+    });
 
-/* ================= DATE ================= */
-(function(){
-var d=new Date(),mo=['January','February','March','April','May','June','July','August','September','October','November','December'];
-var dy=d.getDate(),s='th';if(dy%10===1&&dy!==11)s='st';else if(dy%10===2&&dy!==12)s='nd';else if(dy%10===3&&dy!==13)s='rd';
-document.getElementById('letterDate').textContent=mo[d.getMonth()]+' '+dy+s+', '+d.getFullYear();
-})();
+    /* --- 3. Ambient Desk Canvas (Volumetric Sunbeam & Dust Motes) --- */
+    const deskCanvas = document.getElementById('deskCanvas');
+    const dctx = deskCanvas.getContext('2d');
+    
+    let dWidth = deskCanvas.width = window.innerWidth;
+    let dHeight = deskCanvas.height = window.innerHeight;
 
-/* ================= ENVELOPE ================= */
-(function(){
-var ec=document.getElementById('envelope-container'),ew=document.getElementById('envelope-wrap'),ov=document.getElementById('letter-overlay'),bc=document.getElementById('btnClose');
-ec.addEventListener('click',function(){
- ew.classList.add('env-open');
- setTimeout(function(){ec.style.opacity='0';setTimeout(function(){ec.style.display='none';ov.classList.add('show');window.dispatchEvent(new Event('resize'))},500)},600);
-});
-bc.addEventListener('click',function(){
- ov.classList.remove('show');
- setTimeout(function(){ec.style.display='';ew.classList.remove('env-open');setTimeout(function(){ec.style.opacity='1'},50)},400);
-});
-})();
+    window.addEventListener('resize', () => {
+      dWidth = deskCanvas.width = window.innerWidth;
+      dHeight = deskCanvas.height = window.innerHeight;
+    });
 
-/* ================= SIGNATURE ================= */
-(function(){
-var wrap=document.querySelector('.sig-wrap'),canvas=document.getElementById('sigCanvas'),ctx=canvas.getContext('2d');
-var dpr=window.devicePixelRatio||1,W2,H2,isDrawing=false,paths=[],currentPath=[];
+    const dustMotes = Array.from({ length: 45 }, () => ({
+      x: Math.random() * dWidth,
+      y: Math.random() * dHeight,
+      size: Math.random() * 2 + 0.5,
+      alpha: Math.random() * 0.5 + 0.2,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.4 - 0.1
+    }));
 
-function resizeCanvas(){
- var rect=wrap.getBoundingClientRect();W2=rect.width;H2=120;
- canvas.style.width=W2+'px';canvas.style.height=H2+'px';
- canvas.width=Math.round(W2*dpr);canvas.height=Math.round(H2*dpr);
- ctx.setTransform(dpr,0,0,dpr,0,0);redrawAll();
-}
-function redrawAll(){
- ctx.clearRect(0,0,W2,H2);ctx.lineCap='round';ctx.lineJoin='round';
- ctx.strokeStyle='rgba(14,23,38,0.9)';ctx.lineWidth=3;paths.forEach(drawPath);
-}
-function drawPath(path){
- if(path.length<2){if(path.length===1){ctx.fillStyle='rgba(14,23,38,0.9)';ctx.beginPath();ctx.arc(path[0].x,path[0].y,1.5,0,Math.PI*2);ctx.fill()}return}
- ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);
- for(var i=1;i<path.length-1;i++){var xc=(path[i].x+path[i+1].x)/2,yc=(path[i].y+path[i+1].y)/2;ctx.quadraticCurveTo(path[i].x,path[i].y,xc,yc)}
- ctx.lineTo(path[path.length-1].x,path[path.length-1].y);ctx.stroke();
-}
-function getPos(e){var r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top}}
-function start(e){e.preventDefault();isDrawing=true;currentPath=[getPos(e)];paths.push(currentPath);redrawAll()}
-function move(e){if(!isDrawing)return;e.preventDefault();currentPath.push(getPos(e));redrawAll()}
-function end(){isDrawing=false}
-canvas.addEventListener('pointerdown',start);canvas.addEventListener('pointermove',move);
-canvas.addEventListener('pointerup',end);canvas.addEventListener('pointerleave',end);canvas.addEventListener('pointercancel',end);
-document.getElementById('sigClear').addEventListener('click',function(){paths=[];redrawAll()});
-window.addEventListener('resize',resizeCanvas);
-new MutationObserver(function(){if(document.getElementById('letter-overlay').classList.contains('show'))setTimeout(resizeCanvas,100)}).observe(document.getElementById('letter-overlay'),{attributes:true,attributeFilter:['class']});
+    function renderDeskBg() {
+      dctx.clearRect(0, 0, dWidth, dHeight);
 
-/* Compressed signature for Formspree (JPEG, scaled down) */
-window._getSigData=function(){
- if(!paths.length)return '';
- var tmp=document.createElement('canvas');
- var tw=Math.min(400,W2),th=Math.round(tw*(H2/W2));
- tmp.width=tw;tmp.height=th;
- var tx=tmp.getContext('2d');
- tx.fillStyle='#f2eedc';tx.fillRect(0,0,tw,th);
- tx.drawImage(canvas,0,0,tw,th);
- var data=tmp.toDataURL('image/jpeg',0.55);
- if(data.length>90000)return '(signed — image omitted due to size)';
- return data;
-};
-window._hasSig=function(){return paths.length>0};
-})();
+      // Dark Wood Tabletop Gradient
+      const woodGrad = dctx.createRadialGradient(dWidth/2, dHeight/2, 100, dWidth/2, dHeight/2, Math.max(dWidth, dHeight));
+      woodGrad.addColorStop(0, '#261710');
+      woodGrad.addColorStop(0.6, '#130b07');
+      woodGrad.addColorStop(1, '#050302');
+      dctx.fillStyle = woodGrad;
+      dctx.fillRect(0, 0, dWidth, dHeight);
 
-/* ================= FORM + FIRE ================= */
-(function(){
-var form=document.getElementById('msgForm'),btnSend=document.getElementById('btnSend');
-var overlay=document.getElementById('letter-overlay'),fireOvr=document.getElementById('fire-overlay'),fireC=document.getElementById('fireCanvas'),fX=fireC.getContext('2d');
-var success=document.getElementById('success-msg'),toast=document.getElementById('error-toast');
+      // Volumetric Top-Left Sunbeam Light Cone
+      const beamGrad = dctx.createLinearGradient(0, 0, dWidth * 0.6, dHeight * 0.8);
+      beamGrad.addColorStop(0, 'rgba(255, 220, 160, 0.12)');
+      beamGrad.addColorStop(0.4, 'rgba(207, 168, 96, 0.05)');
+      beamGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      
+      dctx.fillStyle = beamGrad;
+      dctx.beginPath();
+      dctx.moveTo(0, 0);
+      dctx.lineTo(dWidth * 0.7, 0);
+      dctx.lineTo(dWidth * 0.4, dHeight);
+      dctx.lineTo(0, dHeight * 0.8);
+      dctx.closePath();
+      dctx.fill();
 
-function eio(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
-function lerp(a,b,t){return a+(b-a)*t}
-function lerpColor(c1,c2,t){return[Math.round(c1[0]+(c2[0]-c1[0])*t),Math.round(c1[1]+(c2[1]-c1[1])*t),Math.round(c1[2]+(c2[2]-c1[2])*t)]}
-function showError(msg){
- toast.textContent=msg;toast.classList.add('show');
- setTimeout(function(){toast.classList.remove('show')},5000);
-}
+      // Floating Dust Motes in Light Beam
+      dustMotes.forEach(m => {
+        m.x += m.vx;
+        m.y += m.vy;
+        if (m.y < 0) m.y = dHeight;
+        if (m.x < 0) m.x = dWidth;
+        if (m.x > dWidth) m.x = 0;
 
-var normalTheme=[[255,255,255],[255,200,0],[255,100,0],[150,0,0]];
-var magicThemes=[
- [[255,255,255],[0,255,255],[0,100,255],[0,0,150]],
- [[255,255,255],[150,255,0],[0,200,0],[0,80,0]],
- [[255,255,255],[255,150,255],[150,0,255],[50,0,100]],
- [[255,255,255],[255,200,200],[255,0,100],[100,0,50]],
- [[255,255,255],[200,200,255],[100,100,200],[50,50,100]]
-];
-var currentMagicTheme;
+        dctx.fillStyle = `rgba(244, 232, 209, ${m.alpha})`;
+        dctx.beginPath();
+        dctx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+        dctx.fill();
+      });
 
-form.addEventListener('submit',function(e){
- e.preventDefault();
- var name=document.getElementById('fName').value.trim();
- var msg=document.getElementById('fMsg').value.trim();
- var email=document.getElementById('fEmail').value.trim();
- if(!name||!msg)return;
+      requestAnimationFrame(renderDeskBg);
+    }
+    renderDeskBg();
 
- var sig=window._hasSig()?window._getSigData():'(no signature)';
- document.getElementById('fSig').value=sig;
- document.getElementById('fReply').value=email||'';
+    /* --- 4. Fireplace Alcove Canvas with Dynamic Flares --- */
+    const fireCanvas = document.getElementById('fireCanvas');
+    const fctx = fireCanvas.getContext('2d');
+    fireCanvas.width = 140;
+    fireCanvas.height = 100;
 
- currentMagicTheme=magicThemes[Math.floor(Math.random()*magicThemes.length)];
- btnSend.disabled=true;
- btnSend.innerHTML='<span class="send-spinner"></span>CASTING...';
+    let fireTheme = 'amber'; // amber, azure, emerald, amethyst, crimson, ghost
+    let activeParticles = [];
 
- var fd=new FormData(form);
- if(!fd.get('name'))fd.set('name',name);
- if(!fd.get('message'))fd.set('message',msg);
- if(email)fd.set('email',email);
+    const firePalettes = {
+      amber: ['#ff4500', '#ff8c00', '#ffd700', '#ff2200'],
+      azure: ['#00d2ff', '#3a7bd5', '#00f2fe', '#ffffff'],
+      emerald: ['#10b981', '#34d399', '#059669', '#a7f3d0'],
+      amethyst: ['#c084fc', '#9333ea', '#e879f9', '#f472b6'],
+      crimson: ['#f43f5e', '#e11d48', '#fb7185', '#fda4af'],
+      ghost: ['#f8fafc', '#cbd5e1', '#94a3b8', '#38bdf8']
+    };
 
- fetch('https://formspree.io/f/xppplbvr',{
-  method:'POST',
-  body:fd,
-  headers:{'Accept':'application/json'}
- }).then(function(r){
-  return r.json().then(function(data){
-   return{ok:r.ok,status:r.status,data:data};
-  }).catch(function(){
-   return{ok:r.ok,status:r.status,data:null};
-  });
- }).then(function(res){
-  console.log('Formspree response:',res);
-  if(res.ok){
-   startAnim();
-   return;
-  }
-  var err='Formspree error '+res.status;
-  if(res.data&&res.data.errors)err=res.data.errors.map(function(e){return e.message||e}).join('; ');
-  else if(res.data&&res.data.error)err=res.data.error;
-  throw new Error(err);
- }).catch(function(err){
-  console.error('Send failed:',err);
-  btnSend.disabled=false;
-  btnSend.textContent='CAST INTO THE FIRE';
-  showError(err.message||'Could not reach Formspree. Check the console (F12).');
- });
-});
+    function spawnFireParticle() {
+      const colors = firePalettes[fireTheme] || firePalettes.amber;
+      return {
+        x: 70 + (Math.random() - 0.5) * 50,
+        y: 90,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -Math.random() * 2 - 1,
+        size: Math.random() * 6 + 2,
+        life: 1,
+        decay: Math.random() * 0.03 + 0.015,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
 
-function startAnim(){
- overlay.classList.remove('show');
- setTimeout(function(){fireOvr.classList.add('active');resF();runFireAnim()},400);
-}
-function resF(){fireC.width=window.innerWidth;fireC.height=window.innerHeight}
-window.addEventListener('resize',function(){if(fireOvr.classList.contains('active'))resF()});
+    for (let i = 0; i < 30; i++) activeParticles.push(spawnFireParticle());
 
-function runFireAnim(){
- var W=fireC.width,H=fireC.height,cx=W/2,cy=H/2;
- var phase=0,phaseStart=0,startT=null,particles=[];
- var bgOpacity=0,flareBlend=0,flareIntensity=1;
- var letter={x:cx,y:cy,fold:0,burn:0,scale:1,rot:0};
+    function renderFire() {
+      fctx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
 
- function spawnFire(x,y,amount){
-  for(var i=0;i<amount;i++){
-   var isSpark=Math.random()<.15;
-   particles.push({
-    x:x+(Math.random()-.5)*(isSpark?300:200),y:y+(Math.random()-.5)*40,
-    vx:(Math.random()-.5)*(isSpark?80:30),
-    vy:isSpark?-150-Math.random()*300*flareIntensity:-80-Math.random()*150*flareIntensity,
-    life:1,decay:isSpark?0.005+Math.random()*0.01:(0.01+Math.random()*0.015)/Math.max(1,flareIntensity*.5),
-    size:isSpark?1.5+Math.random()*2:25+Math.random()*40*Math.max(1,flareIntensity*.8),
-    isSpark:isSpark
-   });
-  }
- }
- function getColor(theme,life){
-  if(life>.7)return lerpColor(theme[1],theme[0],(life-.7)/.3);
-  if(life>.3)return lerpColor(theme[2],theme[1],(life-.3)/.4);
-  return lerpColor(theme[3],theme[2],life/.3);
- }
- function drawFire(){
-  fX.globalCompositeOperation='lighter';
-  for(var i=particles.length-1;i>=0;i--){
-   var p=particles[i];
-   p.x+=p.vx*.016;p.y+=p.vy*.016;
-   if(p.isSpark)p.vx+=Math.sin(p.y*.05)*2;else p.vx*=.98;
-   p.life-=p.decay;if(p.life<=0){particles.splice(i,1);continue}
-   var c=lerpColor(getColor(normalTheme,p.life),getColor(currentMagicTheme,p.life),flareBlend);
-   fX.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+(p.life*(p.isSpark?1:.3))+')';
-   fX.beginPath();fX.arc(p.x,p.y,Math.max(.1,p.size*p.life),0,Math.PI*2);fX.fill();
-  }
-  fX.globalCompositeOperation='source-over';
- }
- function drawFireplaceBg(){
-  fX.fillStyle='rgba(10,5,2,'+bgOpacity+')';fX.fillRect(0,0,W,H);
-  var grad=fX.createRadialGradient(cx,cy+H*.2,0,cx,cy,Math.max(W,H));
-  grad.addColorStop(0,'rgba(0,0,0,0)');grad.addColorStop(1,'rgba(0,0,0,'+(bgOpacity*.9)+')');
-  fX.fillStyle=grad;fX.fillRect(0,0,W,H);
-  fX.save();fX.globalAlpha=bgOpacity;fX.translate(cx,H);
-  fX.fillStyle='#080402';fX.beginPath();fX.roundRect(-150,-40,300,50,10);fX.fill();
-  fX.beginPath();fX.roundRect(-120,-70,240,45,10);fX.fill();
-  var lg=fX.createLinearGradient(0,-70,0,-20);
-  lg.addColorStop(0,'rgba(255,80,0,'+(.3+flareBlend*.5)+')');lg.addColorStop(1,'transparent');
-  fX.fillStyle=lg;fX.beginPath();fX.roundRect(-120,-70,240,45,10);fX.fill();fX.restore();
- }
- function drawFoldedLetter(lx,ly,w,h,fold,burnAmt,scale,rot){
-  fX.save();fX.translate(lx,ly);fX.scale(scale,scale);fX.rotate(rot);
-  var w2=lerp(w,w*.35,fold),h2=lerp(h,h*.35,fold);
-  fX.shadowColor='rgba(0,0,0,0.5)';fX.shadowBlur=20;
-  fX.fillStyle='#f2eedc';fX.fillRect(-w2/2,-h2/2,w2,h2);fX.shadowColor='transparent';
-  if(fold>.8){fX.globalAlpha=(fold-.8)*5;fX.fillStyle='#8b1a1a';fX.beginPath();fX.arc(0,0,15,0,Math.PI*2);fX.fill();fX.globalAlpha=1}
-  if(burnAmt>0){
-   fX.fillStyle='rgba(10,5,0,'+Math.min(1,burnAmt*1.5)+')';fX.fillRect(-w2/2,-h2/2,w2,h2);
-   var magC=currentMagicTheme[1];
-   fX.strokeStyle='rgba('+magC[0]+','+magC[1]+','+magC[2]+','+Math.min(1,burnAmt*2)+')';
-   fX.lineWidth=3;fX.strokeRect(-w2/2,-h2/2,w2,h2);
-  }
-  fX.restore();
- }
+      if (Math.random() < 0.6) activeParticles.push(spawnFireParticle());
 
- function anim(now){
-  if(!startT){startT=now;phaseStart=now}
-  var dt=(now-phaseStart)/1000;
-  var pw=Math.min(W*.8,500),ph=Math.min(H*.6,400);
-  spawnFire(cx,H-20,3*flareIntensity);
-  fX.clearRect(0,0,W,H);drawFireplaceBg();
+      for (let i = activeParticles.length - 1; i >= 0; i--) {
+        const p = activeParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
 
-  if(phase===0){
-   var p=Math.min(dt/1.5,1);bgOpacity=p;letter.fold=eio(p);
-   if(p>=1){phase=1;phaseStart=now}
-  }else if(phase===1){
-   var p=Math.min(dt/1,1);letter.y=lerp(cy,H*.2,eio(p));
-   if(p>=1){phase=2;phaseStart=now}
-  }else if(phase===2){
-   var p=Math.min(dt/.8,1);letter.y=lerp(H*.2,H-60,p*p);letter.rot=p*.3;
-   if(p>=1){phase=3;phaseStart=now;spawnFire(cx,H-50,50)}
-  }else if(phase===3){
-   var p=Math.min(dt/2.5,1);
-   flareBlend=Math.min(1,p*1.5);flareIntensity=1+Math.sin(p*Math.PI)*4;
-   letter.burn=p*1.2;
-   if(p>.6){letter.scale=lerp(1,0,(p-.6)/.4);if(Math.random()<.3)spawnFire(cx,H-60,5)}
-   if(p>=1){phase=4;phaseStart=now;letter.scale=0}
-  }else if(phase===4){
-   var p=Math.min(dt/2,1);flareIntensity=lerp(1,.8,p);
-   if(p>=1){
-    success.classList.add('show');
-    (function loop(){fX.clearRect(0,0,W,H);drawFireplaceBg();spawnFire(cx,H-20,2);drawFire();requestAnimationFrame(loop)})();
-    return;
-   }
-  }
-  if(letter.scale>0)drawFoldedLetter(letter.x,letter.y,pw,ph,letter.fold,letter.burn,letter.scale,letter.rot);
-  drawFire();
-  requestAnimationFrame(anim);
- }
- requestAnimationFrame(anim);
-}
-})();
-</script>
+        if (p.life <= 0) {
+          activeParticles.splice(i, 1);
+          continue;
+        }
+
+        fctx.globalAlpha = p.life;
+        fctx.fillStyle = p.color;
+        fctx.beginPath();
+        fctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        fctx.fill();
+      }
+      fctx.globalAlpha = 1;
+
+      requestAnimationFrame(renderFire);
+    }
+    renderFire();
+
+    /* --- 5. Non-Glitchy Smooth Bezier Signature Canvas --- */
+    const sigCanvas = document.getElementById('sigCanvas');
+    const sctx = sigCanvas.getContext('2d');
+    const sigContainer = document.getElementById('sigContainer');
+    const sigPlaceholder = document.getElementById('sigPlaceholder');
+    const clearSigBtn = document.getElementById('clearSigBtn');
+
+    let isDrawing = false;
+    let hasSigned = false;
+    let points = [];
+
+    function resizeSigCanvas() {
+      const rect = sigContainer.getBoundingClientRect();
+      sigCanvas.width = rect.width;
+      sigCanvas.height = rect.height;
+      sctx.strokeStyle = '#0f1c3f';
+      sctx.lineWidth = 2.5;
+      sctx.lineCap = 'round';
+      sctx.lineJoin = 'round';
+    }
+    resizeSigCanvas();
+    window.addEventListener('resize', resizeSigCanvas);
+
+    function getPos(e) {
+      const rect = sigCanvas.getBoundingClientRect();
+      if (e.touches && e.touches[0]) {
+        return {
+          x: e.touches[0].clientX - rect.left,
+          y: e.touches[0].clientY - rect.top
+        };
+      }
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      hasSigned = true;
+      sigPlaceholder.style.opacity = '0';
+      const pos = getPos(e);
+      points = [pos, pos];
+      sctx.beginPath();
+      sctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      points.push(pos);
+
+      if (points.length > 2) {
+        const xc = (points[points.length - 1].x + points[points.length - 2].x) / 2;
+        const yc = (points[points.length - 1].y + points[points.length - 2].y) / 2;
+        sctx.quadraticCurveTo(points[points.length - 2].x, points[points.length - 2].y, xc, yc);
+        sctx.stroke();
+      }
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+      points = [];
+    }
+
+    sigCanvas.addEventListener('mousedown', startDrawing);
+    sigCanvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
+
+    sigCanvas.addEventListener('touchstart', startDrawing, { passive: false });
+    sigCanvas.addEventListener('touchmove', draw, { passive: false });
+    sigCanvas.addEventListener('touchend', stopDrawing);
+
+    clearSigBtn.addEventListener('click', () => {
+      sctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      hasSigned = false;
+      sigPlaceholder.style.opacity = '1';
+    });
+
+    /* --- 6. Form Submission, Compression & Fireplace Transition --- */
+    const letterForm = document.getElementById('letterForm');
+    const parchmentCard = document.getElementById('parchmentCard');
+    const statusMsg = document.getElementById('statusMsg');
+    const burnBtn = document.getElementById('burnBtn');
+    const flareNotification = document.getElementById('flareNotification');
+    const flareTitle = document.getElementById('flareTitle');
+    const flareDesc = document.getElementById('flareDesc');
+    const flareCloseBtn = document.getElementById('flareCloseBtn');
+
+    // Export signature as compressed JPEG data URL to prevent Formspree payload size limits
+    function getCompressedSignature() {
+      if (!hasSigned) return "No Signature Provided";
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = sigCanvas.width;
+      tempCanvas.height = sigCanvas.height;
+      const tctx = tempCanvas.getContext('2d');
+      tctx.fillStyle = '#f4e8d1';
+      tctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      tctx.drawImage(sigCanvas, 0, 0);
+      return tempCanvas.toDataURL('image/jpeg', 0.6);
+    }
+
+    const fireThemeDetails = [
+      { key: 'azure', name: 'AZURE FLAME OF THE VOID', desc: 'The hearth burst into a brilliant cyan glare! Your missive folded into spirit energy and dissolved into the stars.' },
+      { key: 'emerald', name: 'EMERALD FOREST GLOW', desc: 'An ancient green flame consumed your scroll with a soft hiss, carrying your secret words across the fog.' },
+      { key: 'amethyst', name: 'AMETHYST VIOLET LIGHT', desc: 'A mystical violet spark ignited upon your letter, turning your words to shimmering purple ash.' },
+      { key: 'crimson', name: 'CRIMSON ETERNAL FIRE', desc: 'A deep ruby blaze surged through the fireplace, incinerating your mark and sealing your letter.' },
+      { key: 'ghost', name: 'GHOST WHITE LUMINESCENCE', desc: 'A pale silvery flame enveloped your message in complete silence, leaving only golden dust.' }
+    ];
+
+    letterForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const nameVal = document.getElementById('senderName').value.trim();
+      const emailVal = document.getElementById('senderEmail').value.trim();
+      const messageVal = document.getElementById('letterBody').value.trim();
+
+      if (!nameVal || !emailVal || !messageVal) {
+        statusMsg.textContent = 'Please fill out all fields.';
+        return;
+      }
+
+      if (!hasSigned) {
+        statusMsg.textContent = 'Please sign your mark on the canvas.';
+        return;
+      }
+
+      burnBtn.disabled = true;
+      statusMsg.textContent = 'Folding letter...';
+
+      // Populate hidden inputs
+      document.getElementById('hiddenName').value = nameVal;
+      document.getElementById('hiddenEmail').value = emailVal;
+      document.getElementById('hiddenMessage').value = messageVal;
+      document.getElementById('hiddenSignature').value = getCompressedSignature();
+
+      // Trigger Fold Animation
+      parchmentCard.classList.add('folding');
+
+      setTimeout(() => {
+        statusMsg.textContent = 'Casting into hearth...';
+        parchmentCard.classList.add('flying');
+
+        // Pick random magical fire color flare
+        const chosenFlare = fireThemeDetails[Math.floor(Math.random() * fireThemeDetails.length)];
+        fireTheme = chosenFlare.key;
+
+        // Extra flare particles in fireplace
+        for (let i = 0; i < 40; i++) activeParticles.push(spawnFireParticle());
+
+        // Send payload via Fetch API (AJAX POST to Formspree)
+        const formData = new FormData(letterForm);
+
+        fetch(letterForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        }).then(response => {
+          if (response.ok) {
+            setTimeout(() => {
+              flareTitle.textContent = chosenFlare.name;
+              flareDesc.textContent = chosenFlare.desc;
+              flareNotification.classList.add('active');
+            }, 800);
+          } else {
+            statusMsg.textContent = 'Error sending message. Try again.';
+            burnBtn.disabled = false;
+            parchmentCard.classList.remove('folding', 'flying');
+          }
+        }).catch(error => {
+          statusMsg.textContent = 'Submission error. Check connection.';
+          burnBtn.disabled = false;
+          parchmentCard.classList.remove('folding', 'flying');
+        });
+
+      }, 1000);
+    });
+
+    flareCloseBtn.addEventListener('click', () => {
+      flareNotification.classList.remove('active');
+      letterForm.reset();
+      sctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      hasSigned = false;
+      sigPlaceholder.style.opacity = '1';
+      parchmentCard.classList.remove('folding', 'flying');
+      burnBtn.disabled = false;
+      statusMsg.textContent = 'Ready to cast into hearth';
+      fireTheme = 'amber';
+    });
+  </script>
 </body>
 </html>
